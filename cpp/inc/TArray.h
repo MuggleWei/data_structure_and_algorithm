@@ -1,0 +1,190 @@
+#ifndef __T_ARRAY_H__
+#define __T_ARRAY_H__
+
+#include <stdlib.h>
+#include <stddef.h>
+#include <assert.h>
+#include "macros.h"
+
+template<typename T>
+class TArray
+{
+public:
+    explicit TArray(size_t init_capacity = 8)
+    {
+        capacity_ = init_capacity >= 8 ? init_capacity : 8;
+        datas_ = alloc_.allocate(capacity_);
+        used_ = 0;
+    }
+    TArray(const TArray &ref)
+    {
+        copy(ref);
+    }
+    TArray(TArray &&rref) noexcept
+        : datas_(rref.datas_)
+        , capacity_(rref.capacity_)
+        , used_(rref.used_)
+    {
+        rref.datas_ = nullptr;
+        rref.capacity_ = 0;
+        rref.used_ = 0;
+    }
+    ~TArray()
+    {
+        deallocate();
+    }
+
+    TArray& operator=(const TArray &ref)
+    {
+        if (this != &ref)
+        {
+            deallocate();
+            copy(ref);
+        }
+
+        return *this;
+    }
+    TArray& operator=(TArray &&rref) noexcept
+    {
+        if (this != rref)
+        {
+             deallocate();
+
+             datas_ = rref.datas_;
+             capacity_ = rref.capacity_;
+             used_ = rref.used_;
+
+             rref.datas_ = nullptr;
+             rref.capacity_ = 0;
+             rref.used_ = 0;
+        }
+        return *this;
+    }
+    T& operator[](size_t index)
+    {
+        assert(index < used_);
+        return datas_[index];
+    }
+
+    bool IsEmpty()
+    {
+        return used_ == 0;
+    }
+    bool IsFull()
+    {
+        return used_ == capacity_;
+    }
+    const T& Top()
+    {
+        assert(!IsEmpty());
+        return datas_[used_ - 1];
+    }
+    void Push(const T &ref)
+    {
+        if (IsFull())
+        {
+            EnsureSpace(capacity_ * 2);
+        }
+
+        alloc_.construct(datas_ + used_, ref);
+        ++used_;
+    }
+    void Pop()
+    {
+        assert(!IsEmpty());
+        alloc_.destroy(&datas_[--used_]);
+    }
+    const T& Get(size_t index) const
+    {
+        assert(index < used_);
+        return datas_[index];
+    }
+    void Insert(size_t index, const T &ref)
+    {
+        assert(index <= used_);
+        if (IsFull())
+        {
+            EnsureSpace(capacity_ * 2);
+        }
+
+        for (size_t i = used_; i > index; --i)
+        {
+            alloc_.construct(datas_ + i, std::move(datas_[i - 1]));
+            alloc_.destroy(datas_ + i - 1);
+        }
+        alloc_.construct(datas_ + index, ref);
+        ++used_;
+    }
+    void Remove(size_t index)
+    {
+        assert(index < used_);
+        alloc_.destroy(datas_ + index);
+        for (size_t i = index; i < used_ - 1; ++i)
+        {
+            alloc_.construct(datas_ + i, std::move(datas_[i + 1]));
+            alloc_.destroy(datas_ + i + 1);
+        }
+        --used_;
+    }
+    void EnsureSpace(size_t capacity)
+    {
+        if (capacity_ < capacity)
+        {
+            size_t used = used_;
+            T *new_data = alloc_.allocate(capacity);
+            for (size_t i = 0; i < used_; ++i)
+            {
+                alloc_.construct(new_data + i, std::move(datas_[i]));
+            }
+            deallocate();
+
+            datas_ = new_data;
+            capacity_ = capacity;
+            used_ = used;            
+        }
+    }
+
+    size_t Used() const
+    {
+        return used_;
+    }
+    size_t Capacity() const
+    {
+        return capacity_;
+    }
+
+private:
+    void deallocate()
+    {
+        if (datas_ != nullptr)
+        {
+            for (T* t = datas_; t != datas_ + used_; ++t)
+            {
+                alloc_.destroy(t);
+            }
+            alloc_.deallocate(datas_, capacity_);
+            datas_ = nullptr;
+            capacity_ = 0;
+            used_ = 0;
+        }        
+    }
+    void copy(const TArray &ref)
+    {
+        capacity_ = ref.capacity_;
+        used_ = ref.used_;
+        datas_ = alloc_.allocate(capacity_);
+        for (size_t i = 0; i < used_; ++i)
+        {
+            alloc_.construct(datas_ + i, ref.datas_[i]);
+        }
+    }
+
+private:
+    T*      datas_;
+    size_t  capacity_;
+    size_t  used_;
+
+    std::allocator<T> alloc_;
+};
+
+#endif
