@@ -52,6 +52,14 @@ void TestArrayFunction()
     }
     PrintArray(&array);
 
+    // find
+    TestData data = {0};
+    size_t find_index = 0;
+    if (ArrayFind(&array, &data, 0, &find_index))
+    {
+        printf("find %d in index %lu\n", data.i, find_index);
+    }
+
     // remove and pop
     for (size_t i = 0; i < 4; ++i)
     {

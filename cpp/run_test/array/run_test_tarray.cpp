@@ -12,6 +12,10 @@
 class TestData
 {
 public:
+    bool operator==(const TestData &ref) const
+    {
+        return num_ == ref.num_;
+    }
     ~TestData()
     {
         num_ = -1;
@@ -51,6 +55,14 @@ void TestArrayFunction()
         arr.Insert(arr.Used(), data);
     }
     PrintArray(arr);
+
+    // find
+    TestData data = { 0, "" };
+    size_t find_index = 0;
+    if (arr.Find(data, 0, find_index))
+    {
+        std::cout << "find " << data.num_ << " in index " << find_index << std::endl;
+    }
 
     // remove and pop
     for (size_t i = 0; i < 4; ++i)

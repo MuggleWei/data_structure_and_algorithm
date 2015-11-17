@@ -96,6 +96,25 @@ void ArrayEnsureSpace(Array *p_array, size_t capacity)
         p_array->capacity = capacity;
     }
 }
+bool ArrayFind(Array *p_array, void *data, size_t start_index, size_t *p_index)
+{
+    assert(start_index < p_array->used);
+    size_t index;
+    for (index = start_index; index < p_array->used; ++index)
+    {
+        if (memcmp((void*)((char*)p_array->datas + index * p_array->unit_size), data, p_array->unit_size) == 0)
+        {
+            *p_index = index;
+            return true;
+        }
+    }
+
+    return false;
+}
+void ArrayMakeEmpty(Array *p_array)
+{
+    p_array->used = 0;
+}
 size_t ArrayUsed(Array *p_array)
 {
     return p_array->used;

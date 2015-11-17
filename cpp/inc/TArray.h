@@ -152,6 +152,24 @@ public:
             used_ = used;            
         }
     }
+    bool Find(const T &ref, size_t start_index, size_t &ref_index)
+    {
+        assert(start_index < used_);
+        for (size_t index = start_index; index < used_; ++index)
+        {
+            if (datas_[index] == ref)
+            {
+                ref_index = index;
+                return true;
+            }
+        }
+
+        return false;
+    }
+    void ArrayMakeEmpty()
+    {
+        used_ = 0;
+    }
 
     size_t Used() const
     {

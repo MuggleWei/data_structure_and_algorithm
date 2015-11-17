@@ -17,12 +17,14 @@ void ArrayDestroy(Array *p_array);
 bool ArrayIsEmpty(Array *p_array);
 bool ArrayIsFull(Array *p_array);
 void* ArrayTop(Array *p_array);
-void ArrayPush(Array *p_array, void* data);
+void ArrayPush(Array *p_array, void *data);
 void ArrayPop(Array *p_array);
 void* ArrayGet(Array *p_array, size_t index);
 void ArrayInsert(Array *p_array, size_t index, void *data);
 void ArrayRemove(Array *p_array, size_t index);
 void ArrayEnsureSpace(Array *p_array, size_t capacity);
+bool ArrayFind(Array *p_array, void *data, size_t start_index, size_t *p_index);
+void ArrayMakeEmpty(Array *p_array);
 size_t ArrayUsed(Array *p_array);
 size_t ArrayCapacity(Array *p_array);
 
