@@ -13,7 +13,7 @@ public:
     explicit TArray(size_t init_capacity = 8)
     {
         capacity_ = init_capacity >= 8 ? init_capacity : 8;
-        datas_ = alloc_.allocate(capacity_);
+        datas_ = static_cast<T*>(malloc(sizeof(T) * capacity_));
         used_ = 0;
     }
     TArray(const TArray &ref)
@@ -86,13 +86,14 @@ public:
             EnsureSpace(capacity_ * 2);
         }
 
-        alloc_.construct(datas_ + used_, ref);
+        new ((void*)(datas_ + used_)) T(ref);
         ++used_;
     }
     void Pop()
     {
         assert(!IsEmpty());
-        alloc_.destroy(&datas_[--used_]);
+        T *p = &datas_[--used_];
+        p->~T();
     }
     const T& Get(size_t index) const
     {
@@ -107,22 +108,30 @@ public:
             EnsureSpace(capacity_ * 2);
         }
 
-        for (size_t i = used_; i > index; --i)
+        T *begin = datas_ + used_;
+        T *end = datas_ + index;
+        while (begin != end)
         {
-            alloc_.construct(datas_ + i, std::move(datas_[i - 1]));
-            alloc_.destroy(datas_ + i - 1);
+            new ((void*)begin) T(std::move(*(begin - 1)));
+            --begin;
+            begin->~T();
         }
-        alloc_.construct(datas_ + index, ref);
+        new ((void*)begin) T(ref);
         ++used_;
     }
     void Remove(size_t index)
     {
         assert(index < used_);
-        alloc_.destroy(datas_ + index);
-        for (size_t i = index; i < used_ - 1; ++i)
+
+        T *begin = datas_ + index;
+        T *end = datas_ + used_ - 1;
+
+        begin->~T();
+        while (begin != end)
         {
-            alloc_.construct(datas_ + i, std::move(datas_[i + 1]));
-            alloc_.destroy(datas_ + i + 1);
+            new ((void*)begin) T(std::move(*(begin + 1)));
+            ++begin;
+            begin->~T();
         }
         --used_;
     }
@@ -131,10 +140,10 @@ public:
         if (capacity_ < capacity)
         {
             size_t used = used_;
-            T *new_data = alloc_.allocate(capacity);
-            for (size_t i = 0; i < used_; ++i)
+            T *new_data = static_cast<T*>(malloc(sizeof(T) * capacity));
+            for (size_t i =0; i<used_; ++i)
             {
-                alloc_.construct(new_data + i, std::move(datas_[i]));
+                new ((void*)(new_data + i)) T(std::move(datas_[i]));
             }
             deallocate();
 
@@ -158,11 +167,12 @@ private:
     {
         if (datas_ != nullptr)
         {
-            for (T* t = datas_; t != datas_ + used_; ++t)
+            for (T* p = datas_; p != datas_ + used_; ++p)
             {
-                alloc_.destroy(t);
+                p->~T();
             }
-            alloc_.deallocate(datas_, capacity_);
+            free(datas_);
+
             datas_ = nullptr;
             capacity_ = 0;
             used_ = 0;
@@ -172,10 +182,10 @@ private:
     {
         capacity_ = ref.capacity_;
         used_ = ref.used_;
-        datas_ = alloc_.allocate(capacity_);
+        datas_ = static_cast<T*>(malloc(sizeof(T) * capacity_));
         for (size_t i = 0; i < used_; ++i)
         {
-            alloc_.construct(datas_ + i, ref.datas_[i]);
+            new ((void*)(datas_ + i)) T(ref.datas_[i]);
         }
     }
 
@@ -183,8 +193,6 @@ private:
     T*      datas_;
     size_t  capacity_;
     size_t  used_;
-
-    std::allocator<T> alloc_;
 };
 
 #endif
