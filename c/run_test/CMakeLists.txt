@@ -15,3 +15,20 @@ add_executable(run_test_c_array
 )
 endif()
 target_link_libraries(run_test_c_array ${data_structure_c_lib})
+# end array
+
+# list
+file(GLOB RUN_TEST_C_LIST_SOURCE list/*.cpp)
+file(GLOB RUN_TEST_C_LIST_HEADER list/*.h)
+if (WIN32)
+add_executable(run_test_c_list
+	${RUN_TEST_C_LIST_SOURCE}
+	${RUN_TEST_C_LIST_HEADER}
+)
+else()
+add_executable(run_test_c_list
+	${RUN_TEST_C_LIST_SOURCE}
+)
+endif()
+target_link_libraries(run_test_c_list ${data_structure_c_lib})
+# end list
