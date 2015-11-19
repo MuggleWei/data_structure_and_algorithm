@@ -7,10 +7,10 @@
 #include <vector>
 #include "macros.h"
 #include "timer.h"
-#include "run_test_list.h"
+#include "run_test_double_list.h"
 extern "C"
 {
-    #include "list.h"
+    #include "double_list.h"
 }
 
 typedef struct TestData_tag
@@ -19,14 +19,14 @@ typedef struct TestData_tag
     char buf[72];
 }TestData;
 
-void PrintList(List *p_list)
+void PrintDoubleList(DoubleList *p_list)
 {
-    ListNode *p_node = ListFirst(p_list);
+    DoubleListNode *p_node = DoubleListFirst(p_list);
     while (p_node)
     {
-        TestData *p_data = (TestData*)GET_LIST_NODE_DATA_ADDRESS(*p_node);
+        TestData *p_data = (TestData*)GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node);
         printf("{%d, %s} ", p_data->i, p_data->buf);
-        p_node = ListNext(p_node);
+        p_node = DoubleListNext(p_list, p_node);
     }
     printf("\n");
 }
@@ -41,12 +41,12 @@ void WriteTimeData(FILE *fp, const char* name, std::vector<size_t>& nums, std::v
     fprintf(fp, "\n");
 }
 
-void TestListPerformance_InsertAndMakeEmpty(std::vector<size_t>& nums, std::vector<double>& times_insert, std::vector<double>& times_make_empty)
+void TestDoubleListPerformance_AddAndMakeEmpty(std::vector<size_t>& nums, std::vector<double>& times_add, std::vector<double>& times_make_empty)
 {
     for (decltype(nums.size()) cur_num = 0; cur_num < nums.size(); ++cur_num)
     {
-        List list;
-        ListInit(&list, sizeof(TestData));
+        DoubleList list;
+        DoubleListInit(&list, sizeof(TestData));
 
         // insert
         Timer timer;
@@ -54,61 +54,71 @@ void TestListPerformance_InsertAndMakeEmpty(std::vector<size_t>& nums, std::vect
         for (size_t i = 0; i < nums[cur_num]; ++i)
         {
             TestData t;
-            ListInsert(&list, &t);
+            DoubleListAdd(&list, &t);
         }
         timer.End();
-        times_insert.push_back(timer.GetElapsedMilliseconds());
+        times_add.push_back(timer.GetElapsedMilliseconds());
 
         printf("insert: %lu - %lf\n", nums[cur_num], timer.GetElapsedMilliseconds());
 
         // make empty
         timer.Start();
-        ListMakeEmpty(&list);
+        DoubleListMakeEmpty(&list);
         timer.End();
         times_make_empty.push_back(timer.GetElapsedMilliseconds());
 
         printf("make empty: %lu - %lf\n", nums[cur_num], timer.GetElapsedMilliseconds());
 
-        ListDestroy(&list);
+        DoubleListDestroy(&list);
     }
 }
 
-void TestListFunction()
+void TestDoubleListFunction()
 {
-    List list;
+    DoubleList list;
 
     // init
-    ListInit(&list, sizeof(TestData));
+    DoubleListInit(&list, sizeof(TestData));
 
     // insert
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < 4; ++i)
     {
         TestData data = { (int)i, "" };
         sprintf(data.buf, "%d", i);
-        ListInsert(&list, &data);
+        DoubleListInsert(&list, &data);
     }
-    PrintList(&list);
+    PrintDoubleList(&list);
+
+    // Add
+    for (int i = 4; i < 8; ++i)
+    {
+        TestData data = { (int)i, "" };
+        sprintf(data.buf, "%d", i);
+        DoubleListAdd(&list, &data);
+    }
+    PrintDoubleList(&list);
 
     // find
-    TestData data = { 5, "5" };
-    ListNode *p_node = ListFind(&list, &data, NULL);
+    TestData data = {5, "5"};
+    DoubleListNode *p_node = DoubleListFind(&list, &data, NULL);
     if (p_node)
     {
-        TestData *p_data = (TestData*)GET_LIST_NODE_DATA_ADDRESS(*p_node);
+        TestData *p_data = (TestData*)GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node);
         printf("find {%d, %s}\n", p_data->i, p_data->buf);
     }
-    
-    // find and remove
-    ListFindAndRemove(&list, &data);
-    PrintList(&list);
+
+    // next
+    DoubleListNode *p_node_next = DoubleListNext(&list, p_node);
+    DoubleListRemove(p_node);
+    PrintDoubleList(&list);
 
     // destroy
-    ListDestroy(&list);
+    DoubleListDestroy(&list);
 }
-void TestListPerformance()
+void TestDoubleListPerformance()
 {
     std::vector<size_t> nums;
-    std::vector<double> times_insert;
+    std::vector<double> times_add;
     std::vector<double> times_make_empty;
 
     for (size_t i = 1; i <= 32; ++i)
@@ -116,14 +126,14 @@ void TestListPerformance()
         nums.push_back(i * 102400);
     }
 
-    // performance - insert and make empty
-    TestListPerformance_InsertAndMakeEmpty(nums, times_insert, times_make_empty);
+    // performance - add and make empty
+    TestDoubleListPerformance_AddAndMakeEmpty(nums, times_add, times_make_empty);
 
     // open file
-    FILE *fp = fopen("ListPerformance.txt", "w+");
+    FILE *fp = fopen("DoubleListPerformance.txt", "w+");
     if (!fp)
     {
-        printf("can't open ListPerformance.txt!\n");
+        printf("can't open DoubleListPerformance.txt!\n");
         assert(0);
         return;
     }
@@ -137,7 +147,7 @@ void TestListPerformance()
     fprintf(fp, "\n");
 
     // write performance data
-    WriteTimeData(fp, "insert", nums, times_insert);
+    WriteTimeData(fp, "insert", nums, times_add);
     WriteTimeData(fp, "make empty", nums, times_make_empty);
 
     // close file
@@ -151,8 +161,8 @@ int main()
     _CrtMemCheckpoint(&s1);
 #endif
 
-    TestListFunction();
-    TestListPerformance();
+    TestDoubleListFunction();
+    TestDoubleListPerformance();
 
 #if defined(_WIN32) && ! defined(NDEBUG)
     _CrtMemCheckpoint(&s2);

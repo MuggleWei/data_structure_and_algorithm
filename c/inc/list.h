@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#define GET_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(ListNode*))
+#define GET_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(ListNode))
 
 // linked list node
 typedef struct ListNode_tag
@@ -26,7 +26,7 @@ bool ListIsEmpty(List *p_list);
 ListNode* ListFirst(List *p_list);
 bool ListIsLast(ListNode *p_node);
 ListNode* ListNext(ListNode *p_node);
-ListNode* ListFind(List *p_list, void *data);
+ListNode* ListFind(List *p_list, void *data, ListNode *start_node);
 void ListInsert(List *p_list, void *data);
 bool ListFindAndRemove(List *p_list, void *data);
 void ListMakeEmpty(List *p_list);

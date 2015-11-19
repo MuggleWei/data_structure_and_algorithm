@@ -32,9 +32,9 @@ ListNode* ListNext(ListNode *p_node)
 {
     return p_node->next;
 }
-ListNode* ListFind(List *p_list, void *data)
+ListNode* ListFind(List *p_list, void *data, ListNode *start_node)
 {
-    ListNode *p = p_list->head->next;
+    ListNode *p = start_node ? start_node : p_list->head->next;
     while (p)
     {
         if (memcmp(GET_LIST_NODE_DATA_ADDRESS(*p), data, p_list->unit_size) == 0)

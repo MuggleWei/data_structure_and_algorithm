@@ -32,3 +32,19 @@ add_executable(run_test_c_list
 endif()
 target_link_libraries(run_test_c_list ${data_structure_c_lib})
 # end list
+
+# double list
+file(GLOB RUN_TEST_C_DOUBLE_LIST_SOURCE double_list/*.cpp)
+file(GLOB RUN_TEST_C_DOUBLE_LIST_HEADER double_list/*.h)
+if (WIN32)
+add_executable(run_test_c_double_list
+	${RUN_TEST_C_DOUBLE_LIST_SOURCE}
+	${RUN_TEST_C_DOUBLE_LIST_HEADER}
+)
+else()
+add_executable(run_test_c_double_list
+	${RUN_TEST_C_DOUBLE_LIST_SOURCE}
+)
+endif()
+target_link_libraries(run_test_c_double_list ${data_structure_c_lib})
+# end double list
