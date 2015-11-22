@@ -109,7 +109,12 @@ void TestDoubleListFunction()
 
     // next
     DoubleListNode *p_node_next = DoubleListNext(&list, p_node);
-    DoubleListRemove(p_node);
+    if (p_node_next)
+    {
+        TestData *p_data = (TestData*)GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node_next);
+        printf("next {%d, %s}\n", p_data->i, p_data->buf);
+    }
+    DoubleListRemove(&list, p_node);
     PrintDoubleList(&list);
 
     // destroy

@@ -5,14 +5,24 @@
 
 void ListInit(List *p_list, size_t unit_size)
 {
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+    MemoryPoolInit(&p_list->pool, 16, unit_size + sizeof(ListNode));
+    p_list->head = (ListNode*)MemoryPoolAlloc(&p_list->pool);
+#else
     p_list->head = (ListNode*)malloc(sizeof(ListNode));
+#endif
     p_list->unit_size = unit_size;
     p_list->head->next = NULL;
 }
 void ListDestroy(List *p_list)
 {
     ListMakeEmpty(p_list);
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+    MemoryPoolFree(&p_list->pool, p_list->head);
+    MemoryPoolDestroy(&p_list->pool);
+#else
     free(p_list->head);
+#endif
     p_list->head = NULL;
     p_list->unit_size = 0;
 }
@@ -48,7 +58,11 @@ ListNode* ListFind(List *p_list, void *data, ListNode *start_node)
 }
 void ListInsert(List *p_list, void *data)
 {
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+    ListNode *p_node = (ListNode*)MemoryPoolAlloc(&p_list->pool);
+#else
     ListNode *p_node = (ListNode*)malloc(sizeof(ListNode) + p_list->unit_size);
+#endif
     memcpy(GET_LIST_NODE_DATA_ADDRESS(*p_node), data, p_list->unit_size);
 
     p_node->next = p_list->head->next;
@@ -63,7 +77,11 @@ bool ListFindAndRemove(List *p_list, void *data)
         {
             ListNode *p_node = *pp;
             *pp = (*pp)->next;
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+            MemoryPoolFree(&p_list->pool, p_node);
+#else
             free(p_node);
+#endif
             return true;
         }
         else
@@ -80,6 +98,10 @@ void ListMakeEmpty(List *p_list)
     {
         ListNode *p_node = p_list->head->next;
         p_list->head->next = p_list->head->next->next;
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+        MemoryPoolFree(&p_list->pool, p_node);
+#else
         free(p_node);
+#endif
     }
 }

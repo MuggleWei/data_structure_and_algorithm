@@ -4,6 +4,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+#include "memory_pool.h"
+#endif
+
 #define GET_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(ListNode))
 
 // linked list node
@@ -17,6 +21,10 @@ typedef struct List_tag
 {
     ListNode*   head;
     size_t      unit_size;
+
+#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+    MemoryPool  pool;
+#endif
 }List;
 
 // linked list function
