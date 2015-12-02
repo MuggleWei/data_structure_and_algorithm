@@ -3,10 +3,10 @@
 #include <string.h>
 #include <assert.h>
 
-void DoubleListInit(DoubleList *p_list, size_t unit_size)
+void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size)
 {
 #if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
-    MemoryPoolInit(&p_list->pool, 16, unit_size + sizeof(DoubleListNode));
+    MemoryPoolInit(&p_list->pool, hint_pool_size, unit_size + sizeof(DoubleListNode));
     p_list->head = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
     p_list->tail = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
 #else

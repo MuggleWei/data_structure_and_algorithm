@@ -36,6 +36,78 @@ void PrintArray(TArray<TestData>& ref)
     std::cout << std::endl;
 }
 
+double TestArrayPerformance_Push(int num)
+{
+    TArray<TestData> arr;
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        arr.Push(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+    std::cout << num << " : " << ret << std::endl;
+
+    return ret;
+}
+double TestArrayPerformance_Push_PreAlloc(int num)
+{
+    TArray<TestData> arr(num);
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        arr.Push(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+    std::cout << num << " : " << ret << std::endl;
+
+    return ret;
+}
+double TestVectorPerformance_Push(int num)
+{
+    std::vector<TestData> array;
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        array.push_back(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    return ret;
+}
+double TestVectorPerformance_Push_PreAlloc(int num)
+{
+    std::vector<TestData> array;
+    array.reserve(num);
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        array.push_back(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    return ret;
+}
+
 void TestArrayFunction()
 {
     TArray<TestData> arr;
@@ -97,44 +169,6 @@ void TestArrayFunction()
         std::cout << std::endl;
     }
 }
-
-void TestArrayPerformance_Push(std::vector<size_t> &ref_num, std::vector<double> &ref_time)
-{
-    for (decltype(ref_num.size()) cur_num = 0; cur_num < ref_num.size(); ++cur_num)
-    {
-        TArray<TestData> arr;
-
-        Timer timer;
-        timer.Start();
-        for (size_t i = 0; i < ref_num[cur_num]; ++i)
-        {
-            TestData t;
-            arr.Push(t);
-        }
-        timer.End();
-        ref_time.push_back(timer.GetElapsedMilliseconds());
-        std::cout << ref_num[cur_num] << " : " << timer.GetElapsedMilliseconds() << std::endl;
-    }
-}
-
-double TestArrayPerformancePush(int num)
-{
-    TArray<TestData> arr;
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        arr.Push(t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-    std::cout << num << " : " << ret << std::endl;
-
-    return ret;
-}
-
 void TestArrayPerformance()
 {
     // set nums
@@ -148,7 +182,10 @@ void TestArrayPerformance()
     performance_run.SetNums(nums);
 
     // set unit test
-    performance_run.AddUnitRunTest("cpp array push", TestArrayPerformancePush);
+    performance_run.AddUnitRunTest("cpp array push", TestArrayPerformance_Push);
+    performance_run.AddUnitRunTest("cpp array push(previous allocate)", TestArrayPerformance_Push_PreAlloc);
+    performance_run.AddUnitRunTest("std vector push(non pod)", TestVectorPerformance_Push);
+    performance_run.AddUnitRunTest("std vector push(non pod previous allocate)", TestVectorPerformance_Push_PreAlloc);
 
     // run
     performance_run.Run();

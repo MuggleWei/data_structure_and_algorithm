@@ -30,7 +30,7 @@ typedef struct DoubleList_tag
 }DoubleList;
 
 // linked list function
-void DoubleListInit(DoubleList *p_list, size_t unit_size);
+void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size);
 void DoubleListDestroy(DoubleList *p_list);
 bool DoubleListIsEmpty(DoubleList *p_list);
 DoubleListNode* DoubleListFirst(DoubleList *p_list);

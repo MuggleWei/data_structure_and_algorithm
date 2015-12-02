@@ -18,7 +18,8 @@ void RunTest::SetNums(std::vector<int> nums)
 }
 void RunTest::AddUnitRunTest(std::string name, UnitTestFunc* ptr_func)
 {
-    UnitTest unit = {name, ptr_func};
+    std::vector<double> tmp;
+    UnitTest unit = {name, ptr_func, tmp};
     units_.push_back(unit);
 }
 void RunTest::WriteToFile(std::string file_name)

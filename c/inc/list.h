@@ -28,7 +28,7 @@ typedef struct List_tag
 }List;
 
 // linked list function
-void ListInit(List *p_list, size_t unit_size);
+void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size);
 void ListDestroy(List *p_list);
 bool ListIsEmpty(List *p_list);
 ListNode* ListFirst(List *p_list);

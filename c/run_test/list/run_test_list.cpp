@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <vector>
+#include <list>
 #include "macros.h"
 #include "timer.h"
 #include "run_test.h"
@@ -32,42 +33,32 @@ void PrintList(List *p_list)
     printf("\n");
 }
 
-void TestListPerformance_InsertAndMakeEmpty(std::vector<size_t>& nums, std::vector<double>& times_insert, std::vector<double>& times_make_empty)
-{
-    for (decltype(nums.size()) cur_num = 0; cur_num < nums.size(); ++cur_num)
-    {
-        List list;
-        ListInit(&list, sizeof(TestData));
-
-        // insert
-        Timer timer;
-        timer.Start();
-        for (size_t i = 0; i < nums[cur_num]; ++i)
-        {
-            TestData t;
-            ListInsert(&list, &t);
-        }
-        timer.End();
-        times_insert.push_back(timer.GetElapsedMilliseconds());
-
-        printf("insert: %lu - %lf\n", nums[cur_num], timer.GetElapsedMilliseconds());
-
-        // make empty
-        timer.Start();
-        ListMakeEmpty(&list);
-        timer.End();
-        times_make_empty.push_back(timer.GetElapsedMilliseconds());
-
-        printf("make empty: %lu - %lf\n", nums[cur_num], timer.GetElapsedMilliseconds());
-
-        ListDestroy(&list);
-    }
-}
-
 double TestListInsert(int num)
 {
     List list;
-    ListInit(&list, sizeof(TestData));
+    ListInit(&list, sizeof(TestData), 16);
+
+    // insert
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        ListInsert(&list, &t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("insert: %d - %lf\n", num, ret);
+
+    ListDestroy(&list);
+
+    return ret;
+}
+double TestListInsert_HintPoolSize(int num)
+{
+    List list;
+    ListInit(&list, sizeof(TestData), num);
 
     // insert
     Timer timer;
@@ -89,7 +80,7 @@ double TestListInsert(int num)
 double TestListMakeEmpty(int num)
 {
     List list;
-    ListInit(&list, sizeof(TestData));
+    ListInit(&list, sizeof(TestData), 16);
 
     // insert
     for (int i = 0; i < num; ++i)
@@ -111,13 +102,53 @@ double TestListMakeEmpty(int num)
 
     return ret;
 }
+double TestStdListInsert(int num)
+{
+    std::list<TestData> list;
+
+    // insert
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.insert(list.begin(), t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("insert: %d - %lf\n", num, ret);
+
+    return ret;
+}
+double TestStdListMakeEmpty(int num)
+{
+    std::list<TestData> list;
+
+    // insert
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.insert(list.begin(), t);
+    }
+
+    Timer timer;
+    timer.Start();
+    list.erase(list.begin(), list.end());
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("make empty: %d - %lf\n", num, ret);
+
+    return ret;
+}
 
 void TestListFunction()
 {
     List list;
 
     // init
-    ListInit(&list, sizeof(TestData));
+    ListInit(&list, sizeof(TestData), 16);
 
     // insert
     for (int i = 0; i < 8; ++i)
@@ -158,7 +189,10 @@ void TestListPerformance()
 
     // set unit test
     performance_run.AddUnitRunTest("c list insert", TestListInsert);
+    performance_run.AddUnitRunTest("c list insert(hint pool size)", TestListInsert_HintPoolSize);
     performance_run.AddUnitRunTest("c list make empty", TestListMakeEmpty);
+    performance_run.AddUnitRunTest("std list insert(pod)", TestStdListInsert);
+    performance_run.AddUnitRunTest("std list make empty(pod)", TestStdListMakeEmpty);
 
     // run
     performance_run.Run();

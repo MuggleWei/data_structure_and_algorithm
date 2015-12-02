@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <vector>
+#include <list>
 #include "macros.h"
 #include "timer.h"
 #include "run_test.h"
@@ -35,7 +36,29 @@ void PrintDoubleList(DoubleList *p_list)
 double TestDoubleListAdd(int num)
 {
     DoubleList list;
-    DoubleListInit(&list, sizeof(TestData));
+    DoubleListInit(&list, sizeof(TestData), 16);
+
+    // add
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        DoubleListAdd(&list, &t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("add: %d - %lf\n", num, ret);
+
+    DoubleListDestroy(&list);
+
+    return ret;
+}
+double TestDoubleListAdd_HintPoolSize(int num)
+{
+    DoubleList list;
+    DoubleListInit(&list, sizeof(TestData), num);
 
     // add
     Timer timer;
@@ -57,7 +80,7 @@ double TestDoubleListAdd(int num)
 double TestDoubleListMakeEmpty(int num)
 {
     DoubleList list;
-    DoubleListInit(&list, sizeof(TestData));
+    DoubleListInit(&list, sizeof(TestData), 16);
 
     // add
     for (int i = 0; i < num; ++i)
@@ -79,13 +102,54 @@ double TestDoubleListMakeEmpty(int num)
 
     return ret;
 }
+double TestStdListAdd(int num)
+{
+    std::list<TestData> list;
+
+    // add
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.push_back(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("add: %d - %lf\n", num, ret);
+
+    return ret;
+}
+double TestStdListMakeEmpty(int num)
+{
+    std::list<TestData> list;
+
+    // add
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.push_back(t);
+    }
+
+    // make empty
+    Timer timer;
+    timer.Start();
+    list.erase(list.begin(), list.end());
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("add: %d - %lf\n", num, ret);
+
+    return ret;
+}
 
 void TestDoubleListFunction()
 {
     DoubleList list;
 
     // init
-    DoubleListInit(&list, sizeof(TestData));
+    DoubleListInit(&list, sizeof(TestData), 16);
 
     // insert
     for (int i = 0; i < 4; ++i)
@@ -141,7 +205,10 @@ void TestDoubleListPerformance()
 
     // set unit test
     performance_run.AddUnitRunTest("c double list add", TestDoubleListAdd);
+    performance_run.AddUnitRunTest("c double list add(hint pool size)", TestDoubleListAdd_HintPoolSize);
     performance_run.AddUnitRunTest("c double list make empty", TestDoubleListMakeEmpty);
+    performance_run.AddUnitRunTest("std list add(pod)", TestStdListAdd);
+    performance_run.AddUnitRunTest("std list make empty(pod)", TestStdListMakeEmpty);
 
     // run
     performance_run.Run();

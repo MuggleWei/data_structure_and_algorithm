@@ -18,6 +18,7 @@ extern "C"
 typedef struct TestData_tag
 {
     int i;
+    char buf[72];
 }TestData;
 
 void PrintArray(Array* p_array)
@@ -27,6 +28,86 @@ void PrintArray(Array* p_array)
         printf("%d ", ((TestData*)ArrayGet(p_array, i))->i);
     }
     printf("\n");
+}
+
+double TestArrayPerformance_Push(int num)
+{
+    Array array;
+    ArrayInit(&array, 8, sizeof(TestData));
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        ArrayPush(&array, &t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    ArrayDestroy(&array);
+
+    return ret;
+}
+double TestArrayPerformance_Push_PreAlloc(int num)
+{
+    Array array;
+    ArrayInit(&array, num, sizeof(TestData));
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        ArrayPush(&array, &t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    ArrayDestroy(&array);
+
+    return ret;
+}
+double TestVectorPerformance_Push(int num)
+{
+    std::vector<TestData> array;
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        array.push_back(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    return ret;
+}
+double TestVectorPerformance_Push_PreAlloc(int num)
+{
+    std::vector<TestData> array;
+    array.reserve(num);
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        array.push_back(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    return ret;
 }
 
 void TestArrayFunction()
@@ -39,7 +120,7 @@ void TestArrayFunction()
     // push
     for (int i = 0; i < 4; ++i)
     {
-        TestData data = { i };
+        TestData data = { i, "" };
         ArrayPush(&array, &data);
     }
     PrintArray(&array);
@@ -47,14 +128,14 @@ void TestArrayFunction()
     // insert
     for (int i = 0; i < 4; ++i)
     {
-        TestData data = { i + 4 };
+        TestData data = { i + 4, "" };
         ArrayInsert(&array, 0, &data);
         ArrayInsert(&array, ArrayUsed(&array), &data);
     }
     PrintArray(&array);
 
     // find
-    TestData data = {0};
+    TestData data = {0, ""};
     size_t find_index = 0;
     if (ArrayFind(&array, &data, 0, &find_index))
     {
@@ -76,29 +157,6 @@ void TestArrayFunction()
     // destroy
     ArrayDestroy(&array);
 }
-
-double TestArrayPerformance_Push(int num)
-{
-    Array array;
-    ArrayInit(&array, num, sizeof(TestData));
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        ArrayPush(&array, &t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
-    ArrayDestroy(&array);
-
-    return ret;
-}
-
 void TestArrayPerformance()
 {
     // set nums
@@ -113,6 +171,9 @@ void TestArrayPerformance()
 
     // set unit test
     performance_run.AddUnitRunTest("c array push", TestArrayPerformance_Push);
+    performance_run.AddUnitRunTest("c array push(previous allocate)", TestArrayPerformance_Push_PreAlloc);
+    performance_run.AddUnitRunTest("std vector push(pod)", TestVectorPerformance_Push);
+    performance_run.AddUnitRunTest("std vector push(pod previous allocate)", TestVectorPerformance_Push_PreAlloc);
 
     // run
     performance_run.Run();
