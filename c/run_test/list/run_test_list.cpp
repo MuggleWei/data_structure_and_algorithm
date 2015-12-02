@@ -7,6 +7,7 @@
 #include <vector>
 #include "macros.h"
 #include "timer.h"
+#include "run_test.h"
 #include "run_test_list.h"
 extern "C"
 {
@@ -29,16 +30,6 @@ void PrintList(List *p_list)
         p_node = ListNext(p_node);
     }
     printf("\n");
-}
-
-void WriteTimeData(FILE *fp, const char* name, std::vector<size_t>& nums, std::vector<double>& times)
-{
-    fprintf(fp, "%s\t", name);
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%f\t", times[i]);
-    }
-    fprintf(fp, "\n");
 }
 
 void TestListPerformance_InsertAndMakeEmpty(std::vector<size_t>& nums, std::vector<double>& times_insert, std::vector<double>& times_make_empty)
@@ -71,6 +62,54 @@ void TestListPerformance_InsertAndMakeEmpty(std::vector<size_t>& nums, std::vect
 
         ListDestroy(&list);
     }
+}
+
+double TestListInsert(int num)
+{
+    List list;
+    ListInit(&list, sizeof(TestData));
+
+    // insert
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        ListInsert(&list, &t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("insert: %d - %lf\n", num, ret);
+
+    ListDestroy(&list);
+
+    return ret;
+}
+double TestListMakeEmpty(int num)
+{
+    List list;
+    ListInit(&list, sizeof(TestData));
+
+    // insert
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        ListInsert(&list, &t);
+    }
+
+    // make empty
+    Timer timer;
+    timer.Start();
+    ListMakeEmpty(&list);
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("make empty: %d - %lf\n", num, ret);
+
+    ListDestroy(&list);
+
+    return ret;
 }
 
 void TestListFunction()
@@ -107,41 +146,25 @@ void TestListFunction()
 }
 void TestListPerformance()
 {
-    std::vector<size_t> nums;
-    std::vector<double> times_insert;
-    std::vector<double> times_make_empty;
-
-    for (size_t i = 1; i <= 32; ++i)
+    // set nums
+    std::vector<int> nums;
+    for (int i = 1; i <= 32; ++i)
     {
         nums.push_back(i * 102400);
     }
 
-    // performance - insert and make empty
-    TestListPerformance_InsertAndMakeEmpty(nums, times_insert, times_make_empty);
+    RunTest performance_run;
+    performance_run.SetNums(nums);
 
-    // open file
-    FILE *fp = fopen("ListPerformance.txt", "w+");
-    if (!fp)
-    {
-        printf("can't open ListPerformance.txt!\n");
-        assert(0);
-        return;
-    }
+    // set unit test
+    performance_run.AddUnitRunTest("c list insert", TestListInsert);
+    performance_run.AddUnitRunTest("c list make empty", TestListMakeEmpty);
 
-    // write file
-    fprintf(fp, "\t");
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%lu\t", nums[i]);
-    }
-    fprintf(fp, "\n");
+    // run
+    performance_run.Run();
 
-    // write performance data
-    WriteTimeData(fp, "insert", nums, times_insert);
-    WriteTimeData(fp, "make empty", nums, times_make_empty);
-
-    // close file
-    fclose(fp);
+    // write result to file
+    performance_run.WriteToFile("c list performance.txt");
 }
 
 int main()

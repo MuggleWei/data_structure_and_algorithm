@@ -14,7 +14,10 @@ add_executable(run_test_c_array
 	${RUN_TEST_C_ARRAY_SOURCE}
 )
 endif()
-target_link_libraries(run_test_c_array ${data_structure_c_lib})
+target_link_libraries(run_test_c_array 
+	${data_structure_c_lib} 
+	${run_test_lib}
+)
 # end array
 
 # list
@@ -30,7 +33,10 @@ add_executable(run_test_c_list
 	${RUN_TEST_C_LIST_SOURCE}
 )
 endif()
-target_link_libraries(run_test_c_list ${data_structure_c_lib})
+target_link_libraries(run_test_c_list 
+	${data_structure_c_lib}
+	${run_test_lib}
+)
 # end list
 
 # double list
@@ -46,5 +52,8 @@ add_executable(run_test_c_double_list
 	${RUN_TEST_C_DOUBLE_LIST_SOURCE}
 )
 endif()
-target_link_libraries(run_test_c_double_list ${data_structure_c_lib})
+target_link_libraries(run_test_c_double_list 
+	${data_structure_c_lib}
+	${run_test_lib}
+)
 # end double list

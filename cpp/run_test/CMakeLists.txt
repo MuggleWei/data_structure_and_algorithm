@@ -14,3 +14,7 @@ add_executable(run_test_cpp_array
 	${RUN_TEST_CPP_ARRAY_SOURCE}
 )
 endif()
+target_link_libraries(run_test_cpp_array
+	${run_test_lib}
+)
+# end array

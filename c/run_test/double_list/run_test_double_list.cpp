@@ -7,6 +7,7 @@
 #include <vector>
 #include "macros.h"
 #include "timer.h"
+#include "run_test.h"
 #include "run_test_double_list.h"
 extern "C"
 {
@@ -31,46 +32,52 @@ void PrintDoubleList(DoubleList *p_list)
     printf("\n");
 }
 
-void WriteTimeData(FILE *fp, const char* name, std::vector<size_t>& nums, std::vector<double>& times)
+double TestDoubleListAdd(int num)
 {
-    fprintf(fp, "%s\t", name);
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
+    DoubleList list;
+    DoubleListInit(&list, sizeof(TestData));
+
+    // add
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
     {
-        fprintf(fp, "%f\t", times[i]);
+        TestData t;
+        DoubleListAdd(&list, &t);
     }
-    fprintf(fp, "\n");
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("add: %d - %lf\n", num, ret);
+
+    DoubleListDestroy(&list);
+
+    return ret;
 }
-
-void TestDoubleListPerformance_AddAndMakeEmpty(std::vector<size_t>& nums, std::vector<double>& times_add, std::vector<double>& times_make_empty)
+double TestDoubleListMakeEmpty(int num)
 {
-    for (decltype(nums.size()) cur_num = 0; cur_num < nums.size(); ++cur_num)
+    DoubleList list;
+    DoubleListInit(&list, sizeof(TestData));
+
+    // add
+    for (int i = 0; i < num; ++i)
     {
-        DoubleList list;
-        DoubleListInit(&list, sizeof(TestData));
-
-        // insert
-        Timer timer;
-        timer.Start();
-        for (size_t i = 0; i < nums[cur_num]; ++i)
-        {
-            TestData t;
-            DoubleListAdd(&list, &t);
-        }
-        timer.End();
-        times_add.push_back(timer.GetElapsedMilliseconds());
-
-        printf("insert: %lu - %lf\n", nums[cur_num], timer.GetElapsedMilliseconds());
-
-        // make empty
-        timer.Start();
-        DoubleListMakeEmpty(&list);
-        timer.End();
-        times_make_empty.push_back(timer.GetElapsedMilliseconds());
-
-        printf("make empty: %lu - %lf\n", nums[cur_num], timer.GetElapsedMilliseconds());
-
-        DoubleListDestroy(&list);
+        TestData t;
+        DoubleListAdd(&list, &t);
     }
+    
+    // make empty
+    Timer timer;
+    timer.Start();
+    DoubleListMakeEmpty(&list);
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("make empty: %d - %lf\n", num, ret);
+
+    DoubleListDestroy(&list);
+
+    return ret;
 }
 
 void TestDoubleListFunction()
@@ -122,41 +129,25 @@ void TestDoubleListFunction()
 }
 void TestDoubleListPerformance()
 {
-    std::vector<size_t> nums;
-    std::vector<double> times_add;
-    std::vector<double> times_make_empty;
-
-    for (size_t i = 1; i <= 32; ++i)
+    // set nums
+    std::vector<int> nums;
+    for (int i = 1; i <= 32; ++i)
     {
         nums.push_back(i * 102400);
     }
 
-    // performance - add and make empty
-    TestDoubleListPerformance_AddAndMakeEmpty(nums, times_add, times_make_empty);
+    RunTest performance_run;
+    performance_run.SetNums(nums);
 
-    // open file
-    FILE *fp = fopen("DoubleListPerformance.txt", "w+");
-    if (!fp)
-    {
-        printf("can't open DoubleListPerformance.txt!\n");
-        assert(0);
-        return;
-    }
+    // set unit test
+    performance_run.AddUnitRunTest("c double list add", TestDoubleListAdd);
+    performance_run.AddUnitRunTest("c double list make empty", TestDoubleListMakeEmpty);
 
-    // write file
-    fprintf(fp, "\t");
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%lu\t", nums[i]);
-    }
-    fprintf(fp, "\n");
+    // run
+    performance_run.Run();
 
-    // write performance data
-    WriteTimeData(fp, "insert", nums, times_add);
-    WriteTimeData(fp, "make empty", nums, times_make_empty);
-
-    // close file
-    fclose(fp);
+    // write result to file
+    performance_run.WriteToFile("c double list performance.txt");
 }
 
 int main()

@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <vector>
 #include "timer.h"
+#include "run_test.h"
 #include "run_test_array.h"
 extern "C"
 {
@@ -76,65 +77,48 @@ void TestArrayFunction()
     ArrayDestroy(&array);
 }
 
-void TestArrayPerformance_Push(std::vector<size_t> &ref_num, std::vector<double> &ref_time)
+double TestArrayPerformance_Push(int num)
 {
-    for (decltype(ref_num.size()) cur_num = 0; cur_num<ref_num.size(); ++cur_num)
+    Array array;
+    ArrayInit(&array, num, sizeof(TestData));
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
     {
-        Array array;
-        ArrayInit(&array, 8, sizeof(TestData));
-
-        Timer timer;
-        timer.Start();
-        for (size_t i = 0; i<ref_num[cur_num]; ++i)
-        {
-            TestData t;
-            ArrayPush(&array, &t);
-        }
-        timer.End();
-        ref_time.push_back(timer.GetElapsedMilliseconds());
-
-        printf("%lu - %lf\n", ref_num[cur_num], timer.GetElapsedMilliseconds());
-
-        ArrayDestroy(&array);
+        TestData t;
+        ArrayPush(&array, &t);
     }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    printf("%d - %lf\n", num, ret);
+
+    ArrayDestroy(&array);
+
+    return ret;
 }
 
 void TestArrayPerformance()
 {
-    std::vector<size_t> nums;
-    std::vector<double> push_time;
-
-    for (size_t i=1; i<=32; ++i)
+    // set nums
+    std::vector<int> nums;
+    for (int i=1; i<=32; ++i)
     {
-        nums.push_back(i*1024000);
+        nums.push_back(i*102400);
     }
 
-    // performance
-    TestArrayPerformance_Push(nums, push_time);
+    RunTest performance_run;
+    performance_run.SetNums(nums);
 
-    // open file
-    FILE *fp = fopen("ArrayPerformance.txt", "w+");
-    if (!fp)
-    {
-        printf("can't open ArrayPerformance.txt!\n");
-        assert(0);
-        return;
-    }
+    // set unit test
+    performance_run.AddUnitRunTest("c array push", TestArrayPerformance_Push);
 
-    // write file
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%lu\t", nums[i]);
-    }
-    fprintf(fp, "\n");
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%f\t", push_time[i]);
-    }
-    fprintf(fp, "\n");
+    // run
+    performance_run.Run();
 
-    // close file
-    fclose(fp);
+    // write result to file
+    performance_run.WriteToFile("c array performance.txt");
 }
 
 int main()

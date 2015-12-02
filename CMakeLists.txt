@@ -31,6 +31,19 @@ include_directories(
 	utility
 )
 
+# run test lib
+set(run_test_lib run_test)
+if (WIN32)
+add_library(${run_test_lib}
+	utility/run_test.h
+	utility/run_test.cpp
+)
+else()
+add_library(${run_test_lib}
+	utility/run_test.cpp
+)
+endif()
+
 # sub directory
 add_subdirectory(c)
 add_subdirectory(cpp)

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "timer.h"
+#include "run_test.h"
 #include "run_test_tarray.h"
 #include "TArray.h"
 
@@ -116,43 +117,44 @@ void TestArrayPerformance_Push(std::vector<size_t> &ref_num, std::vector<double>
     }
 }
 
+double TestArrayPerformancePush(int num)
+{
+    TArray<TestData> arr;
+
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        arr.Push(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+    std::cout << num << " : " << ret << std::endl;
+
+    return ret;
+}
 
 void TestArrayPerformance()
 {
-    std::vector<size_t> nums;
-    std::vector<double> push_time;
-
-    for (size_t i = 1; i <= 32; ++i)
+    // set nums
+    std::vector<int> nums;
+    for (int i = 1; i <= 32; ++i)
     {
-        nums.push_back(i * 1024000);
+        nums.push_back(i * 102400);
     }
 
-    // performance
-    TestArrayPerformance_Push(nums, push_time);
+    RunTest performance_run;
+    performance_run.SetNums(nums);
 
-    // open file
-    FILE *fp = fopen("ArrayPerformance.txt", "w+");
-    if (!fp)
-    {
-        printf("can't open ArrayPerformance.txt!\n");
-        assert(0);
-        return;
-    }
+    // set unit test
+    performance_run.AddUnitRunTest("cpp array push", TestArrayPerformancePush);
 
-    // write file
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%lu\t", nums[i]);
-    }
-    fprintf(fp, "\n");
-    for (decltype(nums.size()) i = 0; i < nums.size(); ++i)
-    {
-        fprintf(fp, "%f\t", push_time[i]);
-    }
-    fprintf(fp, "\n");
+    // run
+    performance_run.Run();
 
-    // close file
-    fclose(fp);
+    // write result to file
+    performance_run.WriteToFile("cpp array performance.txt");
 }
 
 
