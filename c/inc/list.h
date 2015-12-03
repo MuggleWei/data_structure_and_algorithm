@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
 #include "memory_pool.h"
 #endif
 
@@ -22,7 +22,7 @@ typedef struct List_tag
     ListNode*   head;
     size_t      unit_size;
 
-#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
     MemoryPool  pool;
 #endif
 }List;

@@ -23,6 +23,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # option for build test code
 option(BUILD_RUN_TEST "Build test code" ON)
+option(DATA_STRUCTURE_PERFORMANCE_OPTIMIZATION "optimize data structure performance" ON)
+
+# enable some opatimize for data structure performance
+if (DATA_STRUCTURE_PERFORMANCE_OPTIMIZATION)
+add_definitions(-DENABLE_DATA_STRUCTURE_OPTIMIZATION)
+endif()
 
 # include
 include_directories(

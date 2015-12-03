@@ -18,3 +18,21 @@ target_link_libraries(run_test_cpp_array
 	${run_test_lib}
 )
 # end array
+
+# list
+file(GLOB RUN_TEST_CPP_LIST_SOURCE list/*.cpp)
+file(GLOB RUN_TEST_CPP_LIST_HEADER list/*.h)
+if (WIN32)
+add_executable(run_test_cpp_list
+	${RUN_TEST_CPP_LIST_SOURCE}
+	${RUN_TEST_CPP_LIST_HEADER}
+)
+else()
+add_executable(run_test_cpp_list
+	${RUN_TEST_CPP_LIST_SOURCE}
+)
+endif()
+target_link_libraries(run_test_cpp_list
+	${run_test_lib}
+)
+# end list

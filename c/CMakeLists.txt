@@ -5,9 +5,6 @@ project(data_structure_and_algorithm_c)
 file(GLOB DATA_STRUCTURE_C_SOURCE src/*.c) 
 file(GLOB DATA_STRUCTURE_C_HEADER inc/*.h) 
 
-# enable some opatimize for data structure performance
-add_definitions(-DENABLE_C_DATA_STRUCTURE_OPTIMIZATION)
-
 # utility c file
 file(GLOB UTILITY_C_SOURCE ${CMAKE_SOURCE_DIR}/utility/*.c)
 set(UTILITY_C_HEADER
