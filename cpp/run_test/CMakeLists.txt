@@ -33,6 +33,7 @@ add_executable(run_test_cpp_list
 )
 endif()
 target_link_libraries(run_test_cpp_list
+	${utility_c_lib}
 	${run_test_lib}
 )
 # end list

@@ -37,6 +37,24 @@ include_directories(
 	utility
 )
 
+# utility c file
+set(utility_c_lib utility_c)
+file(GLOB UTILITY_C_SOURCE ${CMAKE_SOURCE_DIR}/utility/*.c)
+set(UTILITY_C_HEADER
+	${CMAKE_SOURCE_DIR}/utility/macros.h
+	${CMAKE_SOURCE_DIR}/utility/memory_pool.h
+)
+if (WIN32)
+add_library(${utility_c_lib}
+	${UTILITY_C_SOURCE}
+	${UTILITY_C_HEADER}
+)
+else()
+add_library(${utility_c_lib}
+	${UTILITY_C_SOURCE}
+)
+endif()
+
 # run test lib
 set(run_test_lib run_test)
 if (WIN32)

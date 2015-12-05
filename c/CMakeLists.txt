@@ -5,13 +5,6 @@ project(data_structure_and_algorithm_c)
 file(GLOB DATA_STRUCTURE_C_SOURCE src/*.c) 
 file(GLOB DATA_STRUCTURE_C_HEADER inc/*.h) 
 
-# utility c file
-file(GLOB UTILITY_C_SOURCE ${CMAKE_SOURCE_DIR}/utility/*.c)
-set(UTILITY_C_HEADER
-	${CMAKE_SOURCE_DIR}/utility/macros.h
-	${CMAKE_SOURCE_DIR}/utility/memory_pool.h
-)
-
 # add libary
 set(data_structure_c_lib data_structure_c)
 if (WIN32)

@@ -4,10 +4,14 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <assert.h>
+#include <new>
 #include "macros.h"
 
-#if ENABLE_C_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+extern "C"
+{
 #include "memory_pool.h"
+}
 #endif
 
 template<typename T>
@@ -46,9 +50,15 @@ template<typename T>
 class TList
 {
 public:
-    TList()
+    TList(size_t hint_pool_size = 8)
     {
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
+        MemoryPoolInit(pool_, hint_pool_size, sizeof(TListNode<T>));
+        head_ = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>();
+#else
         head_ = new TListNode<T>();
+#endif
         head_->next_ = nullptr;
         count_ = 0;
     }
@@ -59,9 +69,15 @@ public:
     TList(const TList<T> &&rref) noexcept
         : head_(rref.head_)
         , count_(rref.count_)
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        , pool_(rref.pool_)
+#endif
     {
         rref.head_ = nullptr;
         rref.count_ = 0;
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        rref.pool_ = nullptr;
+#endif
     }
     ~TList()
     {
@@ -89,6 +105,11 @@ public:
 
             rref.head_ = nullptr;
             rref.count_ = 0;
+
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+            pool_ = rref.pool_;
+            rref.pool_ = nullptr;
+#endif
         }
         return *this;
     }
@@ -121,7 +142,11 @@ public:
     }
     void Insert(const T &ref_data)
     {
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        TListNode<T> *node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(ref_data);
+#else
         TListNode<T> *node = new TListNode<T>(ref_data);
+#endif
         node->next_ = head_->next_;
         head_->next_ = node;
         ++count_;
@@ -136,7 +161,12 @@ public:
                 assert(count_ != 0);
                 TListNode<T> *p_node = *pp_node;
                 *pp_node = (*pp_node)->next_;
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+                p_node->~TListNode<T>();
+                MemoryPoolFree(pool_, p_node);
+#else
                 delete(p_node);
+#endif
                 --count_;
                 return true;
             }
@@ -154,7 +184,12 @@ public:
         {
             TListNode<T>* node = head_->next_;
             head_->next_ = head_->next_->next_;
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+            node->~TListNode<T>();
+            MemoryPoolFree(pool_, node);
+#else
             delete(node);
+#endif
         }
         count_ = 0;
     }
@@ -172,17 +207,37 @@ private:
             {
                 TListNode<T>* node = head_->next_;
                 head_->next_ = head_->next_->next_;
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+                node->~TListNode<T>();
+                MemoryPoolFree(pool_, node);
+#else
                 delete(node);
+#endif
             }
 
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+            head_->~TListNode<T>();
+            MemoryPoolFree(pool_, head_);
+#else
             delete(head_);
+#endif
             head_ = nullptr;
             count_ = 0;
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+            MemoryPoolDestroy(pool_);
+            free(pool_);
+            pool_ = nullptr;
+#endif
         }
     }
     void copy(const TList<T> &ref)
     {
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        MemoryPoolInit(pool_, ref.pool_->used, sizeof(TListNode<T>));
+        head_ = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>();
+#else
         head_ = new TListNode<T>();
+#endif
         head_->next_ = nullptr;
         count_ = ref.count_;
         
@@ -190,7 +245,11 @@ private:
         TListNode<T>* current_node = head_;
         while (node != nullptr)
         {
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+            TListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(node->data_);
+#else
             TListNode<T>* new_node = new TListNode<T>(node->data_);
+#endif
             current_node->next_ = new_node;
             current_node = new_node;
             current_node->next_ = nullptr;
@@ -201,6 +260,10 @@ private:
 private:
     TListNode<T>*   head_;
     size_t          count_;
+
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+    MemoryPool*     pool_;
+#endif
 };
 
 #endif
