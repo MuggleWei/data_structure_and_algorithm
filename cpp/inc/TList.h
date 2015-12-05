@@ -131,18 +131,18 @@ public:
         TListNode<T> **pp_node = &head_->next_;
         while (*pp_node != nullptr)
         {
-            if (**pp_node == ref_data)
+            if (*(**pp_node).Get() == ref_data)
             {
                 assert(count_ != 0);
                 TListNode<T> *p_node = *pp_node;
-                *pp_node = (*pp_node)->next;
+                *pp_node = (*pp_node)->next_;
                 delete(p_node);
                 --count_;
                 return true;
             }
             else
             {
-                pp_node = &(*pp_node)->next;
+                pp_node = &(*pp_node)->next_;
             }
         }
 
@@ -156,6 +156,7 @@ public:
             head_->next_ = head_->next_->next_;
             delete(node);
         }
+        count_ = 0;
     }
     size_t Count()
     {

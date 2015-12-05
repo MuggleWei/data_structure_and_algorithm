@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include "timer.h"
 #include "run_test.h"
 #include "run_test_tlist.h"
@@ -36,12 +37,156 @@ void PrintList(TList<TestData>& ref)
     std::cout << std::endl;
 }
 
+double TestListInsert(int num)
+{
+    TList<TestData> list;
+
+    // insert
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.Insert(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    std::cout << "insert: " << num << " - "<< ret << std::endl;
+
+    return ret;
+}
+double TestListInsert_HintPoolSize(int num)
+{
+    TList<TestData> list;
+
+    // insert
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.Insert(t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    std::cout << "insert: " << num << " - "<< ret << std::endl;
+
+    return ret;
+}
+double TestListMakeEmpty(int num)
+{
+    TList<TestData> list;
+
+    // insert
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.Insert(t);
+    }
+
+    // make empty
+    Timer timer;
+    timer.Start();
+    list.MakeEmpty();
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    std::cout << "make empty: " << num << " - " << ret << std::endl;
+
+    return ret;
+}
+double TestStdListInsert(int num)
+{
+    std::list<TestData> list;
+
+    // insert
+    Timer timer;
+    timer.Start();
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.insert(list.begin(), t);
+    }
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    std::cout << "insert: " << num << " - " << ret << std::endl;
+
+    return ret;
+}
+double TestStdListMakeEmpty(int num)
+{
+    std::list<TestData> list;
+
+    // insert
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.insert(list.begin(), t);
+    }
+
+    Timer timer;
+    timer.Start();
+    list.erase(list.begin(), list.end());
+    timer.End();
+    double ret = timer.GetElapsedMilliseconds();
+
+    std::cout << "make empty: " << num << " - " << ret << std::endl;
+
+    return ret;
+}
+
 void TestListFunction()
 {
+    TList<TestData> list;
 
+    // insert
+    for (int i = 0; i < 8; ++i)
+    {
+        TestData data = { (int)i, "" };
+        list.Insert(data);
+    }
+    PrintList(list);
+
+    // find
+    TestData data = { 5, "5" };
+    TListNode<TestData> *node = list.Find(data);
+    if (node)
+    {
+        std::cout << "find {" << node->Get()->num_ << ", " << node->Get()->str_ << "}" << std::endl;
+    }
+
+    // find and remove
+    list.FindAndRemove(data);
+    PrintList(list);
 }
 void TestListPerformance()
-{}
+{
+    // set nums
+    std::vector<int> nums;
+    for (int i = 1; i <= 32; ++i)
+    {
+        nums.push_back(i * 102400);
+    }
+
+    RunTest performance_run;
+    performance_run.SetNums(nums);
+
+    // set unit test
+    performance_run.AddUnitRunTest("cpp list insert", TestListInsert);
+    // performance_run.AddUnitRunTest("cpp list insert(hint pool size)", TestListInsert_HintPoolSize);
+    performance_run.AddUnitRunTest("cpp list make empty", TestListMakeEmpty);
+    performance_run.AddUnitRunTest("std list insert", TestStdListInsert);
+    performance_run.AddUnitRunTest("std list make empty", TestStdListMakeEmpty);
+
+    // run
+    performance_run.Run();
+
+    // write result to file
+    performance_run.WriteToFile("cpp list performance.txt");
+}
 
 int main()
 {
