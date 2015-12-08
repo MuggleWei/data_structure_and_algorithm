@@ -203,17 +203,7 @@ private:
     {
         if (head_ != nullptr)
         {
-            while (head_->next_ != nullptr)
-            {
-                TListNode<T>* node = head_->next_;
-                head_->next_ = head_->next_->next_;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
-                node->~TListNode<T>();
-                MemoryPoolFree(pool_, node);
-#else
-                delete(node);
-#endif
-            }
+            MakeEmpty();
 
 #if ENABLE_DATA_STRUCTURE_OPTIMIZATION
             head_->~TListNode<T>();
