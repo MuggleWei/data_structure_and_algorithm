@@ -178,8 +178,8 @@ void TestDoubleListPerformance()
     performance_run.AddUnitRunTest("cpp double list insert", TestListInsert);
     performance_run.AddUnitRunTest("cpp double list insert(hint pool size)", TestListInsert_HintPoolSize);
     performance_run.AddUnitRunTest("cpp double list make empty", TestListMakeEmpty);
-    performance_run.AddUnitRunTest("std list insert(non pod)", TestStdListInsert);
-    performance_run.AddUnitRunTest("std list make empty(non pod)", TestStdListMakeEmpty);
+    performance_run.AddUnitRunTest("std list insert(pod)", TestStdListInsert);
+    performance_run.AddUnitRunTest("std list make empty(pod)", TestStdListMakeEmpty);
 
     // run
     performance_run.Run();

@@ -232,7 +232,7 @@ private:
     {
 #if ENABLE_DATA_STRUCTURE_OPTIMIZATION
         pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
-        MemoryPoolInit(pool_, hint_pool_size, sizeof(TDoubleListNode<T>));
+        MemoryPoolInit(pool_, ref.pool_->used, sizeof(TDoubleListNode<T>));
         head_ = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>();
         tail_ = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>();
 #else
