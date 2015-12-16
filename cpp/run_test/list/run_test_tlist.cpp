@@ -161,6 +161,18 @@ void TestListFunction()
     // find and remove
     list.FindAndRemove(data);
     PrintList(list);
+
+    // copy
+    TList<TestData> copy_list(list);
+    PrintList(copy_list);
+    copy_list = list;
+    PrintList(copy_list);
+
+    // move
+    TList<TestData> swap_list(std::move(copy_list));
+    PrintList(swap_list);
+    swap_list = std::move(list);
+    PrintList(swap_list);
 }
 void TestListPerformance()
 {

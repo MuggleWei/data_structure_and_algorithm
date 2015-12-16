@@ -26,7 +26,7 @@ public:
         next_ = nullptr;
         prev_ = nullptr;
     }
-    TDoubleListNode(const T& data_ref)
+    explicit TDoubleListNode(const T& data_ref)
         : data_(data_ref)
     {
         next_ = nullptr;
@@ -78,14 +78,20 @@ public:
     {
         copy(ref);
     }
-    TDoubleList(const TDoubleList<T> &&rref) noexcept
+    TDoubleList(TDoubleList<T> &&rref) noexcept
         : head_(rref.head_)
         , tail_(rref.tail_)
         , count_(rref.count_)
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        , pool_(rref.pool_)
+#endif
     {
         rref.head_ = nullptr;
         rref.tail_ = nullptr;
         rref.count_ = 0;
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        rref.pool_ = nullptr;
+#endif
     }
     ~TDoubleList()
     {
@@ -101,15 +107,24 @@ public:
         }
         return *this;
     }
-    TDoubleList<T>& operator=(const TDoubleList<T> &&rref) noexcept
+    TDoubleList<T>& operator=(TDoubleList<T> &&rref) noexcept
     {
+        deallocate();
+
         head_ = rref.head_;
         tail_ = rref.tail_;
         count_ = rref.count_;
 
         rref.head_ = nullptr;
         rref.tail_ = nullptr;
-        rref.count_ = nullptr;
+        rref.count_ = 0;
+
+#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        pool_ = rref.pool_;
+        rref.pool_ = nullptr;
+#endif
+
+        return *this;
     }
 
     bool IsEmpty()
@@ -245,7 +260,7 @@ private:
         tail_->next_ = nullptr;
         count_ = 0;
 
-        for (TDoubleListNode<T>* node = ref.next_; node != ref.tail_; node = node->next_)
+        for (TDoubleListNode<T>* node = ref.head_->next_; node != ref.tail_; node = node->next_)
         {
             Add(node->data_);
         }

@@ -3,7 +3,6 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "macros.h"
 
 #define GET_TREE_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(TreeNode))
 
@@ -23,7 +22,7 @@ typedef struct Tree_tag
 
 typedef void (*TreeTraversalFunc)(TreeNode *node, int level);
 
-void TreeInit(Tree *tree, size_t unit_size, size_t hint_pool_size);
+void TreeInit(Tree *tree, size_t unit_size);
 void TreeDestroy(Tree *tree);
 void TreeNodeDestroy(TreeNode *node);
 void TreeNodeSeparate(TreeNode *node);

@@ -56,3 +56,22 @@ target_link_libraries(run_test_cpp_double_list
 	${run_test_lib}
 )
 # end list
+
+# tree
+file(GLOB RUN_TEST_CPP_TREE_SOURCE tree/*.cpp)
+file(GLOB RUN_TEST_CPP_TREE_HEADER tree/*.h)
+if (WIN32)
+add_executable(run_test_cpp_tree
+	${RUN_TEST_CPP_TREE_SOURCE}
+	${RUN_TEST_CPP_TREE_HEADER}
+)
+else()
+add_executable(run_test_cpp_tree
+	${RUN_TEST_CPP_TREE_SOURCE}
+)
+endif()
+target_link_libraries(run_test_cpp_tree
+	${utility_c_lib}
+	${run_test_lib}
+)
+# end tree

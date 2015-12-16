@@ -41,7 +41,7 @@ void PrintTreeNode(TreeNode *node, int level)
 void TestTreeFunction()
 {
     Tree tree;
-    TreeInit(&tree, sizeof(TestData), 8);
+    TreeInit(&tree, sizeof(TestData));
 
     TestData data[] = {
         { 0, "/" },

@@ -161,6 +161,18 @@ void TestDoubleListFunction()
     // remove
     list.Remove(node);
     PrintList(list);
+
+    // copy
+    TDoubleList<TestData> copy_list(list);
+    PrintList(copy_list);
+    copy_list = list;
+    PrintList(copy_list);
+
+    // move
+    TDoubleList<TestData> swap_list(std::move(copy_list));
+    PrintList(swap_list);
+    swap_list = std::move(list);
+    PrintList(swap_list);
 }
 void TestDoubleListPerformance()
 {

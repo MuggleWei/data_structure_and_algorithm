@@ -3,7 +3,7 @@
 #include <string.h>
 #include <assert.h>
 
-void TreeInit(Tree *tree, size_t unit_size, size_t hint_pool_size)
+void TreeInit(Tree *tree, size_t unit_size)
 {
     tree->root = NULL;
     tree->unit_size = unit_size;

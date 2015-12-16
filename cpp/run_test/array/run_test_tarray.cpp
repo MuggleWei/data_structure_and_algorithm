@@ -148,6 +148,18 @@ void TestArrayFunction()
     }
     PrintArray(arr);
 
+    // copy
+    TArray<TestData> copy_arr(arr);
+    PrintArray(copy_arr);
+    copy_arr = arr;
+    PrintArray(copy_arr);
+
+    // move
+    TArray<TestData> swap_arr(std::move(copy_arr));
+    PrintArray(swap_arr);
+    swap_arr = std::move(copy_arr);
+    PrintArray(swap_arr);
+
     // array contain array
     TArray<TArray<int>> arr2;
     for (int i = 1; i <= 9; ++i)
@@ -203,7 +215,7 @@ int main()
 #endif
 
     TestArrayFunction();
-    TestArrayPerformance();
+//     TestArrayPerformance();
 
 #if defined(_WIN32) && ! defined(NDEBUG)
     _CrtMemCheckpoint(&s2);

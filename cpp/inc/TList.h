@@ -25,7 +25,7 @@ public:
     {
         next_ = nullptr;
     }
-    TListNode(const T& data_ref)
+    explicit TListNode(const T& data_ref)
         : data_(data_ref)
     {
         next_ = nullptr;
@@ -66,7 +66,7 @@ public:
     {
         copy(ref);
     }
-    TList(const TList<T> &&rref) noexcept
+    TList(TList<T> &&rref) noexcept
         : head_(rref.head_)
         , count_(rref.count_)
 #if ENABLE_DATA_STRUCTURE_OPTIMIZATION
@@ -94,9 +94,9 @@ public:
 
         return *this;
     }
-    TList<T>& operator=(const TList<T> &&rref) noexcept
+    TList<T>& operator=(TList<T> &&rref) noexcept
     {
-        if (this != rref)
+        if (this != &rref)
         {
             deallocate();
 
@@ -223,6 +223,7 @@ private:
     void copy(const TList<T> &ref)
     {
 #if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+        pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
         MemoryPoolInit(pool_, ref.pool_->used, sizeof(TListNode<T>));
         head_ = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>();
 #else

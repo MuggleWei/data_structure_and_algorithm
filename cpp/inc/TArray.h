@@ -46,7 +46,7 @@ public:
     }
     TArray& operator=(TArray &&rref) noexcept
     {
-        if (this != rref)
+        if (this != &rref)
         {
              deallocate();
 
