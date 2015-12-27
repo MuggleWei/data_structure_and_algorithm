@@ -7,7 +7,6 @@
 #include <vector>
 #include <list>
 #include "timer.h"
-#include "run_test.h"
 #include "run_test_ttree.h"
 #include "TTree.h"
 
@@ -134,23 +133,7 @@ void TestTreeFunction()
     TestTTreeFunction(copy_root);
 }
 void TestTreePerformance()
-{
-    // set nums
-    std::vector<int> nums;
-    for (int i = 1; i <= 32; ++i)
-    {
-        nums.push_back(i * 102400);
-    }
-
-    RunTest performance_run;
-    performance_run.SetNums(nums);
-
-    // run
-    performance_run.Run();
-
-    // write result to file
-    performance_run.WriteToFile("cpp tree performance.txt");
-}
+{}
 
 int main()
 {

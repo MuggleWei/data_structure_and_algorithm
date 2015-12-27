@@ -8,7 +8,6 @@
 #include <list>
 #include "macros.h"
 #include "timer.h"
-#include "run_test.h"
 #include "run_test_tree.h"
 extern "C"
 {
@@ -94,24 +93,6 @@ void TestTreeFunction()
 }
 void TestTreePerformance()
 {
-    // set nums
-    std::vector<int> nums;
-    for (int i = 1; i <= 32; ++i)
-    {
-        nums.push_back(i * 102400);
-    }
-
-    RunTest performance_run;
-    performance_run.SetNums(nums);
-
-    // set unit test
-    
-
-    // run
-    performance_run.Run();
-
-    // write result to file
-    performance_run.WriteToFile("c tree performance.txt");
 }
 
 int main()

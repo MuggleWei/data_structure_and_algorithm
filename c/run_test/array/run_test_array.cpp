@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <vector>
 #include "timer.h"
-#include "run_test.h"
+#include "performance_test.h"
 #include "run_test_array.h"
 extern "C"
 {
@@ -30,84 +30,47 @@ void PrintArray(Array* p_array)
     printf("\n");
 }
 
-double TestArrayPerformance_Push(int num)
+void TestArrayPush(Array& array, int num)
+{
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        ArrayPush(&array, &t);
+    }
+}
+void TestStdVectorPush(std::vector<TestData>& array, int num)
+{
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        array.push_back(t);
+    }
+}
+
+void TestArrayPerformance_Push(PerformanceTest& test, int num)
 {
     Array array;
     ArrayInit(&array, 8, sizeof(TestData));
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        ArrayPush(&array, &t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
+    PERFORMANCE_TEST_ADD(test, "c array push", num, TestArrayPush(array, num));
     ArrayDestroy(&array);
-
-    return ret;
 }
-double TestArrayPerformance_Push_PreAlloc(int num)
+void TestArrayPerformance_Push_PreAlloc(PerformanceTest& test, int num)
 {
     Array array;
     ArrayInit(&array, num, sizeof(TestData));
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        ArrayPush(&array, &t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
+    PERFORMANCE_TEST_ADD(test, "c array push(previous allocate)", num, TestArrayPush(array, num));
     ArrayDestroy(&array);
-
-    return ret;
 }
-double TestVectorPerformance_Push(int num)
+void TestVectorPerformance_Push(PerformanceTest& test, int num)
 {
     std::vector<TestData> array;
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        array.push_back(t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
-    return ret;
+    PERFORMANCE_TEST_ADD(test, "std vector push(pod)", num, TestStdVectorPush(array, num));
 }
-double TestVectorPerformance_Push_PreAlloc(int num)
+void TestVectorPerformance_Push_PreAlloc(PerformanceTest& test, int num)
 {
     std::vector<TestData> array;
     array.reserve(num);
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        array.push_back(t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
-    return ret;
+    PERFORMANCE_TEST_ADD(test, "std vector push(pod previous allocate)", num, TestStdVectorPush(array, num));
 }
 
 void TestArrayFunction()
@@ -159,27 +122,16 @@ void TestArrayFunction()
 }
 void TestArrayPerformance()
 {
-    // set nums
-    std::vector<int> nums;
-    for (int i=1; i<=32; ++i)
+    PerformanceTest test;
+    for (int i = 1; i <= 32; ++i)
     {
-        nums.push_back(i*102400);
+        int num = i * 102400;
+        TestArrayPerformance_Push(test, num);
+        TestArrayPerformance_Push_PreAlloc(test, num);
+        TestVectorPerformance_Push(test, num);
+        TestVectorPerformance_Push_PreAlloc(test, num);
     }
-
-    RunTest performance_run;
-    performance_run.SetNums(nums);
-
-    // set unit test
-    performance_run.AddUnitRunTest("c array push", TestArrayPerformance_Push);
-    performance_run.AddUnitRunTest("c array push(previous allocate)", TestArrayPerformance_Push_PreAlloc);
-    performance_run.AddUnitRunTest("std vector push(pod)", TestVectorPerformance_Push);
-    performance_run.AddUnitRunTest("std vector push(pod previous allocate)", TestVectorPerformance_Push_PreAlloc);
-
-    // run
-    performance_run.Run();
-
-    // write result to file
-    performance_run.WriteToFile("c array performance.txt");
+    test.WriteCompareToFile("c array performance.txt");
 }
 
 int main()

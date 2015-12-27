@@ -7,7 +7,7 @@
 #include <vector>
 #include <list>
 #include "timer.h"
-#include "run_test.h"
+#include "performance_test.h"
 #include "run_test_tdouble_list.h"
 #include "TDoubleList.h"
 
@@ -37,105 +37,53 @@ void PrintList(TDoubleList<TestData>& ref)
     std::cout << std::endl;
 }
 
-double TestListInsert(int num)
+void TestListInsert(TDoubleList<TestData>& list, int num)
 {
-    TDoubleList<TestData> list;
-
-    // insert
-    Timer timer;
-    timer.Start();
     for (int i = 0; i < num; ++i)
     {
         TestData t;
         list.Insert(t);
     }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    std::cout << "insert: " << num << " - " << ret << std::endl;
-
-    return ret;
 }
-double TestListInsert_HintPoolSize(int num)
+void TestStdListInsert(std::list<TestData>& list, int num)
+{
+    for (int i = 0; i < num; ++i)
+    {
+        TestData t;
+        list.insert(list.begin(), t);
+    }
+}
+
+void TestListPerformance_Insert(PerformanceTest& test, int num)
+{
+    TDoubleList<TestData> list;
+    PERFORMANCE_TEST_ADD(test, "cpp double list insert", num, TestListInsert(list, num));
+}
+void TestListPerformance_Insert_HintPoolSize(PerformanceTest& test, int num)
 {
     TDoubleList<TestData> list(num);
-
-    // insert
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        list.Insert(t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    std::cout << "insert: " << num << " - " << ret << std::endl;
-
-    return ret;
+    PERFORMANCE_TEST_ADD(test, "cpp double list insert(hint pool size)", num, TestListInsert(list, num));
 }
-double TestListMakeEmpty(int num)
+void TestListPerformance_MakeEmpty(PerformanceTest& test, int num)
 {
     TDoubleList<TestData> list;
-
-    // insert
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        list.Insert(t);
-    }
-
-    // make empty
-    Timer timer;
-    timer.Start();
-    list.MakeEmpty();
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    std::cout << "make empty: " << num << " - " << ret << std::endl;
-
-    return ret;
+    TestListInsert(list, num);
+    PERFORMANCE_TEST_ADD(test, "cpp double list make empty", num, list.MakeEmpty());
 }
-double TestStdListInsert(int num)
+void TestStdListPerformance_Insert(PerformanceTest& test, int num)
 {
     std::list<TestData> list;
-
-    // insert
-    Timer timer;
-    timer.Start();
+    PERFORMANCE_TEST_ADD(test, "std list insert(non pod)", num, TestStdListInsert(list, num));
+}
+void TestStdListPerformance_MakeEmpty(PerformanceTest& test, int num)
+{
+    std::list<TestData> list;
     for (int i = 0; i < num; ++i)
     {
         TestData t;
         list.insert(list.begin(), t);
     }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    std::cout << "insert: " << num << " - " << ret << std::endl;
-
-    return ret;
-}
-double TestStdListMakeEmpty(int num)
-{
-    std::list<TestData> list;
-
-    // insert
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        list.insert(list.begin(), t);
-    }
-
-    Timer timer;
-    timer.Start();
-    list.erase(list.begin(), list.end());
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    std::cout << "make empty: " << num << " - " << ret << std::endl;
-
-    return ret;
+    PERFORMANCE_TEST_ADD(test, "std list make empty(non pod)", num, list.clear());
 }
 
 void TestDoubleListFunction()
@@ -176,28 +124,17 @@ void TestDoubleListFunction()
 }
 void TestDoubleListPerformance()
 {
-    // set nums
-    std::vector<int> nums;
+    PerformanceTest test;
     for (int i = 1; i <= 32; ++i)
     {
-        nums.push_back(i * 102400);
+        int num = i * 102400;
+        TestListPerformance_Insert(test, num);
+        TestListPerformance_Insert_HintPoolSize(test, num);
+        TestListPerformance_MakeEmpty(test, num);
+        TestStdListPerformance_Insert(test, num);
+        TestStdListPerformance_MakeEmpty(test, num);        
     }
-
-    RunTest performance_run;
-    performance_run.SetNums(nums);
-
-    // set unit test
-    performance_run.AddUnitRunTest("cpp double list insert", TestListInsert);
-    performance_run.AddUnitRunTest("cpp double list insert(hint pool size)", TestListInsert_HintPoolSize);
-    performance_run.AddUnitRunTest("cpp double list make empty", TestListMakeEmpty);
-    performance_run.AddUnitRunTest("std list insert(non pod)", TestStdListInsert);
-    performance_run.AddUnitRunTest("std list make empty(non pod)", TestStdListMakeEmpty);
-
-    // run
-    performance_run.Run();
-
-    // write result to file
-    performance_run.WriteToFile("cpp double list performance.txt");
+    test.WriteCompareToFile("cpp double list performance.txt");
 }
 
 int main()

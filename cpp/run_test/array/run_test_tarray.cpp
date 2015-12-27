@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include "timer.h"
-#include "run_test.h"
+#include "performance_test.h"
 #include "run_test_tarray.h"
 #include "TArray.h"
 
@@ -36,76 +36,43 @@ void PrintArray(TArray<TestData>& ref)
     std::cout << std::endl;
 }
 
-double TestArrayPerformance_Push(int num)
+void TestArrayPush(TArray<TestData>& arr, int num)
 {
-    TArray<TestData> arr;
-
-    Timer timer;
-    timer.Start();
     for (int i = 0; i < num; ++i)
     {
         TestData t;
         arr.Push(t);
     }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-    std::cout << num << " : " << ret << std::endl;
-
-    return ret;
 }
-double TestArrayPerformance_Push_PreAlloc(int num)
+void TestStdVectorPush(std::vector<TestData>& array, int num)
 {
-    TArray<TestData> arr(num);
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        arr.Push(t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-    std::cout << num << " : " << ret << std::endl;
-
-    return ret;
-}
-double TestVectorPerformance_Push(int num)
-{
-    std::vector<TestData> array;
-
-    Timer timer;
-    timer.Start();
     for (int i = 0; i < num; ++i)
     {
         TestData t;
         array.push_back(t);
     }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
-    return ret;
 }
-double TestVectorPerformance_Push_PreAlloc(int num)
+
+void TestArrayPerformance_Push(PerformanceTest& test, int num)
+{
+    TArray<TestData> arr;
+    PERFORMANCE_TEST_ADD(test, "cpp array push", num, TestArrayPush(arr, num));
+}
+void TestArrayPerformance_Push_PreAlloc(PerformanceTest& test, int num)
+{
+    TArray<TestData> arr(num);
+    PERFORMANCE_TEST_ADD(test, "cpp array push(previous allocate)", num, TestArrayPush(arr, num));
+}
+void TestVectorPerformance_Push(PerformanceTest& test, int num)
+{
+    std::vector<TestData> array;
+    PERFORMANCE_TEST_ADD(test, "std vector push(non pod)", num, TestStdVectorPush(array, num));
+}
+void TestVectorPerformance_Push_PreAlloc(PerformanceTest& test, int num)
 {
     std::vector<TestData> array;
     array.reserve(num);
-
-    Timer timer;
-    timer.Start();
-    for (int i = 0; i < num; ++i)
-    {
-        TestData t;
-        array.push_back(t);
-    }
-    timer.End();
-    double ret = timer.GetElapsedMilliseconds();
-
-    printf("%d - %lf\n", num, ret);
-
-    return ret;
+    PERFORMANCE_TEST_ADD(test, "std vector push(non pod previous allocate)", num, TestStdVectorPush(array, num));
 }
 
 void TestArrayFunction()
@@ -183,27 +150,16 @@ void TestArrayFunction()
 }
 void TestArrayPerformance()
 {
-    // set nums
-    std::vector<int> nums;
+    PerformanceTest test;
     for (int i = 1; i <= 32; ++i)
     {
-        nums.push_back(i * 102400);
+        int num = i * 102400;
+        TestArrayPerformance_Push(test, num);
+        TestArrayPerformance_Push_PreAlloc(test, num);
+        TestVectorPerformance_Push(test, num);
+        TestVectorPerformance_Push_PreAlloc(test, num);
     }
-
-    RunTest performance_run;
-    performance_run.SetNums(nums);
-
-    // set unit test
-    performance_run.AddUnitRunTest("cpp array push", TestArrayPerformance_Push);
-    performance_run.AddUnitRunTest("cpp array push(previous allocate)", TestArrayPerformance_Push_PreAlloc);
-    performance_run.AddUnitRunTest("std vector push(non pod)", TestVectorPerformance_Push);
-    performance_run.AddUnitRunTest("std vector push(non pod previous allocate)", TestVectorPerformance_Push_PreAlloc);
-
-    // run
-    performance_run.Run();
-
-    // write result to file
-    performance_run.WriteToFile("cpp array performance.txt");
+    test.WriteCompareToFile("cpp array performance.txt");
 }
 
 
@@ -215,7 +171,7 @@ int main()
 #endif
 
     TestArrayFunction();
-//     TestArrayPerformance();
+    TestArrayPerformance();
 
 #if defined(_WIN32) && ! defined(NDEBUG)
     _CrtMemCheckpoint(&s2);

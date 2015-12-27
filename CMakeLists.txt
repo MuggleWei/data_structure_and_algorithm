@@ -43,10 +43,10 @@ include_directories(
 
 # utility c file
 set(utility_c_lib utility_c)
-file(GLOB UTILITY_C_SOURCE ${CMAKE_SOURCE_DIR}/utility/*.c)
+file(GLOB UTILITY_C_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/utility/*.c)
 set(UTILITY_C_HEADER
-	${CMAKE_SOURCE_DIR}/utility/macros.h
-	${CMAKE_SOURCE_DIR}/utility/memory_pool.h
+	${CMAKE_CURRENT_SOURCE_DIR}/utility/macros.h
+	${CMAKE_CURRENT_SOURCE_DIR}/utility/memory_pool.h
 )
 if (WIN32)
 add_library(${utility_c_lib}
@@ -65,6 +65,8 @@ if (WIN32)
 add_library(${run_test_lib}
 	utility/run_test.h
 	utility/run_test.cpp
+	utility/performance_test.h
+	utility/performance_test.cpp
 )
 else()
 add_library(${run_test_lib}

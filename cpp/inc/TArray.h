@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <assert.h>
+#include <new>
+#include <utility>
 #include "macros.h"
 
 template<typename T>
