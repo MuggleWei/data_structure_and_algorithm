@@ -1,7 +1,6 @@
 #include "double_list.h"
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size)
 {

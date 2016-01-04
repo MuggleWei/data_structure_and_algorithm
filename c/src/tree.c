@@ -1,7 +1,7 @@
 #include "tree.h"
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
+#include "base.h"
 
 void TreeInit(Tree *tree, size_t unit_size)
 {
@@ -55,7 +55,7 @@ void TreeNodeSeparate(TreeNode *node)
 }
 void TreeNodePreorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraversalFunc func)
 {
-    assert(node);
+    MASSERT(node);
     (*func)(node, level);
     TreeNode *child = node->first_child;
     while (child)
@@ -66,7 +66,7 @@ void TreeNodePreorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraver
 }
 void TreeNodePostorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraversalFunc func)
 {
-    assert(node);
+    MASSERT(node);
     TreeNode *child = node->first_child;
     while (child)
     {
@@ -88,7 +88,7 @@ TreeNode* TreeAddChild(Tree *tree, TreeNode *parent_node, void *data)
     if (parent_node == NULL)
     {
         // add root
-        assert(tree->root == NULL);
+        MASSERT(tree->root == NULL);
         tree->root = node;
     }
     else
@@ -129,7 +129,7 @@ void TreeRemove(Tree *tree, TreeNode *node)
 }
 TreeNode* TreeFind(Tree *tree, TreeNode *node, void *data, bool recursive)
 {
-    assert(node);
+    MASSERT(node);
     TreeNode *child = node->first_child;
     while (child)
     {

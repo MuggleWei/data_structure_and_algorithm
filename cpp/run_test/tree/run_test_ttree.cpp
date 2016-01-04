@@ -9,6 +9,10 @@
 #include "timer.h"
 #include "run_test_ttree.h"
 #include "TTree.h"
+extern "C"
+{
+#include "base.h"
+}
 
 class TestData
 {
@@ -89,10 +93,10 @@ void TestTTreeFunction(TTreeNode<TestData>* root)
 
     // move
     TTree<TestData> tree_swap(std::move(tree_copy));
-    assert(tree_copy.GetRoot() == nullptr);
+    MASSERT(tree_copy.GetRoot() == nullptr);
     tree_swap.GetRoot()->PreorderTraversal(0, PrintTreeNode);
     tree_swap = std::move(tree);
-    assert(tree.GetRoot() == nullptr);
+    MASSERT(tree.GetRoot() == nullptr);
     tree_swap.GetRoot()->PreorderTraversal(0, PrintTreeNode);
 }
 

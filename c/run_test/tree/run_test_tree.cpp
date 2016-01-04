@@ -3,7 +3,6 @@
 #include <crtdbg.h>
 #endif
 #include <stdio.h>
-#include <assert.h>
 #include <vector>
 #include <list>
 #include "macros.h"

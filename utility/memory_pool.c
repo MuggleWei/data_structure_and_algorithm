@@ -1,7 +1,7 @@
 #include "memory_pool.h"
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
+#include "base.h"
 
 void MemoryPoolInit(MemoryPool* pool, unsigned int init_capacity, unsigned int block_size)
 {
@@ -96,7 +96,7 @@ void MemoryPoolEnsureSpace(MemoryPool* pool, unsigned int capacity)
          *                  fm
          *  [x] [x] [x] [x] [x] [x] [x] [x] [x] [x] [x] [x] 
          */
-        assert(pool->alloc_index == pool->free_index);
+        MASSERT(pool->alloc_index == pool->free_index);
 
         free_section1 = (uintptr_t*)&pool->memory_pool_ptr_buf[pool->free_index];
         num_free_section1 = pool->capacity - pool->free_index;

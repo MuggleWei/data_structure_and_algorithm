@@ -1,7 +1,7 @@
 #include "array.h"
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
+#include "base.h"
 
 void ArrayInit(Array *p_array, size_t capacity, size_t unit_size)
 {
@@ -25,7 +25,7 @@ bool ArrayIsFull(Array *p_array)
 }
 void* ArrayTop(Array *p_array)
 {
-    assert(!ArrayIsEmpty(p_array));
+    MASSERT(!ArrayIsEmpty(p_array));
     return (void*)((char*)p_array->datas + p_array->unit_size *(p_array->used - 1));
 }
 void ArrayPush(Array *p_array, void* data)
@@ -41,17 +41,17 @@ void ArrayPush(Array *p_array, void* data)
 }
 void ArrayPop(Array *p_array)
 {
-    assert(!ArrayIsEmpty(p_array));
+    MASSERT(!ArrayIsEmpty(p_array));
     --p_array->used;
 }
 void* ArrayGet(Array *p_array, size_t index)
 {
-    assert(index < p_array->used);
+    MASSERT(index < p_array->used);
     return (void*)((char*)p_array->datas + p_array->unit_size * index);
 }
 void ArrayInsert(Array *p_array, size_t index, void *data)
 {
-    assert(index <= p_array->used);
+    MASSERT(index <= p_array->used);
     if (ArrayIsFull(p_array))
     {
         ArrayEnsureSpace(p_array, 2 * p_array->capacity);
@@ -72,7 +72,7 @@ void ArrayInsert(Array *p_array, size_t index, void *data)
 }
 void ArrayRemove(Array *p_array, size_t index)
 {
-    assert(index < p_array->used);
+    MASSERT(index < p_array->used);
     if (index == p_array->used-1)
     {
         ArrayPop(p_array);
@@ -98,7 +98,7 @@ void ArrayEnsureSpace(Array *p_array, size_t capacity)
 }
 bool ArrayFind(Array *p_array, void *data, size_t start_index, size_t *p_index)
 {
-    assert(start_index < p_array->used);
+    MASSERT(start_index < p_array->used);
     size_t index;
     for (index = start_index; index < p_array->used; ++index)
     {

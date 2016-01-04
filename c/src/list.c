@@ -1,7 +1,6 @@
 #include "list.h"
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size)
 {

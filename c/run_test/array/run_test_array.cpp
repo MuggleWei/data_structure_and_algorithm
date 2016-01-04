@@ -4,7 +4,6 @@
 #endif
 #include <stdio.h>
 #include <stdint.h>
-#include <assert.h>
 #include <vector>
 #include "timer.h"
 #include "performance_test.h"
