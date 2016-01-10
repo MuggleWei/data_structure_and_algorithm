@@ -1,12 +1,20 @@
 #ifndef __T_TREE_H__
 #define __T_TREE_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
 #include <stdlib.h>
 #include <stddef.h>
-#include <assert.h>
 #include <new>
 #include <functional>
-#include <macros.h>
 
 template<typename T>
 class TTree;
@@ -31,9 +39,9 @@ public:
     static void Destroy(TTreeNode<T>* node)
     {
         // ensure node is separated
-        assert(node->parent_ == nullptr);
-        assert(node->next_sibling_ == nullptr);
-        assert(node->prev_sibling_ == nullptr);
+        MASSERT(node->parent_ == nullptr);
+        MASSERT(node->next_sibling_ == nullptr);
+        MASSERT(node->prev_sibling_ == nullptr);
 
         TTreeNode<T> *child = nullptr;
         while (node->first_child_)
@@ -97,7 +105,7 @@ public:
     }
     void RemoveChild(TTreeNode<T>* node)
     {
-        assert(node->parent_ = this);
+        MASSERT(node->parent_ = this);
         node->Separate();
         Destroy(node);
     }
@@ -242,9 +250,9 @@ public:
     }
     explicit TTree(TTreeNode<T> &node_ref)
     {
-        assert(node_ref.parent_ == nullptr);
-        assert(node_ref.next_sibling_ == nullptr);
-        assert(node_ref.prev_sibling_ == nullptr);
+        MASSERT(node_ref.parent_ == nullptr);
+        MASSERT(node_ref.next_sibling_ == nullptr);
+        MASSERT(node_ref.prev_sibling_ == nullptr);
 
         root_ = &node_ref;
     }
@@ -285,7 +293,7 @@ public:
 
     void SetRoot(const T &data_ref)
     {
-        assert(root_ == nullptr);
+        MASSERT(root_ == nullptr);
         root_ = TTreeNode<T>::Create(data_ref);
     }
     TTreeNode<T>* GetRoot()

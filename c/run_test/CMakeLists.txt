@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(run_test_data_structure_and_algorithm_c)
 
 # array
 file(GLOB RUN_TEST_C_ARRAY_SOURCE array/*.cpp)
@@ -16,7 +15,7 @@ add_executable(run_test_c_array
 endif()
 target_link_libraries(run_test_c_array 
 	${data_structure_c_lib} 
-	${run_test_lib}
+	${utility_lib}
 )
 # end array
 
@@ -35,7 +34,7 @@ add_executable(run_test_c_list
 endif()
 target_link_libraries(run_test_c_list 
 	${data_structure_c_lib}
-	${run_test_lib}
+	${utility_lib}
 )
 # end list
 
@@ -54,7 +53,7 @@ add_executable(run_test_c_double_list
 endif()
 target_link_libraries(run_test_c_double_list 
 	${data_structure_c_lib}
-	${run_test_lib}
+	${utility_lib}
 )
 # end double list
 
@@ -73,6 +72,6 @@ add_executable(run_test_c_tree
 endif()
 target_link_libraries(run_test_c_tree
 	${data_structure_c_lib}
-	${run_test_lib}
+	${utility_lib}
 )
 # end tree

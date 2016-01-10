@@ -1,18 +1,20 @@
-#if defined(_WIN32) && ! defined(NDEBUG)
-#define _CRTDBG_MAP_ALLOC 
-#include <crtdbg.h>
-#endif
 #include <iostream>
 #include <string>
 #include <vector>
 #include <list>
-#include "timer.h"
+// #include "timer.h"
 #include "run_test_ttree.h"
 #include "TTree.h"
+#ifdef __cplusplus
 extern "C"
 {
+#endif
+
 #include "base.h"
+
+#ifdef __cplusplus
 }
+#endif
 
 class TestData
 {

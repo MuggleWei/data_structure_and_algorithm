@@ -1,6 +1,16 @@
 #ifndef __C_TREE_H__
 #define __C_TREE_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
 #include <stddef.h>
 #include <stdbool.h>
 
@@ -22,14 +32,14 @@ typedef struct Tree_tag
 
 typedef void (*TreeTraversalFunc)(TreeNode *node, int level);
 
-void TreeInit(Tree *tree, size_t unit_size);
-void TreeDestroy(Tree *tree);
-void TreeNodeDestroy(TreeNode *node);
-void TreeNodeSeparate(TreeNode *node);
-void TreeNodePreorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraversalFunc func);
-void TreeNodePostorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraversalFunc func);
-TreeNode* TreeAddChild(Tree *tree, TreeNode *parent_node, void *data);
-void TreeRemove(Tree *tree, TreeNode *node);
-TreeNode* TreeFind(Tree *tree, TreeNode *node, void *data, bool recursive);
+MG_DLL void TreeInit(Tree *tree, size_t unit_size);
+MG_DLL void TreeDestroy(Tree *tree);
+MG_DLL void TreeNodeDestroy(TreeNode *node);
+MG_DLL void TreeNodeSeparate(TreeNode *node);
+MG_DLL void TreeNodePreorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraversalFunc func);
+MG_DLL void TreeNodePostorderTraversal(Tree *tree, TreeNode *node, int level, TreeTraversalFunc func);
+MG_DLL TreeNode* TreeAddChild(Tree *tree, TreeNode *parent_node, void *data);
+MG_DLL void TreeRemove(Tree *tree, TreeNode *node);
+MG_DLL TreeNode* TreeFind(Tree *tree, TreeNode *node, void *data, bool recursive);
 
 #endif

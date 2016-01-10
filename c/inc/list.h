@@ -1,12 +1,22 @@
 #ifndef __C_LIST_H__
 #define __C_LIST_H__
 
-#include <stddef.h>
-#include <stdbool.h>
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#include "base.h"
+
+#if ENABLE_DSAA_OPTIMIZATION
 #include "memory_pool.h"
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+#include <stddef.h>
+#include <stdbool.h>
 
 #define GET_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(ListNode))
 
@@ -22,21 +32,21 @@ typedef struct List_tag
     ListNode*   head;
     size_t      unit_size;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPool  pool;
 #endif
 }List;
 
 // linked list function
-void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size);
-void ListDestroy(List *p_list);
-bool ListIsEmpty(List *p_list);
-ListNode* ListFirst(List *p_list);
-bool ListIsLast(ListNode *p_node);
-ListNode* ListNext(ListNode *p_node);
-ListNode* ListFind(List *p_list, void *data, ListNode *start_node);
-void ListInsert(List *p_list, void *data);
-bool ListFindAndRemove(List *p_list, void *data);
-void ListMakeEmpty(List *p_list);
+MG_DLL void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size);
+MG_DLL void ListDestroy(List *p_list);
+MG_DLL bool ListIsEmpty(List *p_list);
+MG_DLL ListNode* ListFirst(List *p_list);
+MG_DLL bool ListIsLast(ListNode *p_node);
+MG_DLL ListNode* ListNext(ListNode *p_node);
+MG_DLL ListNode* ListFind(List *p_list, void *data, ListNode *start_node);
+MG_DLL void ListInsert(List *p_list, void *data);
+MG_DLL bool ListFindAndRemove(List *p_list, void *data);
+MG_DLL void ListMakeEmpty(List *p_list);
 
 #endif

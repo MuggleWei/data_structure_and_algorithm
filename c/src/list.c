@@ -4,7 +4,7 @@
 
 void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size)
 {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPoolInit(&p_list->pool, hint_pool_size, unit_size + sizeof(ListNode));
     p_list->head = (ListNode*)MemoryPoolAlloc(&p_list->pool);
 #else
@@ -16,7 +16,7 @@ void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size)
 void ListDestroy(List *p_list)
 {
     ListMakeEmpty(p_list);
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPoolFree(&p_list->pool, p_list->head);
     MemoryPoolDestroy(&p_list->pool);
 #else
@@ -57,7 +57,7 @@ ListNode* ListFind(List *p_list, void *data, ListNode *start_node)
 }
 void ListInsert(List *p_list, void *data)
 {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     ListNode *p_node = (ListNode*)MemoryPoolAlloc(&p_list->pool);
 #else
     ListNode *p_node = (ListNode*)malloc(sizeof(ListNode) + p_list->unit_size);
@@ -76,7 +76,7 @@ bool ListFindAndRemove(List *p_list, void *data)
         {
             ListNode *p_node = *pp;
             *pp = (*pp)->next;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             MemoryPoolFree(&p_list->pool, p_node);
 #else
             free(p_node);
@@ -97,7 +97,7 @@ void ListMakeEmpty(List *p_list)
     {
         ListNode *p_node = p_list->head->next;
         p_list->head->next = p_list->head->next->next;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         MemoryPoolFree(&p_list->pool, p_node);
 #else
         free(p_node);

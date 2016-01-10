@@ -4,7 +4,7 @@
 
 void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size)
 {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPoolInit(&p_list->pool, hint_pool_size, unit_size + sizeof(DoubleListNode));
     p_list->head = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
     p_list->tail = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
@@ -21,7 +21,7 @@ void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size)
 void DoubleListDestroy(DoubleList *p_list)
 {
     DoubleListMakeEmpty(p_list);
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPoolFree(&p_list->pool, p_list->head);
     MemoryPoolFree(&p_list->pool, p_list->tail);
     MemoryPoolDestroy(&p_list->pool);
@@ -69,7 +69,7 @@ DoubleListNode* DoubleListFind(DoubleList *p_list, void *data, DoubleListNode *p
 }
 void DoubleListInsert(DoubleList *p_list, void *data)
 {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     DoubleListNode *p_node = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
 #else
     DoubleListNode *p_node = (DoubleListNode*)malloc(sizeof(DoubleListNode) + p_list->unit_size);
@@ -85,7 +85,7 @@ void DoubleListInsert(DoubleList *p_list, void *data)
 }
 void DoubleListAdd(DoubleList *p_list, void *data)
 {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     DoubleListNode *p_node = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
 #else
     DoubleListNode *p_node = (DoubleListNode*)malloc(sizeof(DoubleListNode) + p_list->unit_size);
@@ -112,7 +112,7 @@ void DoubleListRemove(DoubleList *p_list, DoubleListNode *p_node)
 {
     p_node->prev->next = p_node->next;
     p_node->next->prev = p_node->prev;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPoolFree(&p_list->pool, p_node);
 #else
     free(p_node);

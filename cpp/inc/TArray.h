@@ -1,12 +1,21 @@
 #ifndef __T_ARRAY_H__
 #define __T_ARRAY_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 #include <stdlib.h>
 #include <stddef.h>
-#include <assert.h>
 #include <new>
 #include <utility>
-#include "macros.h"
 
 template<typename T>
 class TArray
@@ -64,7 +73,7 @@ public:
     }
     T& operator[](size_t index)
     {
-        assert(index < used_);
+        MASSERT(index < used_);
         return datas_[index];
     }
 
@@ -78,7 +87,7 @@ public:
     }
     const T& Top()
     {
-        assert(!IsEmpty());
+        MASSERT(!IsEmpty());
         return datas_[used_ - 1];
     }
     void Push(const T &ref)
@@ -93,18 +102,18 @@ public:
     }
     void Pop()
     {
-        assert(!IsEmpty());
+        MASSERT(!IsEmpty());
         T *p = &datas_[--used_];
         p->~T();
     }
     const T& Get(size_t index) const
     {
-        assert(index < used_);
+        MASSERT(index < used_);
         return datas_[index];
     }
     void Insert(size_t index, const T &ref)
     {
-        assert(index <= used_);
+        MASSERT(index <= used_);
         if (IsFull())
         {
             EnsureSpace(capacity_ * 2);
@@ -123,7 +132,7 @@ public:
     }
     void Remove(size_t index)
     {
-        assert(index < used_);
+        MASSERT(index < used_);
 
         T *begin = datas_ + index;
         T *end = datas_ + used_ - 1;
@@ -156,7 +165,7 @@ public:
     }
     bool Find(const T &ref, size_t start_index, size_t &ref_index)
     {
-        assert(start_index < used_);
+        MASSERT(start_index < used_);
         for (size_t index = start_index; index < used_; ++index)
         {
             if (datas_[index] == ref)

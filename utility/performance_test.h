@@ -1,6 +1,17 @@
 #ifndef __PERFORMANCE_TEST_H__
 #define __PERFORMANCE_TEST_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+    #include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 #include <stdio.h>
 #include <string>
 #include <unordered_map>
@@ -17,20 +28,21 @@
         fprintf(stdout, "%s - num: %d, time: %f\n", case_name, num, t.GetElapsedMilliseconds()); \
     }
 
-typedef struct PerformanceData_tag
+class MG_DLL PerformanceData
 {
+public:
     int         num;
     double      time;
-}PerformanceData;
+};
 
 class PerformanceTest
 {
 public:
-    void WriteCompareToFile(std::string file);
-    void PushData(std::string case_name, int num, double t);
+    MG_DLL void WriteCompareToFile(std::string file);
+    MG_DLL void PushData(std::string case_name, int num, double t);
     
 private:
-    std::unordered_map<std::string, std::vector<PerformanceData_tag>> datas_;
+    std::unordered_map<std::string, std::vector<PerformanceData>> datas_;
     std::string name_;
 };
 

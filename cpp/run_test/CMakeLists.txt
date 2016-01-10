@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.8.9)
-project(run_test_data_structure_and_algorithm_cpp)
 
 # array
 file(GLOB RUN_TEST_CPP_ARRAY_SOURCE array/*.cpp)
@@ -15,7 +14,7 @@ add_executable(run_test_cpp_array
 )
 endif()
 target_link_libraries(run_test_cpp_array
-	${run_test_lib}
+	${utility_lib}
 )
 # end array
 
@@ -33,8 +32,7 @@ add_executable(run_test_cpp_list
 )
 endif()
 target_link_libraries(run_test_cpp_list
-	${utility_c_lib}
-	${run_test_lib}
+	${utility_lib}
 )
 # end list
 
@@ -51,9 +49,8 @@ add_executable(run_test_cpp_double_list
 	${RUN_TEST_CPP_DOUBLE_LIST_SOURCE}
 )
 endif()
-target_link_libraries(run_test_cpp_double_list
-	${utility_c_lib}
-	${run_test_lib}
+target_link_libraries(run_test_cpp_double_list	
+	${utility_lib}
 )
 # end list
 
@@ -71,7 +68,6 @@ add_executable(run_test_cpp_tree
 )
 endif()
 target_link_libraries(run_test_cpp_tree
-	${utility_c_lib}
-	${run_test_lib}
+	${utility_lib}
 )
 # end tree

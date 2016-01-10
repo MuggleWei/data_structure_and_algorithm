@@ -1,13 +1,21 @@
 #ifndef __T_LIST_H__
 #define __T_LIST_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
 #include <stdlib.h>
 #include <stddef.h>
-#include <assert.h>
 #include <new>
-#include "macros.h"
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
 extern "C"
 {
 #include "memory_pool.h"
@@ -52,7 +60,7 @@ class TList
 public:
     TList(size_t hint_pool_size = 8)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
         MemoryPoolInit(pool_, hint_pool_size, sizeof(TListNode<T>));
         head_ = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>();
@@ -69,13 +77,13 @@ public:
     TList(TList<T> &&rref) noexcept
         : head_(rref.head_)
         , count_(rref.count_)
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         , pool_(rref.pool_)
 #endif
     {
         rref.head_ = nullptr;
         rref.count_ = 0;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         rref.pool_ = nullptr;
 #endif
     }
@@ -106,7 +114,7 @@ public:
             rref.head_ = nullptr;
             rref.count_ = 0;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             pool_ = rref.pool_;
             rref.pool_ = nullptr;
 #endif
@@ -142,7 +150,7 @@ public:
     }
     void Insert(const T &ref_data)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         TListNode<T> *node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(ref_data);
 #else
         TListNode<T> *node = new TListNode<T>(ref_data);
@@ -158,10 +166,10 @@ public:
         {
             if (*(**pp_node).Get() == ref_data)
             {
-                assert(count_ != 0);
+                MASSERT(count_ != 0);
                 TListNode<T> *p_node = *pp_node;
                 *pp_node = (*pp_node)->next_;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
                 p_node->~TListNode<T>();
                 MemoryPoolFree(pool_, p_node);
 #else
@@ -184,7 +192,7 @@ public:
         {
             TListNode<T>* node = head_->next_;
             head_->next_ = head_->next_->next_;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             node->~TListNode<T>();
             MemoryPoolFree(pool_, node);
 #else
@@ -205,7 +213,7 @@ private:
         {
             MakeEmpty();
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             head_->~TListNode<T>();
             MemoryPoolFree(pool_, head_);
 #else
@@ -213,7 +221,7 @@ private:
 #endif
             head_ = nullptr;
             count_ = 0;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             MemoryPoolDestroy(pool_);
             free(pool_);
             pool_ = nullptr;
@@ -222,7 +230,7 @@ private:
     }
     void copy(const TList<T> &ref)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
         MemoryPoolInit(pool_, ref.pool_->used, sizeof(TListNode<T>));
         head_ = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>();
@@ -236,7 +244,7 @@ private:
         TListNode<T>* current_node = head_;
         while (node != nullptr)
         {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             TListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(node->data_);
 #else
             TListNode<T>* new_node = new TListNode<T>(node->data_);
@@ -252,7 +260,7 @@ private:
     TListNode<T>*   head_;
     size_t          count_;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPool*     pool_;
 #endif
 };

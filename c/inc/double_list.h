@@ -1,12 +1,22 @@
 #ifndef __C_DOUBLE_LIST_H__
 #define __C_DOUBLE_LIST_H__
 
-#include <stddef.h>
-#include <stdbool.h>
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#include "base.h"
+
+#if ENABLE_DSAA_OPTIMIZATION
 #include "memory_pool.h"
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+#include <stddef.h>
+#include <stdbool.h>
 
 #define GET_DOUBLE_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(DoubleListNode))
 
@@ -24,24 +34,24 @@ typedef struct DoubleList_tag
     DoubleListNode* tail;
     size_t          unit_size;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPool  pool;
 #endif
 }DoubleList;
 
 // linked list function
-void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size);
-void DoubleListDestroy(DoubleList *p_list);
-bool DoubleListIsEmpty(DoubleList *p_list);
-DoubleListNode* DoubleListFirst(DoubleList *p_list);
-bool DoubleListIsLast(DoubleList *p_list, DoubleListNode *p_node);
-DoubleListNode* DoubleListNext(DoubleList *p_list, DoubleListNode *p_node);
-DoubleListNode* DoubleListPrev(DoubleList *p_list, DoubleListNode *p_node);
-DoubleListNode* DoubleListFind(DoubleList *p_list, void *data, DoubleListNode *p_start_node);
-void DoubleListInsert(DoubleList *p_list, void *data);
-void DoubleListAdd(DoubleList *p_list, void *data);
-bool DoubleListFindAndRemove(DoubleList *p_list, void *data);
-void DoubleListRemove(DoubleList *p_list, DoubleListNode *p_node);
-void DoubleListMakeEmpty(DoubleList *p_list);
+MG_DLL void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_pool_size);
+MG_DLL void DoubleListDestroy(DoubleList *p_list);
+MG_DLL bool DoubleListIsEmpty(DoubleList *p_list);
+MG_DLL DoubleListNode* DoubleListFirst(DoubleList *p_list);
+MG_DLL bool DoubleListIsLast(DoubleList *p_list, DoubleListNode *p_node);
+MG_DLL DoubleListNode* DoubleListNext(DoubleList *p_list, DoubleListNode *p_node);
+MG_DLL DoubleListNode* DoubleListPrev(DoubleList *p_list, DoubleListNode *p_node);
+MG_DLL DoubleListNode* DoubleListFind(DoubleList *p_list, void *data, DoubleListNode *p_start_node);
+MG_DLL void DoubleListInsert(DoubleList *p_list, void *data);
+MG_DLL void DoubleListAdd(DoubleList *p_list, void *data);
+MG_DLL bool DoubleListFindAndRemove(DoubleList *p_list, void *data);
+MG_DLL void DoubleListRemove(DoubleList *p_list, DoubleListNode *p_node);
+MG_DLL void DoubleListMakeEmpty(DoubleList *p_list);
 
 #endif

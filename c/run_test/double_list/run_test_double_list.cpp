@@ -1,11 +1,6 @@
-#if defined(_WIN32) && ! defined(NDEBUG)
-#define _CRTDBG_MAP_ALLOC 
-#include <crtdbg.h>
-#endif
 #include <stdio.h>
 #include <vector>
 #include <list>
-#include "macros.h"
 #include "timer.h"
 #include "performance_test.h"
 #include "run_test_double_list.h"

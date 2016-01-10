@@ -1,13 +1,21 @@
 #ifndef __T_DOUBLE_LIST_H__
 #define __T_DOUBLE_LIST_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
 #include <stdlib.h>
 #include <stddef.h>
-#include <assert.h>
 #include <new>
-#include "macros.h"
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
 extern "C"
 {
 #include "memory_pool.h"
@@ -59,7 +67,7 @@ class TDoubleList
 public:
     TDoubleList(size_t hint_pool_size = 8)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
         MemoryPoolInit(pool_, hint_pool_size, sizeof(TDoubleListNode<T>));
         head_ = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>();
@@ -82,14 +90,14 @@ public:
         : head_(rref.head_)
         , tail_(rref.tail_)
         , count_(rref.count_)
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         , pool_(rref.pool_)
 #endif
     {
         rref.head_ = nullptr;
         rref.tail_ = nullptr;
         rref.count_ = 0;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         rref.pool_ = nullptr;
 #endif
     }
@@ -119,7 +127,7 @@ public:
         rref.tail_ = nullptr;
         rref.count_ = 0;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         pool_ = rref.pool_;
         rref.pool_ = nullptr;
 #endif
@@ -159,7 +167,7 @@ public:
     }
     void Insert(const T &ref_data)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
 #else
         TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
@@ -172,7 +180,7 @@ public:
     }
     void Add(const T &ref_data)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
 #else
         TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
@@ -187,7 +195,7 @@ public:
     {
         node->prev_->next_ = node->next_;
         node->next_->prev_ = node->prev_;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         node->~TDoubleListNode<T>();
         MemoryPoolFree(pool_, (void*)node);
 #else
@@ -202,7 +210,7 @@ public:
         {
             node->prev_->next_ = node->next_;
             node->next_->prev_ = node->prev_;
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             node->~TDoubleListNode<T>();
             MemoryPoolFree(pool_, node);
 #else
@@ -224,7 +232,7 @@ private:
         {
             MakeEmpty();
             
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             head_->~TDoubleListNode<T>();
             tail_->~TDoubleListNode<T>();
             MemoryPoolFree(pool_, head_);
@@ -236,7 +244,7 @@ private:
             head_ = nullptr;
             tail_ = nullptr;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
             MemoryPoolDestroy(pool_);
             free(pool_);
             pool_ = nullptr;
@@ -245,7 +253,7 @@ private:
     }
     void copy(const TDoubleList<T> &ref)
     {
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
         pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
         MemoryPoolInit(pool_, ref.pool_->used, sizeof(TDoubleListNode<T>));
         head_ = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>();
@@ -271,7 +279,7 @@ private:
     TDoubleListNode<T>*     tail_;
     size_t                  count_;
 
-#if ENABLE_DATA_STRUCTURE_OPTIMIZATION
+#if ENABLE_DSAA_OPTIMIZATION
     MemoryPool*             pool_;
 #endif
 };

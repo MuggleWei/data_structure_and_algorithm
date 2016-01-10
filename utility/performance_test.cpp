@@ -1,6 +1,5 @@
 #include "performance_test.h"
 #include <stdio.h>
-#include <assert.h>
 
 void PerformanceTest::WriteCompareToFile(std::string file)
 {
@@ -9,7 +8,7 @@ void PerformanceTest::WriteCompareToFile(std::string file)
     if (!fp)
     {
         printf("can't open file %s!\n", file.c_str());
-        assert(0);
+        MASSERT(0);
         return;
     }
 
@@ -35,7 +34,7 @@ void PerformanceTest::WriteCompareToFile(std::string file)
         for (auto it = datas_.begin(); it != datas_.end(); ++it)
         {
             // make sure number size equal to others
-            assert(it->second.size() == nums.size());
+            MASSERT(it->second.size() == nums.size());
             if (it->second.size() != nums.size())
             {
                 fprintf(stderr, "%s: number is wrong", it->first.c_str());
@@ -45,7 +44,7 @@ void PerformanceTest::WriteCompareToFile(std::string file)
             // make sure all number is equal
             for (decltype(it->second.size()) i = 0; i < it->second.size(); ++i)
             {
-                assert(it->second[i].num == nums[i]);
+                MASSERT(it->second[i].num == nums[i]);
                 if (it->second[i].num == nums[i])
                 {
                     fprintf(stderr, "%s: number is wrong", it->first.c_str());

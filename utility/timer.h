@@ -1,11 +1,22 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include "base.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 #ifdef _WIN32
 
 #include <windows.h>
 
-class Timer 
+class MG_DLL Timer 
 {
 public:
     Timer() : start_(), end_() {}
@@ -36,7 +47,7 @@ private:
 
 #include <sys/time.h>
 
-class Timer 
+class MG_DLL Timer 
 {
 public:
     Timer() : start_(), end_() {}
