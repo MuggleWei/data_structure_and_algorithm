@@ -45,7 +45,7 @@ void PerformanceTest::WriteCompareToFile(std::string file)
             for (decltype(it->second.size()) i = 0; i < it->second.size(); ++i)
             {
                 MASSERT(it->second[i].num == nums[i]);
-                if (it->second[i].num == nums[i])
+                if (it->second[i].num != nums[i])
                 {
                     fprintf(stderr, "%s: number is wrong", it->first.c_str());
                     continue;
