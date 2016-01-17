@@ -32,8 +32,3 @@ set_target_properties(${data_structure_c_lib} PROPERTIES COMPILE_DEFINITIONS "${
 if(DSAA_SHARED)
 	target_link_libraries(${data_structure_c_lib} ${base_lib})
 endif()
-
-# test code
-if (DSAA_BUILD_RUN_TEST)
-    add_subdirectory(run_test)
-endif()

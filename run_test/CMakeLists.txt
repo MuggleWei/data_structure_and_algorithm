@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 # c array
-file(GLOB RUN_TEST_C_ARRAY_SOURCE array/*.cpp)
-file(GLOB RUN_TEST_C_ARRAY_HEADER array/*.h)
+file(GLOB RUN_TEST_C_ARRAY_SOURCE c_array/*.cpp)
+file(GLOB RUN_TEST_C_ARRAY_HEADER c_array/*.h)
 if (WIN32)
 add_executable(run_test_c_array
 	${RUN_TEST_C_ARRAY_SOURCE}
@@ -38,8 +38,8 @@ target_link_libraries(run_test_cpp_array
 # end cpp array
 
 # list
-file(GLOB RUN_TEST_C_LIST_SOURCE list/*.cpp)
-file(GLOB RUN_TEST_C_LIST_HEADER list/*.h)
+file(GLOB RUN_TEST_C_LIST_SOURCE c_list/*.cpp)
+file(GLOB RUN_TEST_C_LIST_HEADER c_list/*.h)
 if (WIN32)
 add_executable(run_test_c_list
 	${RUN_TEST_C_LIST_SOURCE}
@@ -75,8 +75,8 @@ target_link_libraries(run_test_cpp_list
 # end cpp list
 
 # double list
-file(GLOB RUN_TEST_C_DOUBLE_LIST_SOURCE double_list/*.cpp)
-file(GLOB RUN_TEST_C_DOUBLE_LIST_HEADER double_list/*.h)
+file(GLOB RUN_TEST_C_DOUBLE_LIST_SOURCE c_double_list/*.cpp)
+file(GLOB RUN_TEST_C_DOUBLE_LIST_HEADER c_double_list/*.h)
 if (WIN32)
 add_executable(run_test_c_double_list
 	${RUN_TEST_C_DOUBLE_LIST_SOURCE}
@@ -112,8 +112,8 @@ target_link_libraries(run_test_cpp_double_list
 # end cpp list
 
 # tree
-file(GLOB RUN_TEST_C_TREE_SOURCE tree/*.cpp)
-file(GLOB RUN_TEST_C_TREE_HEADER tree/*.h)
+file(GLOB RUN_TEST_C_TREE_SOURCE c_tree/*.cpp)
+file(GLOB RUN_TEST_C_TREE_HEADER c_tree/*.h)
 if (WIN32)
 add_executable(run_test_c_tree
 	${RUN_TEST_C_TREE_SOURCE}
