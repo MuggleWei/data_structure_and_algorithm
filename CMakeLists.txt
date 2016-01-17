@@ -18,21 +18,35 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# DSAA lib start
+# ===== DSAA lib start =====
+# add lib
 add_subdirectory(dsaa)
+
+# include directory
 include_directories(
 	dsaa/c/inc
 	dsaa/cpp/inc
 	dsaa/base
 	dsaa/utility
 )
+
+# add macro
 if (DSAA_PERFORMANCE_OPTIMIZATION)
 	add_definitions(-DENABLE_DSAA_OPTIMIZATION)
 endif()
+
+# library type
+if (DSAA_SHARED)
+else()
+	add_definitions(-DMG_USE_LIB)
+endif()
+
+# set variable name
 set(base_lib base)
 set(data_structure_c_lib data_structure_c)
 set(utility_lib utility)
-# DSAA lib end
+
+# ===== DSAA lib end =====
 
 # build run test
 option(DSAA_BUILD_RUN_TEST "Build test code" ON)

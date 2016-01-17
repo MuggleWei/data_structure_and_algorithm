@@ -30,16 +30,21 @@ option(DSAA_PERFORMANCE_OPTIMIZATION "optimize performance" ON)
 # enable some opatimize for data structure performance
 if (DSAA_PERFORMANCE_OPTIMIZATION)
 	add_definitions(-DENABLE_DSAA_OPTIMIZATION)
+	message("enable performance optimization")
+else()
+	message("disable performance optimization")
 endif()
 
 # library type
 if (DSAA_SHARED)
 	set(LIB_TYPE SHARED)
 	set(LIB_MACRO MG_USE_DLL)
+	message("use shared library")
 else()
 	set(LIB_TYPE STATIC)
 	set(LIB_MACRO MG_USE_LIB)
 	add_definitions(-DMG_USE_LIB)
+	message("use static library")
 endif()
 
 # include
