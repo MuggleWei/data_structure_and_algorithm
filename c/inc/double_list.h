@@ -1,10 +1,7 @@
 #ifndef __C_DOUBLE_LIST_H__
 #define __C_DOUBLE_LIST_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+
 
 #include "base.h"
 
@@ -13,10 +10,9 @@ extern "C"
 #endif
 
 #ifdef __cplusplus
-}
+extern "C"
+{
 #endif
-#include <stddef.h>
-#include <stdbool.h>
 
 #define GET_DOUBLE_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(DoubleListNode))
 
@@ -53,5 +49,9 @@ MG_DLL void DoubleListAdd(DoubleList *p_list, void *data);
 MG_DLL bool DoubleListFindAndRemove(DoubleList *p_list, void *data);
 MG_DLL void DoubleListRemove(DoubleList *p_list, DoubleListNode *p_node);
 MG_DLL void DoubleListMakeEmpty(DoubleList *p_list);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

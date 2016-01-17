@@ -1,17 +1,12 @@
 #ifndef __MEMORY_POOL_H__
 #define __MEMORY_POOL_H__
 
+#include "base.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
-#include <stdint.h>
 
 typedef struct MemoryPool_tag
 {
@@ -38,5 +33,9 @@ MG_DLL uintptr_t MemoryPoolAlloc(MemoryPool* pool);
 MG_DLL void MemoryPoolFree(MemoryPool* pool, void* p_data);
 
 MG_DLL void MemoryPoolEnsureSpace(MemoryPool* pool, unsigned int capacity);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

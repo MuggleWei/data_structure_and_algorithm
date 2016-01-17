@@ -1,7 +1,17 @@
 #ifndef __BASE_H__
 #define __BASE_H__
 
+// base c header
+#include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+
+// detect memory leak
+#if defined(_WIN32) && ! defined(NDEBUG)
+#define _CRTDBG_MAP_ALLOC 
+#include <crtdbg.h>
+#endif
 
 // noexcept
 #ifdef _WIN32
@@ -14,6 +24,7 @@
 // assert
 #if NDEBUG
 #define MASSERT(x)
+#define MASSERT_MSG(x, msg)
 #else
 #define MASSERT(x) \
 do \
@@ -58,11 +69,7 @@ do \
 #endif 
 
 // log
-#if NDEBUG
-#define MLOG(format, ...)
-#else
 #define MLOG(format, ...) printf(format, ##__VA_ARGS__);
-#endif
 
 // sleep
 #if _WIN32
@@ -84,13 +91,23 @@ do \
     } \
 } while (0)
 
-// detect memory leak
-#if defined(_WIN32) && ! defined(NDEBUG)
-#define _CRTDBG_MAP_ALLOC 
-#include <crtdbg.h>
+// max length of path
+#if _WIN32
+#define MG_MAX_PATH MAX_PATH
+#else
+#define MG_MAX_PATH 1024
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
 // function
 MG_DLL void ExportFailure(const char* cond, const char* file_name, int line, const char* msg);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

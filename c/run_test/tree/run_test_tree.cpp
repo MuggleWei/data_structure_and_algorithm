@@ -3,10 +3,7 @@
 #include <list>
 #include "timer.h"
 #include "run_test_tree.h"
-extern "C"
-{
 #include "tree.h"
-}
 
 typedef struct TestData_tag
 {

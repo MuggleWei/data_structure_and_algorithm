@@ -1,16 +1,7 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
 
 #ifdef _WIN32
 

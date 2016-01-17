@@ -4,10 +4,7 @@
 #include "timer.h"
 #include "performance_test.h"
 #include "run_test_double_list.h"
-extern "C"
-{
-    #include "double_list.h"
-}
+#include "double_list.h"
 
 typedef struct TestData_tag
 {

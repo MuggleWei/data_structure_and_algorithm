@@ -5,16 +5,7 @@
 // #include "timer.h"
 #include "run_test_ttree.h"
 #include "TTree.h"
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
 
 class TestData
 {

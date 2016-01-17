@@ -1,16 +1,7 @@
 #ifndef __PERFORMANCE_TEST_H__
 #define __PERFORMANCE_TEST_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-    #include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
+#include "base.h"
 
 #include <stdio.h>
 #include <string>

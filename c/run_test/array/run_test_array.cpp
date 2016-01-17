@@ -4,10 +4,7 @@
 #include "timer.h"
 #include "performance_test.h"
 #include "run_test_array.h"
-extern "C"
-{
-    #include "array.h"
-}
+#include "array.h"
 
 
 typedef struct TestData_tag

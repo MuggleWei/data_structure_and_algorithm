@@ -1,18 +1,12 @@
 #ifndef __C_ARRAY_H__
 #define __C_ARRAY_H__
 
+#include "base.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
-#include <stddef.h>
-#include <stdbool.h>
 
 typedef struct Array_tag
 {
@@ -38,5 +32,8 @@ MG_DLL void ArrayMakeEmpty(Array *p_array);
 MG_DLL size_t ArrayUsed(Array *p_array);
 MG_DLL size_t ArrayCapacity(Array *p_array);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
