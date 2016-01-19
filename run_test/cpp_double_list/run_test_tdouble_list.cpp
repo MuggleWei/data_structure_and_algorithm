@@ -102,6 +102,16 @@ void TestDoubleListFunction()
         std::cout << "find {" << node->Get()->num_ << ", " << node->Get()->str_ << "}" << std::endl;
     }
 
+    // insert node
+    TestData insert_node = { 10, "10" };
+    list.Insert(insert_node, node);
+    PrintList(list);
+
+    // add node
+    TestData add_node = { 11, "11" };
+    list.Add(add_node, node);
+    PrintList(list);
+
     // remove
     list.Remove(node);
     PrintList(list);

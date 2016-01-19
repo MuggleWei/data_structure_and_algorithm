@@ -40,6 +40,7 @@ MG_DLL bool ListIsLast(ListNode *p_node);
 MG_DLL ListNode* ListNext(ListNode *p_node);
 MG_DLL ListNode* ListFind(List *p_list, void *data, ListNode *start_node);
 MG_DLL void ListInsert(List *p_list, void *data);
+MG_DLL void ListAdd(List *p_list, void *data, ListNode* prev_node);
 MG_DLL bool ListFindAndRemove(List *p_list, void *data);
 MG_DLL void ListMakeEmpty(List *p_list);
 

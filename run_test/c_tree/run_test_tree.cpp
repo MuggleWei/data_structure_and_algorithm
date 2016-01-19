@@ -17,15 +17,15 @@ void PrintTreeNode(TreeNode *node, int level)
     {
         if (i == level - 1)
         {
-            printf("|---");
+            MLOG("|---");
         }
         else
         {
-            printf("|   ");
+            MLOG("|   ");
         }        
     }
     TestData* p_data = (TestData*)GET_TREE_NODE_DATA_ADDRESS(*node);
-    printf("%s\n", p_data->buf);
+    MLOG("%s\n", p_data->buf);
 }
 
 void TestTreeFunction()
@@ -63,11 +63,11 @@ void TestTreeFunction()
     TreeAddChild(&tree, local, &data[11]);
 
     // print
-    printf("preorder:\n");
+    MLOG("preorder:\n");
     TreeNodePreorderTraversal(&tree, tree.root, 0, PrintTreeNode);
 
     // print
-    printf("\npostorder:\n");
+    MLOG("\npostorder:\n");
     TreeNodePostorderTraversal(&tree, tree.root, 0, PrintTreeNode);
 
     // find
@@ -77,7 +77,7 @@ void TestTreeFunction()
     TreeRemove(&tree, node);
 
     // print
-    printf("\npreorder:\n");
+    MLOG("\npreorder:\n");
     TreeNodePreorderTraversal(&tree, tree.root, 0, PrintTreeNode);
 
     TreeDestroy(&tree);

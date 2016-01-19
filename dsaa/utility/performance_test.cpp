@@ -1,5 +1,4 @@
 #include "performance_test.h"
-#include <stdio.h>
 
 void PerformanceTest::WriteCompareToFile(std::string file)
 {
@@ -7,7 +6,7 @@ void PerformanceTest::WriteCompareToFile(std::string file)
     FILE *fp = fopen(file.c_str(), "w+");
     if (!fp)
     {
-        printf("can't open file %s!\n", file.c_str());
+        MLOG("can't open file %s!\n", file.c_str());
         MASSERT(0);
         return;
     }

@@ -18,10 +18,10 @@ void PrintDoubleList(DoubleList *p_list)
     while (p_node)
     {
         TestData *p_data = (TestData*)GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node);
-        printf("{%d, %s} ", p_data->i, p_data->buf);
+        MLOG("{%d, %s} ", p_data->i, p_data->buf);
         p_node = DoubleListNext(p_list, p_node);
     }
-    printf("\n");
+    MLOG("\n");
 }
 
 void TestDoubleListAdd(DoubleList& list, int num)
@@ -112,15 +112,25 @@ void TestDoubleListFunction()
     if (p_node)
     {
         TestData *p_data = (TestData*)GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node);
-        printf("find {%d, %s}\n", p_data->i, p_data->buf);
+        MLOG("find {%d, %s}\n", p_data->i, p_data->buf);
     }
+
+    // insert node
+    TestData insert_data = {10, "10"};
+    DoubleListInsertNode(&list, &insert_data, p_node);
+    PrintDoubleList(&list);
+
+    // add node
+    TestData add_data = { 11, "11" };
+    DoubleListAddNode(&list, &add_data, p_node);
+    PrintDoubleList(&list);
 
     // next
     DoubleListNode *p_node_next = DoubleListNext(&list, p_node);
     if (p_node_next)
     {
         TestData *p_data = (TestData*)GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node_next);
-        printf("next {%d, %s}\n", p_data->i, p_data->buf);
+        MLOG("next {%d, %s}\n", p_data->i, p_data->buf);
     }
     DoubleListRemove(&list, p_node);
     PrintDoubleList(&list);

@@ -1,25 +1,11 @@
 #ifndef __T_LIST_H__
 #define __T_LIST_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
-#include <stdlib.h>
-#include <stddef.h>
 #include <new>
 
 #if ENABLE_DSAA_OPTIMIZATION
-extern "C"
-{
 #include "memory_pool.h"
-}
 #endif
 
 template<typename T>
@@ -150,13 +136,25 @@ public:
     }
     void Insert(const T &ref_data)
     {
+        Add(ref_data, head_);
+// #if ENABLE_DSAA_OPTIMIZATION
+//         TListNode<T> *node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(ref_data);
+// #else
+//         TListNode<T> *node = new TListNode<T>(ref_data);
+// #endif
+//         node->next_ = head_->next_;
+//         head_->next_ = node;
+//         ++count_;
+    }
+    void Add(const T &ref_data, TListNode<T>* prev_node)
+    {
 #if ENABLE_DSAA_OPTIMIZATION
         TListNode<T> *node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(ref_data);
 #else
         TListNode<T> *node = new TListNode<T>(ref_data);
 #endif
-        node->next_ = head_->next_;
-        head_->next_ = node;
+        node->next_ = prev_node->next_;
+        prev_node->next_ = node;
         ++count_;
     }
     bool FindAndRemove(const T &ref_data)

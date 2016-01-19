@@ -57,6 +57,19 @@ ListNode* ListFind(List *p_list, void *data, ListNode *start_node)
 }
 void ListInsert(List *p_list, void *data)
 {
+    ListAdd(p_list, data, p_list->head);
+// #if ENABLE_DSAA_OPTIMIZATION
+//     ListNode *p_node = (ListNode*)MemoryPoolAlloc(&p_list->pool);
+// #else
+//     ListNode *p_node = (ListNode*)malloc(sizeof(ListNode) + p_list->unit_size);
+// #endif
+//     memcpy(GET_LIST_NODE_DATA_ADDRESS(*p_node), data, p_list->unit_size);
+// 
+//     p_node->next = p_list->head->next;
+//     p_list->head->next = p_node;
+}
+void ListAdd(List *p_list, void *data, ListNode* prev_node)
+{
 #if ENABLE_DSAA_OPTIMIZATION
     ListNode *p_node = (ListNode*)MemoryPoolAlloc(&p_list->pool);
 #else
@@ -64,8 +77,8 @@ void ListInsert(List *p_list, void *data)
 #endif
     memcpy(GET_LIST_NODE_DATA_ADDRESS(*p_node), data, p_list->unit_size);
 
-    p_node->next = p_list->head->next;
-    p_list->head->next = p_node;
+    p_node->next = prev_node->next;
+    prev_node->next = p_node;
 }
 bool ListFindAndRemove(List *p_list, void *data)
 {

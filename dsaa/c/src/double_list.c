@@ -76,8 +76,6 @@ void DoubleListInsert(DoubleList *p_list, void *data)
 #endif
     memcpy(GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node), data, p_list->unit_size);
 
-    void *tmp = GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node);
-
     p_node->next = p_list->head->next;
     p_node->prev = p_list->head;
     p_node->prev->next = p_node;
@@ -94,6 +92,34 @@ void DoubleListAdd(DoubleList *p_list, void *data)
 
     p_node->next = p_list->tail;
     p_node->prev = p_list->tail->prev;
+    p_node->prev->next = p_node;
+    p_node->next->prev = p_node;
+}
+void DoubleListInsertNode(DoubleList *p_list, void *data, DoubleListNode* next_node)
+{
+#if ENABLE_DSAA_OPTIMIZATION
+    DoubleListNode *p_node = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
+#else
+    DoubleListNode *p_node = (DoubleListNode*)malloc(sizeof(DoubleListNode) + p_list->unit_size);
+#endif
+    memcpy(GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node), data, p_list->unit_size);
+
+    p_node->next = next_node;
+    p_node->prev = next_node->prev;
+    p_node->prev->next = p_node;
+    p_node->next->prev = p_node;
+}
+void DoubleListAddNode(DoubleList *p_list, void *data, DoubleListNode* pre_node)
+{
+#if ENABLE_DSAA_OPTIMIZATION
+    DoubleListNode *p_node = (DoubleListNode*)MemoryPoolAlloc(&p_list->pool);
+#else
+    DoubleListNode *p_node = (DoubleListNode*)malloc(sizeof(DoubleListNode) + p_list->unit_size);
+#endif
+    memcpy(GET_DOUBLE_LIST_NODE_DATA_ADDRESS(*p_node), data, p_list->unit_size);
+
+    p_node->next = pre_node->next;
+    p_node->prev = pre_node;
     p_node->prev->next = p_node;
     p_node->next->prev = p_node;
 }

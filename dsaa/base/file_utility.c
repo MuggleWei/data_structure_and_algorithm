@@ -84,9 +84,13 @@ bool File_IsExist(const char* file_name)
 
 bool File_Read(const char* file_name, char** ptr_bytes, long* ptr_num)
 {
+    // get absolute path
+    char file_path[MG_MAX_PATH];
+    File_GetAbsolutePath(file_name, file_path);
+
     // note : why use "rb"
     // if use "r", the return value of ftell and fread maybe not equal
-    FILE* fp = fopen(file_name, "rb");
+    FILE* fp = fopen(file_path, "rb");
     if (fp == NULL)
     {
         return false;

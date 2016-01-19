@@ -46,6 +46,8 @@ MG_DLL DoubleListNode* DoubleListPrev(DoubleList *p_list, DoubleListNode *p_node
 MG_DLL DoubleListNode* DoubleListFind(DoubleList *p_list, void *data, DoubleListNode *p_start_node);
 MG_DLL void DoubleListInsert(DoubleList *p_list, void *data);
 MG_DLL void DoubleListAdd(DoubleList *p_list, void *data);
+MG_DLL void DoubleListInsertNode(DoubleList *p_list, void *data, DoubleListNode* next_node);
+MG_DLL void DoubleListAddNode(DoubleList *p_list, void *data, DoubleListNode* pre_node);
 MG_DLL bool DoubleListFindAndRemove(DoubleList *p_list, void *data);
 MG_DLL void DoubleListRemove(DoubleList *p_list, DoubleListNode *p_node);
 MG_DLL void DoubleListMakeEmpty(DoubleList *p_list);

@@ -1,18 +1,7 @@
 #ifndef __T_TREE_H__
 #define __T_TREE_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
-#include <stdlib.h>
-#include <stddef.h>
 #include <new>
 #include <functional>
 

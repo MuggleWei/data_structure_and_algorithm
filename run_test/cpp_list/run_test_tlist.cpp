@@ -98,6 +98,11 @@ void TestListFunction()
         std::cout << "find {" << node->Get()->num_ << ", " << node->Get()->str_ << "}" << std::endl;
     }
 
+    // add node
+    TestData add_data = { 10, "10" };
+    list.Add(add_data, node);
+    PrintList(list);
+
     // find and remove
     list.FindAndRemove(data);
     PrintList(list);

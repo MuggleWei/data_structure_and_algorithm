@@ -1,25 +1,12 @@
 #ifndef __T_DOUBLE_LIST_H__
 #define __T_DOUBLE_LIST_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include "base.h"
-
-#ifdef __cplusplus
-}
-#endif
-#include <stdlib.h>
 #include <stddef.h>
 #include <new>
 
 #if ENABLE_DSAA_OPTIMIZATION
-extern "C"
-{
 #include "memory_pool.h"
-}
 #endif
 
 template<typename T>
@@ -178,6 +165,19 @@ public:
         new_node->prev_ = head_;
         ++count_;
     }
+    void Insert(const T &ref_data, TDoubleListNode<T>* next_node)
+    {
+#if ENABLE_DSAA_OPTIMIZATION
+        TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
+#else
+        TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
+#endif
+        new_node->next_ = next_node;
+        new_node->prev_ = next_node->prev_;
+        new_node->next_->prev_ = new_node;
+        new_node->prev_->next_ = new_node;
+        ++count_;
+    }
     void Add(const T &ref_data)
     {
 #if ENABLE_DSAA_OPTIMIZATION
@@ -189,6 +189,19 @@ public:
         tail_->prev_->next_ = new_node;
         new_node->next_ = tail_;
         tail_->prev_ = new_node;
+        ++count_;
+    }
+    void Add(const T &ref_data, TDoubleListNode<T>* prev_node)
+    {
+#if ENABLE_DSAA_OPTIMIZATION
+        TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
+#else
+        TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
+#endif
+        new_node->prev_ = prev_node;
+        new_node->next_ = prev_node->next_;
+        new_node->prev_->next_ = new_node;
+        new_node->next_->prev_ = new_node;
         ++count_;
     }
     void Remove(const TDoubleListNode<T> *node)

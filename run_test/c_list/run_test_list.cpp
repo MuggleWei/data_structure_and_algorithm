@@ -18,10 +18,10 @@ void PrintList(List *p_list)
     while (p_node)
     {
         TestData *p_data = (TestData*)GET_LIST_NODE_DATA_ADDRESS(*p_node);
-        printf("{%d, %s} ", p_data->i, p_data->buf);
+        MLOG("{%d, %s} ", p_data->i, p_data->buf);
         p_node = ListNext(p_node);
     }
-    printf("\n");
+    MLOG("\n");
 }
 
 void TestListInsert(List& list, int num)
@@ -101,9 +101,14 @@ void TestListFunction()
     if (p_node)
     {
         TestData *p_data = (TestData*)GET_LIST_NODE_DATA_ADDRESS(*p_node);
-        printf("find {%d, %s}\n", p_data->i, p_data->buf);
+        MLOG("find {%d, %s}\n", p_data->i, p_data->buf);
     }
     
+    // add node
+    TestData add_data = { 10, "10" };
+    ListAdd(&list, &add_data, p_node);
+    PrintList(&list);
+
     // find and remove
     ListFindAndRemove(&list, &data);
     PrintList(&list);

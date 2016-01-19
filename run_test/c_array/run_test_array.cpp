@@ -17,9 +17,9 @@ void PrintArray(Array* p_array)
 {
     for (size_t i = 0; i < ArrayUsed(p_array); ++i)
     {
-        printf("%d ", ((TestData*)ArrayGet(p_array, i))->i);
+        MLOG("%d ", ((TestData*)ArrayGet(p_array, i))->i);
     }
-    printf("\n");
+    MLOG("\n");
 }
 
 void TestArrayPush(Array& array, int num)
@@ -94,18 +94,18 @@ void TestArrayFunction()
     size_t find_index = 0;
     if (ArrayFind(&array, &data, 0, &find_index))
     {
-        printf("find %d in index %lu\n", data.i, find_index);
+        MLOG("find %d in index %lu\n", data.i, find_index);
     }
 
     // remove and pop
     for (size_t i = 0; i < 4; ++i)
     {
         TestData *tmp = (TestData*)ArrayGet(&array, 4);
-        printf("%d ", tmp->i);
+        MLOG("%d ", tmp->i);
         ArrayRemove(&array, 4);
-        printf("%d ", ((TestData*)ArrayTop(&array))->i);
+        MLOG("%d ", ((TestData*)ArrayTop(&array))->i);
         ArrayPop(&array);
-        printf("\n");
+        MLOG("\n");
     }
     PrintArray(&array);
 
