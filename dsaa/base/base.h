@@ -99,6 +99,12 @@ do \
 #define MG_MAX_PATH 1024
 #endif
 
+// sprintf_s
+#if _WIN32
+#else
+#define sprintf_s(buf, size_in_byte, format, ...) sprintf(buf, format, ##__VA_ARGS__)
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {

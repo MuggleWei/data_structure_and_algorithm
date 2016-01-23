@@ -41,6 +41,10 @@ DoubleListNode* DoubleListFirst(DoubleList *p_list)
 {
     return DoubleListIsEmpty(p_list) ? NULL : p_list->head->next;
 }
+DoubleListNode* DoubleListLast(DoubleList *p_list)
+{
+    return DoubleListIsEmpty(p_list) ? NULL : p_list->tail->prev;
+}
 bool DoubleListIsLast(DoubleList *p_list, DoubleListNode *p_node)
 {
     return p_node->next == p_list->tail;

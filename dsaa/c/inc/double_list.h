@@ -40,6 +40,7 @@ MG_DLL void DoubleListInit(DoubleList *p_list, size_t unit_size, size_t hint_poo
 MG_DLL void DoubleListDestroy(DoubleList *p_list);
 MG_DLL bool DoubleListIsEmpty(DoubleList *p_list);
 MG_DLL DoubleListNode* DoubleListFirst(DoubleList *p_list);
+MG_DLL DoubleListNode* DoubleListLast(DoubleList *p_list);
 MG_DLL bool DoubleListIsLast(DoubleList *p_list, DoubleListNode *p_node);
 MG_DLL DoubleListNode* DoubleListNext(DoubleList *p_list, DoubleListNode *p_node);
 MG_DLL DoubleListNode* DoubleListPrev(DoubleList *p_list, DoubleListNode *p_node);

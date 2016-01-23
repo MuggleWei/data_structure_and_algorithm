@@ -4,14 +4,14 @@
 #else
 #endif
 
-bool File_IsAbsolutePath(const char* file_name)
+bool File_IsAbsolutePath(const char* file_path)
 {
 #ifdef _WIN32
-    size_t len = strlen(file_name);
+    size_t len = strlen(file_path);
     if (len > 2 &&
-        ((file_name[0] >= 'a' && file_name[0] <= 'z') || (file_name[0] >= 'A' && file_name[0] <= 'Z')) &&
-        file_name[1] == ':' &&
-        file_name[2] == '/')
+        ((file_path[0] >= 'a' && file_path[0] <= 'z') || (file_path[0] >= 'A' && file_path[0] <= 'Z')) &&
+        file_path[1] == ':' &&
+        file_path[2] == '/')
     {
         return true;
     }
@@ -20,7 +20,7 @@ bool File_IsAbsolutePath(const char* file_name)
 #else
 #endif
 }
-bool File_GetAbsolutePath(const char* in_file_name, char* out_file_name)
+bool File_GetAbsolutePath(const char* in_file_name, char* out_file_path)
 {
 #ifdef _WIN32
     if (File_IsAbsolutePath(in_file_name))
@@ -31,10 +31,10 @@ bool File_GetAbsolutePath(const char* in_file_name, char* out_file_name)
     char module_path[MG_MAX_PATH];
     GetModuleFileName(NULL, module_path, MG_MAX_PATH);
 
-    File_GetDirectory(module_path, out_file_name);
-    size_t len = strlen(out_file_name);
+    File_GetDirectory(module_path, out_file_path);
+    size_t len = strlen(out_file_path);
 
-    memcpy(&out_file_name[len], in_file_name, strlen(in_file_name) + 1);
+    memcpy(&out_file_path[len], in_file_name, strlen(in_file_name) + 1);
 
     return true;
 #else
@@ -62,13 +62,9 @@ bool File_GetDirectory(const char* file_path, char* dir)
 
     return true;
 }
-bool File_IsExist(const char* file_name)
+bool File_IsExist(const char* file_path)
 {
 #ifdef _WIN32
-    // get absolute file path
-    char file_path[MG_MAX_PATH];
-    File_GetAbsolutePath(file_name, file_path);
-
     // convert to utf16 characters
     WCHAR utf16_buf[512] = {0};
     MultiByteToWideChar(CP_UTF8, 0, file_path, -1, utf16_buf, sizeof(utf16_buf) / sizeof(utf16_buf[0]));
@@ -82,12 +78,8 @@ bool File_IsExist(const char* file_name)
 #endif
 }
 
-bool File_Read(const char* file_name, char** ptr_bytes, long* ptr_num)
+bool File_Read(const char* file_path, char** ptr_bytes, long* ptr_num)
 {
-    // get absolute path
-    char file_path[MG_MAX_PATH];
-    File_GetAbsolutePath(file_name, file_path);
-
     // note : why use "rb"
     // if use "r", the return value of ftell and fread maybe not equal
     FILE* fp = fopen(file_path, "rb");
