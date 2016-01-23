@@ -48,8 +48,15 @@ set(utility_lib utility)
 
 # ===== DSAA lib end =====
 
-# build run test
 option(DSAA_BUILD_RUN_TEST "Build test code" ON)
+option(DSAA_BUILD_BOOK_PRACTISE "Build book practise" ON)
+
+# build run test
 if (DSAA_BUILD_RUN_TEST)
     add_subdirectory(run_test)
+endif()
+
+# build book practise
+if (DSAA_BUILD_BOOK_PRACTISE)
+	add_subdirectory(book_parctise)
 endif()
