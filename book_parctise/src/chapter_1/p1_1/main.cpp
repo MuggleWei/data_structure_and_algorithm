@@ -83,7 +83,7 @@ void TestPerformance()
 
 int main()
 {
-#if defined(_WIN32) && ! defined(NDEBUG)
+#if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
     _CrtMemState s1, s2, s3;
     _CrtMemCheckpoint(&s1);
 #endif
@@ -93,7 +93,7 @@ int main()
     TestFunction();
     TestPerformance();
 
-#if defined(_WIN32) && ! defined(NDEBUG)
+#if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
     _CrtMemCheckpoint(&s2);
     if (_CrtMemDifference(&s3, &s1, &s2))
     {

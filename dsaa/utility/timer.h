@@ -3,7 +3,7 @@
 
 #include "base.h"
 
-#ifdef _WIN32
+#if MG_PLATFORM_WINDOWS
 
 #include <windows.h>
 

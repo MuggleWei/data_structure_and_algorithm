@@ -41,6 +41,15 @@ else()
 	add_definitions(-DMG_USE_LIB)
 endif()
 
+# platform macro
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+	add_definitions(-DMG_PLATFORM_UNIX=1)
+elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
+	add_definitions(-DMG_PLATFORM_OSX=1)
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+	add_definitions(-DMG_PLATFORM_WINDOWS=1)
+endif()
+
 # set variable name
 set(base_lib base)
 set(data_structure_c_lib data_structure_c)

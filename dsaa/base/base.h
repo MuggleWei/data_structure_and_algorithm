@@ -9,13 +9,13 @@
 #include <stddef.h>
 
 // detect memory leak
-#if defined(_WIN32) && ! defined(NDEBUG)
+#if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
 #define _CRTDBG_MAP_ALLOC 
 #include <crtdbg.h>
 #endif
 
 // noexcept
-#ifdef _WIN32
+#if MG_PLATFORM_WINDOWS
 #if _MSC_VER < 1900
 #define _XKEYCHECK_H
 #define noexcept
@@ -46,7 +46,7 @@ do \
 #endif
 
 // lib and dll
-#if _WIN32
+#if MG_PLATFORM_WINDOWS
 #if defined(MG_USE_LIB)
 #define MG_DLL
 #elif defined(MG_USE_DLL)
@@ -73,7 +73,7 @@ do \
 #define MLOG(format, ...) printf(format, ##__VA_ARGS__);
 
 // sleep
-#if _WIN32
+#if MG_PLATFORM_WINDOWS
 #include <windows.h>
 #define MSleep(ms) Sleep(ms)
 #else
@@ -93,14 +93,14 @@ do \
 } while (0)
 
 // max length of path
-#if _WIN32
+#if MG_PLATFORM_WINDOWS
 #define MG_MAX_PATH MAX_PATH
 #else
 #define MG_MAX_PATH 1024
 #endif
 
 // sprintf_s
-#if _WIN32
+#if MG_PLATFORM_WINDOWS
 #else
 #define sprintf_s(buf, size_in_byte, format, ...) sprintf(buf, format, ##__VA_ARGS__)
 #endif

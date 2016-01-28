@@ -133,7 +133,7 @@ bool process_file(const char* file_name, bool is_std_file,
     Array* file_stack, Array* file_records, 
     DoubleList* lines, DoubleList* file_binarys)
 {
-#ifdef _WIN32
+#if MG_PLATFORM_WINDOWS
     const char* header_search_dirs[] = {
         "D:/Microsoft Visual Studio 12.0/VC/crt/src",
         "D:/Microsoft Visual Studio 12.0/VC/include",

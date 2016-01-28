@@ -1,12 +1,27 @@
 #include "file_utility.h"
-#ifdef _WIN32
-#include <windows.h>
-#else
-#endif
 
+#if MG_PLATFORM_WINDOWS
+
+#include <windows.h>
+
+void File_GetProcessPath(char* file_path)
+{
+    GetModuleFileName(NULL, file_path, MG_MAX_PATH);
+}
+bool File_IsExist(const char* file_path)
+{
+    // convert to utf16 characters
+    WCHAR utf16_buf[512] = { 0 };
+    MultiByteToWideChar(CP_UTF8, 0, file_path, -1, utf16_buf, sizeof(utf16_buf) / sizeof(utf16_buf[0]));
+
+    // get file attributes
+    DWORD attr = GetFileAttributesW(utf16_buf);
+    if (attr == INVALID_FILE_ATTRIBUTES || (attr & FILE_ATTRIBUTE_DIRECTORY))
+        return false;
+    return true;
+}
 bool File_IsAbsolutePath(const char* file_path)
 {
-#ifdef _WIN32
     size_t len = strlen(file_path);
     if (len > 2 &&
         ((file_path[0] >= 'a' && file_path[0] <= 'z') || (file_path[0] >= 'A' && file_path[0] <= 'Z')) &&
@@ -17,19 +32,40 @@ bool File_IsAbsolutePath(const char* file_path)
     }
 
     return false;
-#else
-#endif
 }
+
+#else
+
+void File_GetProcessPath(char* file_path)
+{
+    // TODO:
+}
+bool File_IsExist(const char* file_path)
+{
+    // TODO:
+    return false;
+}
+bool File_IsAbsolutePath(const char* file_path)
+{
+    size_t len = strlen(file_path);
+    if (len > 1 && file_path[0] == '/')
+    {
+        return true;
+    }
+
+    return false;
+}
+#endif
+
 bool File_GetAbsolutePath(const char* in_file_name, char* out_file_path)
 {
-#ifdef _WIN32
     if (File_IsAbsolutePath(in_file_name))
     {
         return true;
     }
 
     char module_path[MG_MAX_PATH];
-    GetModuleFileName(NULL, module_path, MG_MAX_PATH);
+    File_GetProcessPath(module_path);
 
     File_GetDirectory(module_path, out_file_path);
     size_t len = strlen(out_file_path);
@@ -37,8 +73,6 @@ bool File_GetAbsolutePath(const char* in_file_name, char* out_file_path)
     memcpy(&out_file_path[len], in_file_name, strlen(in_file_name) + 1);
 
     return true;
-#else
-#endif
 }
 bool File_GetDirectory(const char* file_path, char* dir)
 {
@@ -62,22 +96,6 @@ bool File_GetDirectory(const char* file_path, char* dir)
 
     return true;
 }
-bool File_IsExist(const char* file_path)
-{
-#ifdef _WIN32
-    // convert to utf16 characters
-    WCHAR utf16_buf[512] = {0};
-    MultiByteToWideChar(CP_UTF8, 0, file_path, -1, utf16_buf, sizeof(utf16_buf) / sizeof(utf16_buf[0]));
-
-    // get file attributes
-    DWORD attr = GetFileAttributesW(utf16_buf);
-    if (attr == INVALID_FILE_ATTRIBUTES || (attr & FILE_ATTRIBUTE_DIRECTORY))
-        return false;
-    return true;
-#else
-#endif
-}
-
 bool File_Read(const char* file_path, char** ptr_bytes, long* ptr_num)
 {
     // note : why use "rb"

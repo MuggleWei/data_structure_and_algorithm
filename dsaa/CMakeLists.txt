@@ -27,6 +27,15 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(DSAA_SHARED "build shared library" ON)
 option(DSAA_PERFORMANCE_OPTIMIZATION "optimize performance" ON)
 
+# platform macro
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
+	add_definitions(-DMG_PLATFORM_UNIX=1)
+elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
+	add_definitions(-DMG_PLATFORM_OSX=1)
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+	add_definitions(-DMG_PLATFORM_WINDOWS=1)
+endif()
+
 # enable some opatimize for data structure performance
 if (DSAA_PERFORMANCE_OPTIMIZATION)
 	add_definitions(-DENABLE_DSAA_OPTIMIZATION)
