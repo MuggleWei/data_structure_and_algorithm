@@ -36,13 +36,25 @@ bool File_IsAbsolutePath(const char* file_path)
 
 #else
 
+#include <sys/types.h>
+#include <unistd.h>
+
 void File_GetProcessPath(char* file_path)
 {
-    // TODO:
+    char sz_tmp[32], buf[MG_MAX_PATH];
+    ssize_t len;
+
+    sprintf_s(sz_tmp, 31, "/proc/%d/exe", getpid());
+    len = readlink(sz_tmp, file_path, MG_MAX_PATH);
+    MASSERT_MSG(len >= 0, "something wrong in readlink function");
+    if (len >= 0)
+        file_path[len] = '\0';
 }
 bool File_IsExist(const char* file_path)
 {
-    // TODO:
+    if (access(file_path, F_OK) != -1)
+        return true;
+
     return false;
 }
 bool File_IsAbsolutePath(const char* file_path)
@@ -55,6 +67,7 @@ bool File_IsAbsolutePath(const char* file_path)
 
     return false;
 }
+
 #endif
 
 bool File_GetAbsolutePath(const char* in_file_name, char* out_file_path)

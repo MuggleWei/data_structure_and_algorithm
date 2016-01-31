@@ -52,7 +52,7 @@ void TestTreeFunction()
     TreeNode* root = TreeAddChild(&tree, NULL, &data[0]);
     TreeNode* home = TreeAddChild(&tree, root, &data[1]);
     TreeNode* usr = TreeAddChild(&tree, root, &data[2]);
-    TreeNode* var = TreeAddChild(&tree, root, &data[3]);
+    TreeAddChild(&tree, root, &data[3]);
     TreeAddChild(&tree, home, &data[4]);
     TreeAddChild(&tree, home, &data[5]);
     TreeAddChild(&tree, usr, &data[6]);

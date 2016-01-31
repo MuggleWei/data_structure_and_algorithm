@@ -30,7 +30,8 @@ bool SearchInStdFolder(const char* file_name, size_t search_num, const char** se
 
     for (index = 0; index < search_num; ++index)
     {
-        sprintf_s(file_path, MG_MAX_PATH, "%s/%s\0", search_dirs[index], file_name);
+        memset(file_path, 0, MG_MAX_PATH);
+        sprintf_s(file_path, MG_MAX_PATH - 1, "%s/%s", search_dirs[index], file_name);
         if (File_IsExist(file_path))
         {
             return true;
@@ -144,7 +145,11 @@ bool process_file(const char* file_name, bool is_std_file,
     };
 #else
     const char* header_search_dirs[] = {
-        "/usr/include"
+        "/usr/include",
+        "/usr/include/x86_64-linux-gnu",
+        "/usr/include/linux",
+        "/usr/local/include",
+        "/usr/lib/gcc/x86_64-linux-gnu/4.8/include",
     };
 #endif
     char* bytes = NULL;
@@ -160,13 +165,14 @@ bool process_file(const char* file_name, bool is_std_file,
     // check file name length
     if (strlen(file_name) == 0)
     {
-        MLOG("file name is null\n", file_name);
+        MLOG("file name is null\n");
         MASSERT_MSG(0, "file name is null!\n");
         return false;
     }
 
     // ensure file is exist
-    sprintf_s(file_path, MG_MAX_PATH, "%s\0", file_name);
+    memset(file_path, 0, MG_MAX_PATH);
+    sprintf_s(file_path, MG_MAX_PATH - 1, "%s", file_name);
     is_file_exist = File_IsExist(file_path);
     if (!is_file_exist)
     {

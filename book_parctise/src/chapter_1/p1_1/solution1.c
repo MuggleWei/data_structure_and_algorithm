@@ -2,9 +2,11 @@
 
 int solution1_Function(int* arr, int count, int k_th)
 {
-    for (int i = 0; i < count; ++i)
+    int i, j;
+
+    for (i = 0; i < count; ++i)
     {
-        for (int j = i+1; j < count; ++j)
+        for (j = i+1; j < count; ++j)
         {
             if (arr[i] < arr[j])
             {

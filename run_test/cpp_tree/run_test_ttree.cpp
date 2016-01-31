@@ -114,7 +114,7 @@ void TestTreeFunction()
     TTreeNode<TestData>* root = TTreeNode<TestData>::Create(data[0]);
     TTreeNode<TestData>* home = root->AddChild(TTreeNode<TestData>::Create(data[1]));
     TTreeNode<TestData>* usr = root->AddChild(TTreeNode<TestData>::Create(data[2]));
-    TTreeNode<TestData>* var = root->AddChild(TTreeNode<TestData>::Create(data[3]));
+    root->AddChild(TTreeNode<TestData>::Create(data[3]));
     home->AddChild(TTreeNode<TestData>::Create(data[4]));
     home->AddChild(TTreeNode<TestData>::Create(data[5]));
     usr->AddChild(TTreeNode<TestData>::Create(data[6]));

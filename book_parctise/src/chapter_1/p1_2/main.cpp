@@ -137,7 +137,7 @@ void TestPerformance()
         }
 
         // solution 1
-        PERFORMANCE_TEST_ADD(test, "puzzle - solution 1", num, ret = solution1_Function(&puzzle_board, &cur_dictionary));
+        PERFORMANCE_TEST_ADD(test, "puzzle - solution 1", (int)num, ret = solution1_Function(&puzzle_board, &cur_dictionary));
         count = ArrayUsed(&ret);
         MLOG("solution 1:\n");
         for (size_t index = 0; index < count; ++index)
@@ -148,7 +148,7 @@ void TestPerformance()
         ArrayDestroy(&ret);
 
         // solution 2
-        PERFORMANCE_TEST_ADD(test, "puzzle - solution 2", num, ret = solution2_Function(&puzzle_board, &cur_dictionary));
+        PERFORMANCE_TEST_ADD(test, "puzzle - solution 2", (int)num, ret = solution2_Function(&puzzle_board, &cur_dictionary));
         count = ArrayUsed(&ret);
         MLOG("solution 1:\n");
         for (size_t index = 0; index < count; ++index)

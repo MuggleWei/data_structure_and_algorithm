@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <string.h>
 
 // detect memory leak
 #if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
