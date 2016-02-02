@@ -3,25 +3,22 @@
 
 #include "base.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+EXTERN_C_BEGIN
 
 #define GET_TREE_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(TreeNode))
 
 typedef struct TreeNode_tag
 {
-    struct TreeNode_tag* parent;
-    struct TreeNode_tag* first_child;
-    struct TreeNode_tag* next_sibling;
-    struct TreeNode_tag* prev_sibling;
+	struct TreeNode_tag* parent;
+	struct TreeNode_tag* first_child;
+	struct TreeNode_tag* next_sibling;
+	struct TreeNode_tag* prev_sibling;
 }TreeNode;
 
 typedef struct Tree_tag
 {
-    TreeNode* root;
-    size_t    unit_size;
+	TreeNode* root;
+	size_t    unit_size;
 }Tree;
 
 typedef void (*TreeTraversalFunc)(TreeNode *node, int level);
@@ -36,8 +33,6 @@ MG_DLL TreeNode* TreeAddChild(Tree *tree, TreeNode *parent_node, void *data);
 MG_DLL void TreeRemove(Tree *tree, TreeNode *node);
 MG_DLL TreeNode* TreeFind(Tree *tree, TreeNode *node, void *data, bool recursive);
 
-#ifdef __cplusplus
-}
-#endif
+EXTERN_C_END
 
 #endif

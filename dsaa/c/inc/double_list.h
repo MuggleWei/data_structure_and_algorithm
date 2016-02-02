@@ -1,37 +1,32 @@
 #ifndef __C_DOUBLE_LIST_H__
 #define __C_DOUBLE_LIST_H__
 
-
-
 #include "base.h"
 
 #if ENABLE_DSAA_OPTIMIZATION
 #include "memory_pool.h"
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+EXTERN_C_BEGIN
 
 #define GET_DOUBLE_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(DoubleListNode))
 
 // double linked list node
 typedef struct DoubleListNode_tag
 {
-    struct DoubleListNode_tag* prev;
-    struct DoubleListNode_tag* next;
+	struct DoubleListNode_tag* prev;
+	struct DoubleListNode_tag* next;
 }DoubleListNode;
 
 // double linked list
 typedef struct DoubleList_tag
 {
-    DoubleListNode* head;
-    DoubleListNode* tail;
-    size_t          unit_size;
+	DoubleListNode* head;
+	DoubleListNode* tail;
+	size_t          unit_size;
 
 #if ENABLE_DSAA_OPTIMIZATION
-    MemoryPool  pool;
+	MemoryPool  pool;
 #endif
 }DoubleList;
 
@@ -53,8 +48,6 @@ MG_DLL bool DoubleListFindAndRemove(DoubleList *p_list, void *data);
 MG_DLL void DoubleListRemove(DoubleList *p_list, DoubleListNode *p_node);
 MG_DLL void DoubleListMakeEmpty(DoubleList *p_list);
 
-#ifdef __cplusplus
-}
-#endif
+EXTERN_C_END
 
 #endif

@@ -1,8 +1,11 @@
 #ifndef __PROCESS_FILE_H__
 #define __PROCESS_FILE_H__
 
+#include "base.h"
 #include "array.h"
 #include "double_list.h"
+
+EXTERN_C_BEGIN
 
 /*
  *  parse file and extend #include
@@ -19,5 +22,7 @@
 bool process_file(const char* file_name, bool is_std_file, 
     Array* file_stack, Array* file_records,
     DoubleList* lines, DoubleList* file_binarys);
+
+EXTERN_C_END
 
 #endif

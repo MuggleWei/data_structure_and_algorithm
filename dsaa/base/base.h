@@ -31,18 +31,18 @@
 #define MASSERT(x) \
 do \
 { \
-    if (!(x)) \
-    { \
-        ExportFailure(#x, __FILE__, __LINE__, "\0");  \
-    } \
+	if (!(x)) \
+	{ \
+		ExportFailure(#x, __FILE__, __LINE__, "\0");  \
+	} \
 } while(0)
 #define MASSERT_MSG(x, msg) \
 do \
 { \
-    if (!(x)) \
-    { \
-        ExportFailure(#x, __FILE__, __LINE__, msg);  \
-    } \
+	if (!(x)) \
+	{ \
+		ExportFailure(#x, __FILE__, __LINE__, msg);  \
+	} \
 } while(0)
 #endif
 
@@ -70,6 +70,15 @@ do \
 #define USING_NS_MUGGLE
 #endif 
 
+// extern c
+#ifdef __cplusplus
+#define EXTERN_C_BEGIN extern "C" {
+#define EXTERN_C_END   }
+#else
+#define EXTERN_C_BEGIN
+#define EXTERN_C_END
+#endif
+
 // log
 #define MLOG(format, ...) printf(format, ##__VA_ARGS__);
 
@@ -86,11 +95,11 @@ do \
 #define SAFE_DELETE(x) \
 do \
 { \
-    if (x) \
-    { \
-        delete x; \
-        x = nullptr; \
-    } \
+	if (x) \
+	{ \
+		delete x; \
+		x = nullptr; \
+	} \
 } while (0)
 
 // max length of path
@@ -106,16 +115,11 @@ do \
 #define sprintf_s(buf, size_in_byte, format, ...) sprintf(buf, format, ##__VA_ARGS__)
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+EXTERN_C_BEGIN
 
 // function
 MG_DLL void ExportFailure(const char* cond, const char* file_name, int line, const char* msg);
 
-#ifdef __cplusplus
-}
-#endif
+EXTERN_C_END
 
 #endif

@@ -7,31 +7,31 @@
 
 #include <windows.h>
 
-class MG_DLL Timer 
+class MG_DLL Timer
 {
 public:
-    Timer() : start_(), end_() {}
+	Timer() : start_(), end_() {}
 
-    void Start() 
+	void Start()
 	{
-        QueryPerformanceCounter(&start_);
-    }
+		QueryPerformanceCounter(&start_);
+	}
 
-    void End() 
+	void End()
 	{
-        QueryPerformanceCounter(&end_);
-    }
+		QueryPerformanceCounter(&end_);
+	}
 
-    double GetElapsedMilliseconds() 
+	double GetElapsedMilliseconds()
 	{
-        LARGE_INTEGER freq;
-        QueryPerformanceFrequency(&freq);
-        return (end_.QuadPart - start_.QuadPart) * 1000.0 / freq.QuadPart;
-    }
+		LARGE_INTEGER freq;
+		QueryPerformanceFrequency(&freq);
+		return (end_.QuadPart - start_.QuadPart) * 1000.0 / freq.QuadPart;
+	}
 
 private:
-    LARGE_INTEGER start_;
-    LARGE_INTEGER end_;
+	LARGE_INTEGER start_;
+	LARGE_INTEGER end_;
 };
 
 #else
@@ -41,26 +41,26 @@ private:
 class MG_DLL Timer 
 {
 public:
-    Timer() : start_(), end_() {}
+	Timer() : start_(), end_() {}
 
-    void Start() 
+	void Start() 
 	{
-        gettimeofday(&start_, NULL);
-    }
+		gettimeofday(&start_, NULL);
+	}
 
-    void End() 
+	void End() 
 	{
-        gettimeofday(&end_, NULL);
-    }
+		gettimeofday(&end_, NULL);
+	}
 
-    double GetElapsedMilliseconds() 
+	double GetElapsedMilliseconds() 
 	{
-        return (end_.tv_sec - start_.tv_sec) * 1000.0 + (end_.tv_usec - start_.tv_usec) / 1000.0;
-    }
+		return (end_.tv_sec - start_.tv_sec) * 1000.0 + (end_.tv_usec - start_.tv_usec) / 1000.0;
+	}
 
 private:
-  struct timeval start_;
-  struct timeval end_;
+	struct timeval start_;
+	struct timeval end_;
 };
 
 #endif

@@ -3,17 +3,14 @@
 
 #include "base.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+EXTERN_C_BEGIN
 
 typedef struct Array_tag
 {
-    void*   datas;
-    size_t  capacity;
-    size_t  used;
-    size_t  unit_size;
+	void*   datas;
+	size_t  capacity;
+	size_t  used;
+	size_t  unit_size;
 }Array;
 
 MG_DLL void ArrayInit(Array *p_array, size_t capacity, size_t unit_size);
@@ -32,8 +29,6 @@ MG_DLL void ArrayMakeEmpty(Array *p_array);
 MG_DLL size_t ArrayUsed(Array *p_array);
 MG_DLL size_t ArrayCapacity(Array *p_array);
 
-#ifdef __cplusplus
-}
-#endif
+EXTERN_C_END
 
 #endif

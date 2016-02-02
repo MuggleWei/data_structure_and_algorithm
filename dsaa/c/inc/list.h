@@ -7,27 +7,24 @@
 #include "memory_pool.h"
 #endif
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+EXTERN_C_BEGIN
 
 #define GET_LIST_NODE_DATA_ADDRESS(node) (void*)(((char*)&node) + sizeof(ListNode))
 
 // linked list node
 typedef struct ListNode_tag
 {
-    struct ListNode_tag* next;
+	struct ListNode_tag* next;
 }ListNode;
 
 // linked list
 typedef struct List_tag
 {
-    ListNode*   head;
-    size_t      unit_size;
+	ListNode*   head;
+	size_t      unit_size;
 
 #if ENABLE_DSAA_OPTIMIZATION
-    MemoryPool  pool;
+	MemoryPool  pool;
 #endif
 }List;
 
@@ -44,8 +41,6 @@ MG_DLL void ListAdd(List *p_list, void *data, ListNode* prev_node);
 MG_DLL bool ListFindAndRemove(List *p_list, void *data);
 MG_DLL void ListMakeEmpty(List *p_list);
 
-#ifdef __cplusplus
-}
-#endif
+EXTERN_C_END
 
 #endif
