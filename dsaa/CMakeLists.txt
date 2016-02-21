@@ -96,4 +96,11 @@ add_subdirectory(utility)
 add_subdirectory(c)
 add_subdirectory(cpp)
 
+# set folder in vs
+set_target_properties(
+	base data_structure_c utility
+	PROPERTIES
+	FOLDER "dsaa"
+)
+
 message("===== muggle dsaa end =====")

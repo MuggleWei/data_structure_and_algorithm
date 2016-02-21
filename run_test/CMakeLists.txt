@@ -148,9 +148,10 @@ target_link_libraries(run_test_cpp_tree
 )
 # end tree
 
-#set_target_properties(
-#	run_test_c_array run_test_c_list run_test_c_double_list run_test_c_tree
-#	run_test_cpp_array run_test_cpp_list run_test_cpp_double_list run_test_cpp_tree
-#	PROPERTIES
-#	FOLDER "RunTest"
-#)
+# set folder in vs
+set_target_properties(
+	run_test_c_array run_test_c_list run_test_c_double_list run_test_c_tree
+	run_test_cpp_array run_test_cpp_list run_test_cpp_double_list run_test_cpp_tree
+	PROPERTIES
+	FOLDER "RunTest"
+)

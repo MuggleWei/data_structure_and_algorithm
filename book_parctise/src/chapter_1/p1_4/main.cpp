@@ -1,5 +1,5 @@
 /*
- *  replace include file name to file content
+ *  reads filename and inserts its contents in place of the include statement
  */
 #include "process_file.h"
 

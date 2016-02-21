@@ -16,9 +16,6 @@ EXTERN_C_BEGIN
  *  @lines: extended lines
  *  @file_binarys: binary in file with out \r \n
  */
-// parse file and extend #include
-// @file_name: file name
-// @
 bool process_file(const char* file_name, bool is_std_file, 
     Array* file_stack, Array* file_records,
     DoubleList* lines, DoubleList* file_binarys);

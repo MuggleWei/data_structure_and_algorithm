@@ -63,3 +63,10 @@ target_link_libraries(book_p1_4
 	${utility_lib}
 )
 # end practis 1.4
+
+# set folder in vs
+set_target_properties(
+	book_p1_1 book_p1_2 book_p1_4
+	PROPERTIES
+	FOLDER "book/chapter1"
+)
