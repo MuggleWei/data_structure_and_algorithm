@@ -1,5 +1,29 @@
 cmake_minimum_required (VERSION 2.8.9)
 
+# function for add book practice code
+function(add_book_code name)
+	file(GLOB ${name}_H ${name}/*.h)
+	file(GLOB ${name}_C ${name}/*.c)
+	file(GLOB ${name}_CPP ${name}/*.cpp)
+	if (WIN32)
+	add_executable(${name}
+		${${name}_H}
+		${${name}_C}
+		${${name}_CPP}
+	)
+	else()
+	add_executable(${name}
+		${${name}_C}
+		${${name}_CPP}
+	)
+	endif()
+	target_link_libraries(${name}
+		${data_structure_c_lib}
+		${utility_lib}
+	)
+endfunction(add_book_code) 
+
+# add book code
 add_subdirectory(src)
 
 # add external command
