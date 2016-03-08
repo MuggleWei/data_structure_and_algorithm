@@ -127,6 +127,40 @@ void TestDoubleListFunction()
 	PrintList(swap_list);
 	swap_list = std::move(list);
 	PrintList(swap_list);
+
+	// ascending insert
+	swap_list.MakeEmpty();
+	int arr_int[8];
+	for (int i = 0; i < 8; ++i)
+	{
+		arr_int[i] = i;
+	}
+	for (int i = 0; i < 8; ++i)
+	{
+		int index = rand() % 8;
+		int tmp = arr_int[i];
+		arr_int[i] = arr_int[index];
+		arr_int[index] = tmp;
+	}
+	for (int i = 0; i < 8; ++i)
+	{
+		TestData data = { (int)arr_int[i], "" };
+		swap_list.Insert(data, [](const TestData& val1, const TestData& val2)->
+			bool{ return val1.num_ < val2.num_; });
+	}
+	PrintList(swap_list);
+
+	// is ordered
+	bool is_ordered = false;
+	is_ordered = swap_list.IsOrdered([](const TestData& val1, const TestData& val2)->
+		bool{ return val1.num_ < val2.num_; });
+	MASSERT(is_ordered);
+
+	// compare find and remove
+	TestData find_data = { 3, "3" };
+	auto find_node = swap_list.Find(find_data, nullptr, [](const TestData& val1, const TestData& val2)->
+		bool{ return val1.num_ == val2.num_; });
+	MASSERT(find_node && find_node->Get()->num_ == 3);
 }
 void TestDoubleListPerformance()
 {

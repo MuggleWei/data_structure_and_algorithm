@@ -122,9 +122,27 @@ public:
 		return *this;
 	}
 
-		bool IsEmpty()
+	typedef bool (*PtrFunc_Compare)(const T& ref1, const T& ref2);
+
+	bool IsEmpty()
 	{
 		return count_ == 0;
+	}
+	bool IsOrdered(PtrFunc_Compare ptr_compare_func)
+	{
+		TDoubleListNode<T>* p;
+		for (p = First(); !IsLast(p); p = p->Next())
+		{
+			if (!IsLast(p->Next()))
+			{
+				if (!(*ptr_compare_func)(*p->Get(), *p->Next()->Get()))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 	TDoubleListNode<T>* First()
 	{
@@ -138,12 +156,23 @@ public:
 	{
 		return node == tail_;
 	}
-	TDoubleListNode<T>* Find(const T &ref_data, TDoubleListNode<T> *start_node = nullptr)
+	TDoubleListNode<T>* Find(const T &ref_data, TDoubleListNode<T> *start_node = nullptr, PtrFunc_Compare ptr_compare_func = nullptr)
 	{
 		TDoubleListNode<T> *node = (start_node == nullptr) ? head_->next_ : start_node;
 		while (node != tail_)
 		{
-			if (node->data_ == ref_data)
+			bool compare_result;
+
+			if (ptr_compare_func)
+			{
+				compare_result = (*ptr_compare_func)(node->data_, ref_data);
+			}
+			else
+			{
+				compare_result = (node->data_ == ref_data);
+			}
+
+			if (compare_result)
 			{
 				return node;
 			}
@@ -152,20 +181,46 @@ public:
 
 		return nullptr;
 	}
-	void Insert(const T &ref_data)
+	TDoubleListNode<T>* Insert(const T &ref_data, PtrFunc_Compare ptr_compare_func = nullptr)
 	{
-#if ENABLE_DSAA_OPTIMIZATION
-		TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
-#else
-		TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
-#endif
-		new_node->next_ = head_->next_;
-		new_node->next_->prev_ = new_node;
-		head_->next_ = new_node;
-		new_node->prev_ = head_;
-		++count_;
+		TDoubleListNode<T>* ret = nullptr;
+
+		if (ptr_compare_func == nullptr)
+		{
+			ret = Insert(ref_data, head_->next_);
+		}
+		else
+		{
+			TDoubleListNode<T>* p;
+			for (p = First(); !IsLast(p); p = p->Next())
+			{
+				if (!(*ptr_compare_func)(*p->Get(), ref_data))
+				{
+					ret = Insert(ref_data, p);
+					break;
+				}
+			}
+
+			if (IsLast(p))
+			{
+				ret = Add(ref_data);
+			}
+		}
+
+		return ret;
+
+// #if ENABLE_DSAA_OPTIMIZATION
+// 		TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
+// #else
+// 		TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
+// #endif
+// 		new_node->next_ = head_->next_;
+// 		new_node->next_->prev_ = new_node;
+// 		head_->next_ = new_node;
+// 		new_node->prev_ = head_;
+// 		++count_;
 	}
-	void Insert(const T &ref_data, TDoubleListNode<T>* next_node)
+	TDoubleListNode<T>* Insert(const T &ref_data, TDoubleListNode<T>* next_node)
 	{
 #if ENABLE_DSAA_OPTIMIZATION
 		TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
@@ -177,21 +232,25 @@ public:
 		new_node->next_->prev_ = new_node;
 		new_node->prev_->next_ = new_node;
 		++count_;
+
+		return new_node;
 	}
-	void Add(const T &ref_data)
+	TDoubleListNode<T>* Add(const T &ref_data)
 	{
-#if ENABLE_DSAA_OPTIMIZATION
-		TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
-#else
-		TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
-#endif
-		new_node->prev_ = tail_->prev_;
-		tail_->prev_->next_ = new_node;
-		new_node->next_ = tail_;
-		tail_->prev_ = new_node;
-		++count_;
+		return Add(ref_data, tail_->prev_);
+
+// #if ENABLE_DSAA_OPTIMIZATION
+// 		TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
+// #else
+// 		TDoubleListNode<T>* new_node = new TDoubleListNode<T>(ref_data);
+// #endif
+// 		new_node->prev_ = tail_->prev_;
+// 		tail_->prev_->next_ = new_node;
+// 		new_node->next_ = tail_;
+// 		tail_->prev_ = new_node;
+// 		++count_;
 	}
-	void Add(const T &ref_data, TDoubleListNode<T>* prev_node)
+	TDoubleListNode<T>* Add(const T &ref_data, TDoubleListNode<T>* prev_node)
 	{
 #if ENABLE_DSAA_OPTIMIZATION
 		TDoubleListNode<T>* new_node = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>(ref_data);
@@ -203,6 +262,8 @@ public:
 		new_node->prev_->next_ = new_node;
 		new_node->next_->prev_ = new_node;
 		++count_;
+
+		return new_node;
 	}
 	void Remove(const TDoubleListNode<T> *node)
 	{

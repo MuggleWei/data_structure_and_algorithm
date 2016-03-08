@@ -4,5 +4,6 @@
 #include "base.h"
 #include "memory_pool.h"
 #include "file_utility.h"
+#include "string_convert.h"
 
 #endif

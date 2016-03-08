@@ -1,7 +1,6 @@
 /*
  *  Maximum subsequence sum problem
  */
-#include <time.h>
 #include "base.h"
 #include "performance_test.h"
 #include "solution1.h"

@@ -1,7 +1,6 @@
 /*
  *  random int array in special range
  */
-#include <time.h>
 #include "base.h"
 #include "performance_test.h"
 #include "solution1.h"

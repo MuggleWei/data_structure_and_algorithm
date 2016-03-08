@@ -108,9 +108,27 @@ public:
 		return *this;
 	}
 
-		bool IsEmpty()
+	typedef bool (*PtrFunc_Compare)(const T& ref1, const T& ref2);
+
+	bool IsEmpty()
 	{
 		return head_->next_ == nullptr;
+	}
+	bool IsOrdered(PtrFunc_Compare ptr_compare_func)
+	{
+		TListNode<T>* p;
+		for (p = First(); p; p = p->next_)
+		{
+			if (p->next_)
+			{
+				if (!(*ptr_compare_func)(p->data_, p->next_->data_))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 	TListNode<T>* First()
 	{
@@ -120,12 +138,23 @@ public:
 	{
 		return ptr_node->next_ == nullptr;
 	}
-	TListNode<T>* Find(const T &ref_data, TListNode<T>* start_node = nullptr)
+	TListNode<T>* Find(const T &ref_data, TListNode<T>* start_node = nullptr, PtrFunc_Compare ptr_compare_func = nullptr)
 	{
 		TListNode<T> *node = (start_node == nullptr) ? head_->next_ : start_node;
 		while (node != nullptr)
 		{
-			if (node->data_ == ref_data)
+			bool compare_result;
+
+			if (ptr_compare_func)
+			{
+				compare_result = (*ptr_compare_func)(node->data_, ref_data);
+			}
+			else
+			{
+				compare_result = (node->data_ == ref_data);
+			}
+
+			if (compare_result)
 			{
 				return node;
 			}
@@ -134,19 +163,38 @@ public:
 
 		return nullptr;
 	}
-	void Insert(const T &ref_data)
+	TListNode<T>* Insert(const T &ref_data, PtrFunc_Compare ptr_compare_func = nullptr)
 	{
-		Add(ref_data, head_);
-		// #if ENABLE_DSAA_OPTIMIZATION
-		//         TListNode<T> *node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(ref_data);
-		// #else
-		//         TListNode<T> *node = new TListNode<T>(ref_data);
-		// #endif
-		//         node->next_ = head_->next_;
-		//         head_->next_ = node;
-		//         ++count_;
+		TListNode<T>* ret = nullptr;
+
+		if (ptr_compare_func == nullptr)
+		{
+			ret = Add(ref_data, head_);
+		}
+		else
+		{
+			TListNode<T>* p;
+			TListNode<T>* prev = head_;
+			for (p = First(); p; p = p->next_)
+			{
+				if (!(*ptr_compare_func)(p->data_, ref_data))
+				{
+					ret = Add(ref_data, prev);
+					break;
+				}
+
+				prev = p;
+			}
+
+			if (p == nullptr)
+			{
+				ret = Add(ref_data, prev);
+			}
+		}
+
+		return ret;
 	}
-	void Add(const T &ref_data, TListNode<T>* prev_node)
+	TListNode<T>* Add(const T &ref_data, TListNode<T>* prev_node)
 	{
 #if ENABLE_DSAA_OPTIMIZATION
 		TListNode<T> *node = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>(ref_data);
@@ -156,13 +204,25 @@ public:
 		node->next_ = prev_node->next_;
 		prev_node->next_ = node;
 		++count_;
+
+		return node;
 	}
-	bool FindAndRemove(const T &ref_data)
+	bool FindAndRemove(const T &ref_data, PtrFunc_Compare ptr_compare_func = nullptr)
 	{
 		TListNode<T> **pp_node = &head_->next_;
 		while (*pp_node != nullptr)
 		{
-			if (*(**pp_node).Get() == ref_data)
+			bool compare_result = false;
+			if (ptr_compare_func)
+			{
+				compare_result = (*ptr_compare_func)((**pp_node).data_, ref_data);
+			}
+			else
+			{
+				compare_result = ((**pp_node).data_ == ref_data);
+			}
+
+			if (compare_result)
 			{
 				MASSERT(count_ != 0);
 				TListNode<T> *p_node = *pp_node;
@@ -180,6 +240,29 @@ public:
 			{
 				pp_node = &(*pp_node)->next_;
 			}
+		}
+
+		return false;
+	}
+	bool RemoveNext(TListNode<T>* node = nullptr)
+	{
+		if (node == nullptr)
+		{
+			node = head_;
+		}
+
+		TListNode<T> *next_node = node->next_;
+		if (next_node)
+		{
+			node->next_ = next_node->next_;
+#if ENABLE_DSAA_OPTIMIZATION
+			next_node->~TListNode<T>();
+			MemoryPoolFree(pool_, next_node);
+#else
+			delete(next_node);
+#endif
+
+			return true;
 		}
 
 		return false;

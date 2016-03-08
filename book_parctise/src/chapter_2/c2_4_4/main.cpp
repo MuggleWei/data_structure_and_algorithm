@@ -2,8 +2,6 @@
  *  some typical O(logN) algorithm
  *  binary search, Euclidean algorithm, exponentiation
  */
-#include <time.h>
-#include "binary_search.h"
 #include "base.h"
 #include "performance_test.h"
 #include "binary_search.h"

@@ -1,7 +1,6 @@
 /*
  *  find majority element
  */
-#include <time.h>
 #include "base.h"
 #include "performance_test.h"
 #include "find_majority_element.h"

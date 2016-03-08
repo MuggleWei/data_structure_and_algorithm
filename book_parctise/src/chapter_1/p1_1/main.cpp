@@ -1,8 +1,6 @@
 /*
  *  selection problem
  */
-#include <time.h>
-#include <string.h>
 #include <vector>
 #include "base.h"
 #include "performance_test.h"

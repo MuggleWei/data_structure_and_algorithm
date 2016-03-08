@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 // detect memory leak
 #if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
@@ -84,13 +85,7 @@ do \
 #define MLOG(format, ...) printf(format, ##__VA_ARGS__);
 
 // sleep
-#if MG_PLATFORM_WINDOWS
-#include <windows.h>
-#define MSleep(ms) Sleep(ms)
-#else
-#include <unistd.h>
-#define MSleep(s) sleep((double)(s) * 1000.0)
-#endif
+#define MSleep(ms) SleepFunction(ms)
 
 // safe delete
 #define SAFE_DELETE(x) \
@@ -105,7 +100,7 @@ do \
 
 // max length of path
 #if MG_PLATFORM_WINDOWS
-#define MG_MAX_PATH MAX_PATH
+#define MG_MAX_PATH 260
 #else
 #define MG_MAX_PATH 1024
 #endif
@@ -120,6 +115,7 @@ EXTERN_C_BEGIN
 
 // function
 MG_DLL void ExportFailure(const char* cond, const char* file_name, int line, const char* msg);
+MG_DLL void SleepFunction(unsigned long ms);
 
 EXTERN_C_END
 
