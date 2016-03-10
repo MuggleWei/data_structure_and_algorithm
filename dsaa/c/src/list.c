@@ -5,7 +5,7 @@
 void ListInit(List *p_list, size_t unit_size, size_t hint_pool_size)
 {
 #if ENABLE_DSAA_OPTIMIZATION
-	MemoryPoolInit(&p_list->pool, hint_pool_size, unit_size + sizeof(ListNode));
+	MemoryPoolInit(&p_list->pool, (unsigned int)hint_pool_size, (unsigned int)(unit_size + sizeof(ListNode)));
 	p_list->head = (ListNode*)MemoryPoolAlloc(&p_list->pool);
 #else
 	p_list->head = (ListNode*)malloc(sizeof(ListNode));

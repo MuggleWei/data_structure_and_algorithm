@@ -14,7 +14,7 @@ static RetWord TryMatch(PuzzleBoard* puzzle_board, char* word, int x, int y, int
 	}
 
 	RetWord ret = { -1, -1, -1, -1, "" };
-	size_t len = strlen(word), i = 0;
+	int len = (int)strlen(word), i = 0;
 	int cur_x = 0, cur_y = 0;
 
 	MASSERT(len > 0);

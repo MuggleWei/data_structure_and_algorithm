@@ -6,16 +6,21 @@
 
 void File_GetProcessPath(char* file_path)
 {
-	GetModuleFileName(NULL, file_path, MG_MAX_PATH);
+	// convert to unicode characters
+	WCHAR unicode_buf[MG_MAX_PATH] = { 0 };
+	GetModuleFileNameW(NULL, unicode_buf, MG_MAX_PATH);
+
+	// convert to utf8
+	WideCharToMultiByte(CP_UTF8, 0, unicode_buf, -1, file_path, MG_MAX_PATH, NULL, FALSE);
 }
 bool File_IsExist(const char* file_path)
 {
 	// convert to utf16 characters
-	WCHAR utf16_buf[512] = { 0 };
-	MultiByteToWideChar(CP_UTF8, 0, file_path, -1, utf16_buf, sizeof(utf16_buf) / sizeof(utf16_buf[0]));
+	WCHAR unicode_buf[MG_MAX_PATH] = { 0 };
+	MultiByteToWideChar(CP_UTF8, 0, file_path, -1, unicode_buf, MG_MAX_PATH);
 
 	// get file attributes
-	DWORD attr = GetFileAttributesW(utf16_buf);
+	DWORD attr = GetFileAttributesW(unicode_buf);
 	if (attr == INVALID_FILE_ATTRIBUTES || (attr & FILE_ATTRIBUTE_DIRECTORY))
 		return false;
 	return true;
@@ -26,7 +31,7 @@ bool File_IsAbsolutePath(const char* file_path)
 	if (len > 2 &&
 		((file_path[0] >= 'a' && file_path[0] <= 'z') || (file_path[0] >= 'A' && file_path[0] <= 'Z')) &&
 		file_path[1] == ':' &&
-		file_path[2] == '/')
+		(file_path[2] == '/' || file_path[2] == '\\'))
 	{
 		return true;
 	}
@@ -111,6 +116,9 @@ bool File_GetDirectory(const char* file_path, char* dir)
 }
 bool File_Read(const char* file_path, char** ptr_bytes, long* ptr_num)
 {
+	long file_size;
+	size_t read_size;
+
 	// note : why use "rb"
 	// if use "r", the return value of ftell and fread maybe not equal
 	FILE* fp = fopen(file_path, "rb");
@@ -120,7 +128,7 @@ bool File_Read(const char* file_path, char** ptr_bytes, long* ptr_num)
 	}
 
 	fseek(fp, 0, SEEK_END);
-	long file_size = ftell(fp);
+	file_size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	if (file_size == 0)
@@ -131,12 +139,12 @@ bool File_Read(const char* file_path, char** ptr_bytes, long* ptr_num)
 	}
 
 	*ptr_bytes = (char*)malloc(file_size + 1);
-	long read_size = fread(*ptr_bytes, 1, file_size, fp);
+	read_size = fread(*ptr_bytes, 1, (size_t)file_size, fp);
 	(*ptr_bytes)[file_size] = '\0';
 	fclose(fp);
 
 	MASSERT(read_size == file_size);
-	*ptr_num = read_size;
+	*ptr_num = (long)read_size;
 
 	return true;
 }

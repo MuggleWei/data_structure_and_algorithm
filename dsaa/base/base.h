@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdarg.h>
 #include <string.h>
 #include <math.h>
 #include <time.h>
@@ -82,7 +83,7 @@ do \
 #endif
 
 // log
-#define MLOG(format, ...) printf(format, ##__VA_ARGS__);
+#define MLOG(format, ...) LogFunction(format, ##__VA_ARGS__);
 
 // sleep
 #define MSleep(ms) SleepFunction(ms)
@@ -116,6 +117,7 @@ EXTERN_C_BEGIN
 // function
 MG_DLL void ExportFailure(const char* cond, const char* file_name, int line, const char* msg);
 MG_DLL void SleepFunction(unsigned long ms);
+MG_DLL void LogFunction(const char *format, ...);
 
 EXTERN_C_END
 

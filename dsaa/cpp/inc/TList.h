@@ -48,7 +48,7 @@ public:
 	{
 #if ENABLE_DSAA_OPTIMIZATION
 		pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
-		MemoryPoolInit(pool_, hint_pool_size, sizeof(TListNode<T>));
+		MemoryPoolInit(pool_, (unsigned int)hint_pool_size, sizeof(TListNode<T>));
 		head_ = new ((void*)MemoryPoolAlloc(pool_)) TListNode<T>();
 #else
 		head_ = new TListNode<T>();

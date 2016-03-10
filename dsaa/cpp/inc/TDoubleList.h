@@ -56,7 +56,7 @@ public:
 	{
 #if ENABLE_DSAA_OPTIMIZATION
 		pool_ = (MemoryPool*)malloc(sizeof(MemoryPool));
-		MemoryPoolInit(pool_, hint_pool_size, sizeof(TDoubleListNode<T>));
+		MemoryPoolInit(pool_, (unsigned int)hint_pool_size, (unsigned int)sizeof(TDoubleListNode<T>));
 		head_ = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>();
 		tail_ = new ((void*)MemoryPoolAlloc(pool_)) TDoubleListNode<T>();
 #else
