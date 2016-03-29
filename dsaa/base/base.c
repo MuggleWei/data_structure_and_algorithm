@@ -5,10 +5,22 @@
 #include <unistd.h>
 #endif
 
-void ExportFailure(const char* cond, const char* file_name, int line, const char* msg)
+void ExportFailure(const char* cond, const char* file_name, int line, const char* format, ...)
 {
-	MLOG("Assertion failed: %s. %s, %d. %s\n", cond, file_name, line, msg);
+	va_list args;
+	va_start(args, format);
+
+	char buf[MG_MAX_PATH];
+	vsnprintf(buf, MG_MAX_PATH, format, args);
+
+	MLOG("Assertion failed: %s. %s, %d. %s\n", cond, file_name, line, buf);
+
+#if MG_PLATFORM_WINDOWS
+	__debugbreak();
+#endif
 	abort();
+
+	va_end(args);
 }
 
 void SleepFunction(unsigned long ms)

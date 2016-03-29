@@ -39,12 +39,12 @@ do \
 		ExportFailure(#x, __FILE__, __LINE__, "\0");  \
 	} \
 } while(0)
-#define MASSERT_MSG(x, msg) \
+#define MASSERT_MSG(x, format, ...) \
 do \
 { \
 	if (!(x)) \
 	{ \
-		ExportFailure(#x, __FILE__, __LINE__, msg);  \
+		ExportFailure(#x, __FILE__, __LINE__, format, ##__VA_ARGS__);  \
 	} \
 } while(0)
 #endif
@@ -115,7 +115,7 @@ do \
 EXTERN_C_BEGIN
 
 // function
-MG_DLL void ExportFailure(const char* cond, const char* file_name, int line, const char* msg);
+MG_DLL void ExportFailure(const char* cond, const char* file_name, int line, const char* msg, ...);
 MG_DLL void SleepFunction(unsigned long ms);
 MG_DLL void LogFunction(const char *format, ...);
 
