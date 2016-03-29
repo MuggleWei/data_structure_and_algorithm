@@ -21,7 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # set use folder in vs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# ===== DSAA lib start =====
+# === DSAA lib start
 # add lib
 add_subdirectory(dsaa)
 
@@ -58,7 +58,7 @@ set(base_lib base)
 set(data_structure_c_lib data_structure_c)
 set(utility_lib utility)
 
-# ===== DSAA lib end =====
+# === DSAA lib end
 
 option(DSAA_BUILD_RUN_TEST "Build test code" ON)
 option(DSAA_BUILD_BOOK_PRACTISE "Build book practise" ON)
