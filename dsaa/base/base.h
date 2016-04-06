@@ -12,8 +12,15 @@
 #include <math.h>
 #include <time.h>
 
+// debug and release macro
+#if ! defined(NDEBUG)
+#define MUGGLE_DEBUG 1
+#else
+#define MUGGLE_RELEASE 1
+#endif
+
 // detect memory leak
-#if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
+#if MG_PLATFORM_WINDOWS && MUGGLE_DEBUG
 #define _CRTDBG_MAP_ALLOC 
 #include <crtdbg.h>
 #endif
@@ -110,6 +117,41 @@ do \
 #if MG_PLATFORM_WINDOWS
 #else
 #define sprintf_s(buf, size_in_byte, format, ...) sprintf(buf, format, ##__VA_ARGS__)
+#endif
+
+// enum and enum string
+#define GENERATE_ENUM(e) e,
+#define GENERATE_ENUM_STRING(e) #e,
+
+#define ENUM_MACRO_DEFINE(enum_name, FOREACH_ENUM) \
+enum enum_name \
+{ \
+	FOREACH_ENUM(GENERATE_ENUM) \
+	enum_name##_MAX, \
+}; \
+extern const char* enum_name##String[enum_name##_MAX];
+
+#define ENUM_MACRO_STRING(enum_name, FOREACH_ENUM) \
+const char* enum_name##String[enum_name##_MAX] = { \
+	FOREACH_ENUM(GENERATE_ENUM_STRING) \
+};
+
+// enum and enum string struct
+#ifdef __cplusplus
+#define ENUM_STRUCT_DEFINE(struct_name, FOREACH_ENUM) \
+struct struct_name \
+{ \
+	enum Enum \
+	{ \
+		FOREACH_ENUM(GENERATE_ENUM) \
+		Max, \
+	}; \
+	static const char* EnumString[Max]; \
+};
+#define ENUM_STRUCT_STRING(struct_name, FOREACH_ENUM) \
+const char* struct_name::EnumString[struct_name::Max] = { \
+	FOREACH_ENUM(GENERATE_ENUM_STRING) \
+};
 #endif
 
 EXTERN_C_BEGIN

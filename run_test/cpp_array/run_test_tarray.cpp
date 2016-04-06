@@ -161,7 +161,7 @@ void TestArrayPerformance()
 
 int main()
 {
-#if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
+#if MG_PLATFORM_WINDOWS && MUGGLE_DEBUG
 	_CrtMemState s1, s2, s3;
 	_CrtMemCheckpoint(&s1);
 #endif
@@ -169,7 +169,7 @@ int main()
 	TestArrayFunction();
 	TestArrayPerformance();
 
-#if MG_PLATFORM_WINDOWS && ! defined(NDEBUG)
+#if MG_PLATFORM_WINDOWS && MUGGLE_DEBUG
 	_CrtMemCheckpoint(&s2);
 	if (_CrtMemDifference(&s3, &s1, &s2))
 	{
