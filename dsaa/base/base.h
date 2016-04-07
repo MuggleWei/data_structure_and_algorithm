@@ -69,6 +69,19 @@ do \
 #define MG_DLL
 #endif
 
+// deprecated macro
+#if MG_PLATFORM_WINDOWS
+	#if _MSC_VER >= 1900 // >= vs 2015
+		#define MUGGLE_DEPRECATED [[deprecated]]
+	#else
+		#define MUGGLE_DEPRECATED __declspec(deprecated)
+	#endif
+#elif MG_PLATFORM_UNIX || MG_PLATFORM_OSX
+	#define MUGGLE_DEPRECATED __attribute__((deprecated))
+#else
+	#define MUGGLE_DEPRECATED
+#endif
+
 // namespace
 #ifdef __cplusplus
 #define NS_MUGGLE_BEGIN namespace muggle {
