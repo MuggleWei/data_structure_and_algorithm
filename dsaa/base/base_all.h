@@ -1,5 +1,5 @@
-#ifndef __MG_BASE_ALL_H__
-#define __MG_BASE_ALL_H__
+#ifndef __MUGGLE_BASE_ALL_H__
+#define __MUGGLE_BASE_ALL_H__
 
 #include "base.h"
 #include "memory_pool.h"

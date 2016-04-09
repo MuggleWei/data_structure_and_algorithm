@@ -1,5 +1,5 @@
-#ifndef __STRING_CONVERT_H__
-#define __STRING_CONVERT_H__
+#ifndef __MUGGLE_STRING_CONVERT_H__
+#define __MUGGLE_STRING_CONVERT_H__
 
 #include "base.h"
 

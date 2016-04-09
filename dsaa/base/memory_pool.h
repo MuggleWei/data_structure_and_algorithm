@@ -1,5 +1,5 @@
-#ifndef __MEMORY_POOL_H__
-#define __MEMORY_POOL_H__
+#ifndef __MUGGLE_MEMORY_POOL_H__
+#define __MUGGLE_MEMORY_POOL_H__
 
 #include "base.h"
 

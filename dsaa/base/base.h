@@ -1,5 +1,5 @@
-#ifndef __BASE_H__
-#define __BASE_H__
+#ifndef __MUGGLE_BASE_H__
+#define __MUGGLE_BASE_H__
 
 // base c header
 #include <stdio.h>
@@ -70,12 +70,9 @@ do \
 #endif
 
 // deprecated macro
+// #define MUGGLE_DEPRECATED [[deprecated]] // wait for c++14 support
 #if MG_PLATFORM_WINDOWS
-	#if _MSC_VER >= 1900 // >= vs 2015
-		#define MUGGLE_DEPRECATED [[deprecated]]
-	#else
-		#define MUGGLE_DEPRECATED __declspec(deprecated)
-	#endif
+	#define MUGGLE_DEPRECATED __declspec(deprecated)
 #elif MG_PLATFORM_UNIX || MG_PLATFORM_OSX
 	#define MUGGLE_DEPRECATED __attribute__((deprecated))
 #else
