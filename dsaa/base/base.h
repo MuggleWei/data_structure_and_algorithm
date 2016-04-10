@@ -149,7 +149,7 @@ const char* enum_name##String[enum_name##_MAX] = { \
 // enum and enum string struct
 #ifdef __cplusplus
 #define ENUM_STRUCT_DEFINE(struct_name, FOREACH_ENUM) \
-struct struct_name \
+struct MG_DLL struct_name \
 { \
 	enum Enum \
 	{ \

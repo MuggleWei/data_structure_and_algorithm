@@ -1,7 +1,7 @@
 #ifndef __MUGGLE_MEMORY_POOL_H__
 #define __MUGGLE_MEMORY_POOL_H__
 
-#include "base.h"
+#include "base/base.h"
 
 EXTERN_C_BEGIN
 

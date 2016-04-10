@@ -1,7 +1,6 @@
 #include "memory_pool.h"
 #include <stdlib.h>
 #include <string.h>
-#include "base.h"
 
 void MemoryPoolInit(MemoryPool* pool, unsigned int init_capacity, unsigned int block_size)
 {

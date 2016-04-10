@@ -1,7 +1,7 @@
 #ifndef __MUGGLE_FILE_UTILITY_H__
 #define __MUGGLE_FILE_UTILITY_H__
 
-#include "base.h"
+#include "base/base.h"
 
 EXTERN_C_BEGIN
 
