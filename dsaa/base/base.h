@@ -34,9 +34,9 @@
 #endif
 
 // assert
-#if NDEBUG
+#if MUGGLE_RELEASE
 #define MASSERT(x)
-#define MASSERT_MSG(x, msg)
+#define MASSERT_MSG(x, msg, ...)
 #else
 #define MASSERT(x) \
 do \
