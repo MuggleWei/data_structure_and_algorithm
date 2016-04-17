@@ -159,7 +159,7 @@ struct struct_name \
 		FOREACH_ENUM(GENERATE_ENUM) \
 		Max, \
 	}; \
-	static const char* getEnumString(int index) \
+	static const char* EnumToString(Enum index) \
 	{ \
 		switch (index) \
 		{ \
@@ -167,6 +167,19 @@ struct struct_name \
 		} \
 		MASSERT_MSG(0, "Enumerator index beyond the range"); \
 		return ""; \
+	} \
+	static Enum StringToEnum(const char* str) \
+	{ \
+		int enum_index; \
+		for (enum_index = 0; enum_index < Enum::Max; ++enum_index) \
+		{ \
+			if (strcmp(str, EnumToString((Enum)enum_index)) == 0) \
+			{ \
+				return (Enum)enum_index; \
+			} \
+		} \
+		MASSERT_MSG(0, "This string not exist in this enumerator"); \
+		return Enum::Max; \
 	} \
 };
 #endif
