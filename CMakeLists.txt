@@ -27,6 +27,7 @@ add_subdirectory(dsaa)
 
 # include directory
 include_directories(
+	dsaa
 	dsaa/c/inc
 	dsaa/cpp/inc
 	dsaa/base

@@ -58,12 +58,14 @@ do \
 
 // lib and dll
 #if MG_PLATFORM_WINDOWS
+#define MG_DLL_EXPORT __declspec(dllexport)
+#define MG_DLL_IMPORT __declspec(dllimport)
 #if defined(MG_USE_LIB)
 #define MG_DLL
 #elif defined(MG_USE_DLL)
-#define MG_DLL __declspec(dllexport)
+#define MG_DLL MG_DLL_EXPORT
 #else
-#define MG_DLL __declspec(dllimport)
+#define MG_DLL MG_DLL_IMPORT
 #endif
 #else
 #define MG_DLL
@@ -132,6 +134,7 @@ do \
 // enum and enum string
 #define GENERATE_ENUM(e) e,
 #define GENERATE_ENUM_STRING(e) #e,
+#define CASE_ENUM_TO_STRING(e) case e: return #e;
 
 #define ENUM_MACRO_DEFINE(enum_name, FOREACH_ENUM) \
 enum enum_name \
@@ -148,7 +151,7 @@ const char* enum_name##String[enum_name##_MAX] = { \
 
 // enum and enum string struct
 #ifdef __cplusplus
-#define ENUM_STRUCT_DEFINE(struct_name, FOREACH_ENUM) \
+#define ENUM_STRUCT(struct_name, FOREACH_ENUM) \
 struct MG_DLL struct_name \
 { \
 	enum Enum \
@@ -156,11 +159,15 @@ struct MG_DLL struct_name \
 		FOREACH_ENUM(GENERATE_ENUM) \
 		Max, \
 	}; \
-	static const char* EnumString[Max]; \
-};
-#define ENUM_STRUCT_STRING(struct_name, FOREACH_ENUM) \
-const char* struct_name::EnumString[struct_name::Max] = { \
-	FOREACH_ENUM(GENERATE_ENUM_STRING) \
+	static const char* getEnumString(int index) \
+	{ \
+		switch (index) \
+		{ \
+			FOREACH_ENUM(CASE_ENUM_TO_STRING); \
+		} \
+		MASSERT_MSG(0, "Enumerator index beyond the range") \
+		return ""; \
+	} \
 };
 #endif
 

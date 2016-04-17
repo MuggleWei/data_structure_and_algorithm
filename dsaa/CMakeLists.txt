@@ -58,6 +58,7 @@ endif()
 
 # include
 include_directories(
+	.
 	c/inc
 	cpp/inc
 	base
