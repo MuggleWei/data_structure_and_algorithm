@@ -165,7 +165,7 @@ struct MG_DLL struct_name \
 		{ \
 			FOREACH_ENUM(CASE_ENUM_TO_STRING); \
 		} \
-		MASSERT_MSG(0, "Enumerator index beyond the range") \
+		MASSERT_MSG(0, "Enumerator index beyond the range"); \
 		return ""; \
 	} \
 };
