@@ -21,6 +21,11 @@ function(add_book_code name)
 		${data_structure_c_lib}
 		${utility_lib}
 	)
+	install(TARGETS ${name}
+	RUNTIME DESTINATION ${DSAA_INSTALL_RUNTIME_PATH}
+	LIBRARY DESTINATION ${DSAA_INSTALL_LIBRARY_PATH}
+	ARCHIVE DESTINATION ${DSAA_INSTALL_ARCHIVE_PATH}
+)
 endfunction(add_book_code) 
 
 # add book code

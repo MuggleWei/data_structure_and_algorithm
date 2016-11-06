@@ -32,3 +32,11 @@ set_target_properties(${data_structure_c_lib} PROPERTIES COMPILE_DEFINITIONS "${
 if(DSAA_SHARED)
 	target_link_libraries(${data_structure_c_lib} ${base_lib})
 endif()
+
+# install
+install(FILES ${DATA_STRUCTURE_C_HEADER} DESTINATION ${DSAA_INSTALL_INCLUDE_PATH}/c)
+install(TARGETS ${data_structure_c_lib}
+	RUNTIME DESTINATION ${DSAA_INSTALL_RUNTIME_PATH}
+	LIBRARY DESTINATION ${DSAA_INSTALL_LIBRARY_PATH}
+	ARCHIVE DESTINATION ${DSAA_INSTALL_ARCHIVE_PATH}
+)

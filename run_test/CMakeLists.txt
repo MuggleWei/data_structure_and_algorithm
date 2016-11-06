@@ -155,3 +155,10 @@ set_target_properties(
 	PROPERTIES
 	FOLDER "RunTest"
 )
+install(TARGETS 
+	run_test_c_array run_test_c_list run_test_c_double_list run_test_c_tree
+	run_test_cpp_array run_test_cpp_list run_test_cpp_double_list run_test_cpp_tree
+	RUNTIME DESTINATION ${DSAA_INSTALL_RUNTIME_PATH}
+	LIBRARY DESTINATION ${DSAA_INSTALL_LIBRARY_PATH}
+	ARCHIVE DESTINATION ${DSAA_INSTALL_ARCHIVE_PATH}
+)

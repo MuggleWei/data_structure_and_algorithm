@@ -21,6 +21,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # set use folder in vs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# set install variables
+set(DSAA_INSTALL_RUNTIME_PATH bin/muggle)
+set(DSAA_INSTALL_LIBRARY_PATH lib/muggle)
+set(DSAA_INSTALL_ARCHIVE_PATH lib/muggle)
+set(DSAA_INSTALL_INCLUDE_PATH include/muggle/dsaa)
+
+# set rpath
+# for common situation
+# set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${CMAKE_INSTALL_PREFIX}/lib")
+# only for current situation
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../../lib/muggle")
+
 # === DSAA lib start
 # add lib
 add_subdirectory(dsaa)
