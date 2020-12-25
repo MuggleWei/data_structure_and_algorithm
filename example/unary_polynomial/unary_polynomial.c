@@ -24,11 +24,11 @@ void output_unary_polynomial(struct linked_list *p)
 		int num_bytes = 0;
 		if (is_first)
 		{
-			num_bytes = snprintf(buf, sizeof(buf), "%dX**%d", data->coefficient, data->exponent);
+			num_bytes = snprintf(buf, sizeof(buf), "%dX^%d", data->coefficient, data->exponent);
 		}
 		else
 		{
-			num_bytes = snprintf(buf, sizeof(buf), " + %dX**%d", data->coefficient, data->exponent);
+			num_bytes = snprintf(buf, sizeof(buf), " + %dX^%d", data->coefficient, data->exponent);
 		}
 
 		muggle_bytes_buffer_write(&bytes_buf, num_bytes, buf);
@@ -136,7 +136,7 @@ int main()
 	}
 	unary_polynomial_node_t *data = NULL;
 
-	// P1 = 10X**1000 + 5X**14 + 1
+	// P1 = 10X^1000 + 5X^14 + 1
 	struct linked_list p1;
 	linked_list_init(&p1, 16);
 
@@ -155,7 +155,7 @@ int main()
 	data->exponent = 0;
 	linked_list_append(&p1, NULL, data);
 
-	// P2 = 3X**1990 - 2X**1492 + 11X + 5
+	// P2 = 3X^1990 - 2X^1492 + 11X + 5
 	struct linked_list p2;
 	linked_list_init(&p2, 16);
 
