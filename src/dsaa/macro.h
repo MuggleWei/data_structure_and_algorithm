@@ -1,0 +1,34 @@
+#ifndef DATA_STRUCTURE_AND_ALOG_MACRO_H_
+#define DATA_STRUCTURE_AND_ALOG_MACRO_H_
+
+#include "muggle/muggle_cc.h"
+
+#if MUGGLE_PLATFORM_WINDOWS && defined(dsaa_USE_DLL)
+	#ifdef dsaa_EXPORTS
+		#define DSAA_EXPORT __declspec(dllexport)
+	#else
+		#define DSAA_EXPORT __declspec(dllimport)
+	#endif
+#else
+	#define DSAA_EXPORT
+#endif
+
+EXTERN_C_BEGIN
+
+// compare data
+// @param d1  data1
+// @param d2  data2
+// @return
+//     1: d1 > d2
+//     0: d1 == d2
+//     -1: d1 < d2
+typedef int(*func_data_cmp)(void *d1, void *d2);
+
+// free data
+// @param pool  pointer to a memory pool, it can be NULL
+// @param data  the data wait for free
+typedef void(*func_data_free)(void *pool, void *data);
+
+EXTERN_C_END
+
+#endif

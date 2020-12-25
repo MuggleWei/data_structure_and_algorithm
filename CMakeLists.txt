@@ -1,8 +1,5 @@
-cmake_minimum_required (VERSION 2.8.9)
-project (DSAA)
-
-# set cmake policy
-# cmake_policy(SET CMP0054 NEW)
+cmake_minimum_required (VERSION 3.0.2)
+project(data_structure_and_algorithm)
 
 # set compile parameter
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
@@ -13,6 +10,11 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS=1 -D_UNICODE -DUNICODE)
 endif()
 
+# for vim plugin - YCM
+if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+	set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
+
 # set output directory
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -21,67 +23,132 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # set use folder in vs
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# set install variables
-set(DSAA_INSTALL_RUNTIME_PATH bin/muggle)
-set(DSAA_INSTALL_LIBRARY_PATH lib/muggle)
-set(DSAA_INSTALL_ARCHIVE_PATH lib/muggle)
-set(DSAA_INSTALL_INCLUDE_PATH include/muggle/dsaa)
+# cmake
+include(${CMAKE_CURRENT_LIST_DIR}/thirdparty/muggleCC/cmake/muggle_utils.cmake)
 
-# set rpath
-# for common situation
-# set(CMAKE_INSTALL_RPATH "$ORIGIN:$ORIGIN/../lib:${CMAKE_INSTALL_PREFIX}/lib")
-# only for current situation
-set(CMAKE_INSTALL_RPATH "$ORIGIN/../../lib/muggle")
+if (WIN32)
+	list(APPEND CMAKE_PREFIX_PATH "f:/c_pkg")
+else()
+	list(APPEND CMAKE_PREFIX_PATH "~/c_pkg")
+endif()
 
-# === DSAA lib start
-# add lib
-add_subdirectory(dsaa)
 
-# include directory
+# muggleCC
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/thirdparty/muggleCC)
+set(mugglecc mugglecc)
+
+# include directories
 include_directories(
-	dsaa
-	dsaa/c/inc
-	dsaa/cpp/inc
-	dsaa/base
-	dsaa/utility
+	${CMAKE_CURRENT_LIST_DIR}/src/
+	${CMAKE_CURRENT_LIST_DIR}/thirdparty/muggleCC
 )
 
-# add macro
-if (DSAA_PERFORMANCE_OPTIMIZATION)
-	add_definitions(-DENABLE_DSAA_OPTIMIZATION)
+# data structure lib
+set(dsaa dsaa)
+muggle_add_project(${dsaa} ${CMAKE_CURRENT_LIST_DIR}/src/dsaa SHARED)
+add_dependencies(${dsaa} ${mugglecc})
+target_link_libraries(${dsaa} PUBLIC ${mugglecc})
+
+# functions
+function(add_example name folder)
+	message("add example ${name} ${folder}")
+	
+	set(name example_${name})
+
+	file(GLOB tmp_h ${folder}/*.h)
+	file(GLOB tmp_c ${folder}/*.c)
+	file(GLOB tmp_cpp ${folder}/*.cpp)
+	file(GLOB tmp_cc ${folder}/*.cc)
+
+	if (WIN32)
+		add_executable(${name} ${tmp_h} ${tmp_c} ${tmp_cpp} ${tmp_cc})
+		set_target_properties(${name}
+			PROPERTIES
+			FOLDER "example"
+			VS_DEBUGGER_WORKING_DIRECTORY "$(OutDir)"
+		)
+	else()
+		add_executable(${name} ${tmp_c} ${tmp_cpp} ${tmp_cc})
+	endif(WIN32)
+	target_include_directories(${name} PUBLIC
+		${CMAKE_CURRENT_LIST_DIR}/src
+	)
+	target_link_libraries(${name} ${dsaa})
+	add_dependencies(${name} ${dsaa})
+endfunction()
+
+function(add_gtest name folder)
+	message("add test ${name} ${folder}")
+	
+	set(name test_${name})
+
+	file(GLOB tmp_h ${folder}/*.h)
+	file(GLOB tmp_c ${folder}/*.c)
+	file(GLOB tmp_cpp ${folder}/*.cpp)
+	file(GLOB tmp_cc ${folder}/*.cc)
+
+	if (WIN32)
+		add_executable(${name} ${tmp_h} ${tmp_c} ${tmp_cpp} ${tmp_cc})
+		set_target_properties(${name}
+			PROPERTIES
+			FOLDER "test"
+			VS_DEBUGGER_WORKING_DIRECTORY "$(OutDir)"
+		)
+	else()
+		add_executable(${name} ${tmp_c} ${tmp_cpp} ${tmp_cc})
+	endif(WIN32)
+	
+	if (FOUND_GTEST_FROM_DOWNLOAD)
+		add_dependencies(${name}
+			${dsaa}
+			${GTEST_BOTH_LIBRARIES}
+		)
+	endif()
+
+	target_include_directories(${name} PRIVATE
+		${GTEST_INCLUDE_DIRS}
+	)
+	target_link_libraries(${name}
+		${dsaa}
+		${GTEST_BOTH_LIBRARIES}
+	)
+
+	add_test(NAME ${name} COMMAND ${name})
+endfunction()
+
+# test
+if (BUILD_TESTING)
+	enable_testing()
+	
+	# search gtest first
+	find_package(GTest)
+	
+	if (GTEST_FOUND)
+		set(FOUND_GTEST_FROM_SEARCH ON)
+
+		message("-- Find GTest - use gtest from search")
+		message("-- GTest include directories: ${GTEST_INCLUDE_DIRS}")
+		message("-- GTest both libraries: ${GTEST_BOTH_LIBRARIES}")
+	else()
+
+		set(GTEST_INCLUDE_DIRS "${gtest_SOURCE_DIR}/include")
+		set(GTEST_BOTH_LIBRARIES gtest_main)
+		set(FOUND_GTEST_FROM_DOWNLOAD ON)
+
+		message("-- Find GTest - use gtest from download")
+	endif()
 endif()
 
-# library type
-if (DSAA_SHARED)
-else()
-	add_definitions(-DMG_USE_LIB)
-endif()
+# example
+SUBDIRLIST(example_dirs ${CMAKE_CURRENT_LIST_DIR}/example)
+FOREACH(subdir ${example_dirs})
+	add_example(${subdir} ${CMAKE_CURRENT_LIST_DIR}/example/${subdir})
+ENDFOREACH()
 
-# platform macro
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
-	add_definitions(-DMG_PLATFORM_UNIX=1)
-elseif (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
-	add_definitions(-DMG_PLATFORM_OSX=1)
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-	add_definitions(-DMG_PLATFORM_WINDOWS=1)
-endif()
-
-# set variable name
-set(base_lib base)
-set(data_structure_c_lib data_structure_c)
-set(utility_lib utility)
-
-# === DSAA lib end
-
-option(DSAA_BUILD_RUN_TEST "Build test code" ON)
-option(DSAA_BUILD_BOOK_PRACTISE "Build book practise" ON)
-
-# build run test
-if (DSAA_BUILD_RUN_TEST)
-    add_subdirectory(run_test)
-endif()
-
-# build book practise
-if (DSAA_BUILD_BOOK_PRACTISE)
-	add_subdirectory(book_parctise)
+# test
+if (BUILD_TESTING)
+	SUBDIRLIST(test_root_dir ${CMAKE_CURRENT_LIST_DIR}/test)
+	FOREACH(subdir ${test_root_dir})
+		add_gtest(${subdir} ${CMAKE_CURRENT_LIST_DIR}/test/${subdir})
+	ENDFOREACH()
 endif()

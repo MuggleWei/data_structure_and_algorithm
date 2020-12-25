@@ -1,0 +1,3 @@
+[submodule "thirdparty/muggleCC"]
+	path = thirdparty/muggleCC
+	url = https://github.com/MuggleWei/muggleCC.git
