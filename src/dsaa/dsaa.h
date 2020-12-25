@@ -4,5 +4,6 @@
 #include "dsaa/macro.h"
 #include "dsaa/array_list.h"
 #include "dsaa/linked_list.h"
+#include "dsaa/stack.h"
 
 #endif

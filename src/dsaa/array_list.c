@@ -55,9 +55,9 @@ bool array_list_init(struct array_list *p_array_list, uint32_t capacity)
 	}
 
 	p_array_list->nodes = (struct array_list_node*)malloc(sizeof(struct array_list_node) * capacity);
-	if (p_array_list == NULL)
+	if (p_array_list->nodes == NULL)
 	{
-		return 0;
+		return false;
 	}
 
 	p_array_list->capacity = capacity;
@@ -81,7 +81,7 @@ void array_list_clear(struct array_list *p_array_list, func_data_free func_free,
 {
 	if (func_free)
 	{
-		for (unsigned int i = 0; i < p_array_list->size; i++)
+		for (uint32_t i = 0; i < p_array_list->size; i++)
 		{
 			if (p_array_list->nodes[i].data)
 			{

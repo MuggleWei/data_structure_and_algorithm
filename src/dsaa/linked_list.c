@@ -83,8 +83,14 @@ bool linked_list_init(struct linked_list *p_linked_list, uint32_t capacity)
 		}
 
 		p_linked_list->node_pool = (muggle_memory_pool_t*)malloc(sizeof(muggle_memory_pool_t));
+		if (p_linked_list->node_pool == NULL)
+		{
+			return false;
+		}
+
 		if (!muggle_memory_pool_init(p_linked_list->node_pool, capacity, sizeof(struct linked_list_node)))
 		{
+			free(p_linked_list->node_pool);
 			return 0;
 		}
 	}
