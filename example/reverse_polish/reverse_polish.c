@@ -162,7 +162,7 @@ void parse_reverse_polish(char *s)
 			char *tmp = (char*)muggle_memory_pool_alloc(&pool);
 			snprintf(tmp, block_size, "x%d", tmp_index++);
 
-			printf("%s = %s %c %s\n", tmp, s1, *p, s2);
+			printf("%s = %s %c %s\n", tmp, s2, *p, s1);
 
 			stack_push(&stack, tmp);
 		}
@@ -189,6 +189,7 @@ int main()
 
 	// convert standard notation to reverse polish
 	char *s = "a + b * c + (d * e + f) * g";
+	// char *s = "a - b - c";
 	char *reverse_polish_notation = standard_to_reverse_polish(s);
 	printf("standard: %s\nreverse polish: %s\n", s, reverse_polish_notation);
 
