@@ -50,11 +50,11 @@ char* standard_to_reverse_polish(char *s)
 				while (node)
 				{
 					char c = *(char*)node->data;
-					if (s_priority_bucket[c] <= s_priority_bucket[*p])
+					if (s_priority_bucket[c] < s_priority_bucket[*p])
 					{
 						break;
 					}
-					else if (s_priority_bucket[c] > s_priority_bucket[*p])
+					else if (s_priority_bucket[c] >= s_priority_bucket[*p])
 					{
 						if (c == '(')
 						{
@@ -65,6 +65,7 @@ char* standard_to_reverse_polish(char *s)
 							*o = c;
 							o++;
 							stack_pop(&stack, NULL, NULL);
+							node = stack_top(&stack);
 						}
 					}
 				}
@@ -80,11 +81,34 @@ char* standard_to_reverse_polish(char *s)
 			struct stack_node *node = stack_top(&stack);
 			while (node)
 			{
-				// TODO:
+				char c = *(char*)node->data;
+				if (c == '(')
+				{
+					stack_pop(&stack, NULL, NULL);
+					break;
+				}
+
+				*o = c;
+				o++;
+
+				stack_pop(&stack, NULL, NULL);
+				node = stack_top(&stack);
 			}
 		}
 
 		p++;
+	}
+
+	struct stack_node *node = stack_top(&stack);
+	while (node)
+	{
+		char c = *(char*)node->data;
+
+		*o = c;
+		o++;
+
+		stack_pop(&stack, NULL, NULL);
+		node = stack_top(&stack);
 	}
 
 	stack_destroy(&stack, NULL, NULL);
@@ -92,7 +116,87 @@ char* standard_to_reverse_polish(char *s)
 	return out;
 }
 
+void parse_reverse_polish(char *s)
+{
+	printf("parse reverse polish notation: %s\n", s);
+
+	size_t block_size = 8;
+	muggle_memory_pool_t pool;
+	muggle_memory_pool_init(&pool, 8, (unsigned int)block_size);
+
+	struct stack stack;
+	stack_init(&stack, 8);
+
+	int tmp_index = 0;
+	char *p = s;
+	while (*p != '\0')
+	{
+		if ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z'))
+		{
+			char *tmp = (char*)muggle_memory_pool_alloc(&pool);
+			memset(tmp, 0, block_size);
+			tmp[0] = *p;
+
+			stack_push(&stack, tmp);
+		}
+		else if (*p == '+' || *p == '-' || *p == '*' || *p == '/')
+		{
+			struct stack_node *node = stack_top(&stack);
+			if (node == NULL)
+			{
+				printf("invalid notation\n");
+				exit(EXIT_FAILURE);
+			}
+			char *s1 = (char*)node->data;
+			stack_pop(&stack, NULL, NULL);
+
+			node = stack_top(&stack);
+			if (node == NULL)
+			{
+				printf("invalid notation\n");
+				exit(EXIT_FAILURE);
+			}
+			char *s2 = (char*)node->data;
+			stack_pop(&stack, NULL, NULL);
+
+			char *tmp = (char*)muggle_memory_pool_alloc(&pool);
+			snprintf(tmp, block_size, "x%d", tmp_index++);
+
+			printf("%s = %s %c %s\n", tmp, s1, *p, s2);
+
+			stack_push(&stack, tmp);
+		}
+
+		p++;
+	}
+
+	struct stack_node *node = stack_top(&stack);
+	if (node == NULL)
+	{
+		printf("invalid notation\n");
+		exit(EXIT_FAILURE);
+	}
+	printf("result is %s\n", (char*)node->data);
+
+	stack_destroy(&stack, NULL, NULL);
+
+	muggle_memory_pool_destroy(&pool);
+}
+
 int main()
 {
+	init_priority_bucket();
+
+	// convert standard notation to reverse polish
+	char *s = "a + b * c + (d * e + f) * g";
+	char *reverse_polish_notation = standard_to_reverse_polish(s);
+	printf("standard: %s\nreverse polish: %s\n", s, reverse_polish_notation);
+
+	// parse reverse polish
+	parse_reverse_polish(reverse_polish_notation);
+
+	// free memory
+	free(reverse_polish_notation);
+
 	return 0;
 }
