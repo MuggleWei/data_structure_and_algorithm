@@ -6,9 +6,7 @@ class LinkedListFixture : public ::testing::Test
 public:
 	void SetUp()
 	{
-#if MUGGLE_DEBUG & MUGGLE_PLATFORM_WINDOWS
 		muggle_debug_memory_leak_start(&mem_state_);
-#endif
 
 		bool ret;
 
@@ -29,17 +27,13 @@ public:
 		linked_list_destroy(&list_[0], NULL, NULL);
 		linked_list_destroy(&list_[1], NULL, NULL);
 
-#if MUGGLE_DEBUG & MUGGLE_PLATFORM_WINDOWS
 		muggle_debug_memory_leak_end(&mem_state_);
-#endif
 	}
 
 protected:
 	struct linked_list list_[2];
 
-#if MUGGLE_DEBUG & MUGGLE_PLATFORM_WINDOWS
 	muggle_debug_memory_state mem_state_;
-#endif
 };
 
 TEST_F(LinkedListFixture, empty)

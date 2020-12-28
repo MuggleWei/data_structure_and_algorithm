@@ -165,6 +165,9 @@ void parse_reverse_polish(char *s)
 			printf("%s = %s %c %s\n", tmp, s2, *p, s1);
 
 			stack_push(&stack, tmp);
+
+			muggle_memory_pool_free(&pool, s1);
+			muggle_memory_pool_free(&pool, s2);
 		}
 
 		p++;

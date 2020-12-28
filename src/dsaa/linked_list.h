@@ -22,7 +22,7 @@ struct linked_list
 
 // initialize linked list
 // @param p_linked_list  pointer to linked list
-// @param capacity  init capacity for nodes memory pool, if 0, don't use memory pool
+// @param capacity       init capacity for nodes memory pool, if 0, don't use memory pool
 DSAA_EXPORT
 bool linked_list_init(struct linked_list *p_linked_list, uint32_t capacity);
 

@@ -91,14 +91,14 @@ bool linked_list_init(struct linked_list *p_linked_list, uint32_t capacity)
 		if (!muggle_memory_pool_init(p_linked_list->node_pool, capacity, sizeof(struct linked_list_node)))
 		{
 			free(p_linked_list->node_pool);
-			return 0;
+			return false;
 		}
 	}
 
 	p_linked_list->head.next = &p_linked_list->tail;
 	p_linked_list->tail.prev = &p_linked_list->head;
 
-	return 1;
+	return true;
 }
 
 void linked_list_destroy(struct linked_list *p_linked_list, func_data_free func_free, void *pool)
