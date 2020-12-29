@@ -8,7 +8,7 @@ static struct linked_list_node* linked_list_allocate_node(struct linked_list *p_
 	struct linked_list_node *node = NULL;
 	if (p_linked_list->node_pool)
 	{
-		node = muggle_memory_pool_alloc(p_linked_list->node_pool);
+		node = (struct linked_list_node*)muggle_memory_pool_alloc(p_linked_list->node_pool);
 	}
 	else
 	{
@@ -58,26 +58,13 @@ static void linked_list_free_data(struct linked_list *p_linked_list, struct link
 	}
 }
 
-static bool linked_list_capacity_valid(uint32_t capacity)
-{
-	// limit max capacity = (1 << 31) - 1
-	if (capacity >= (uint32_t)1 << 31)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
 bool linked_list_init(struct linked_list *p_linked_list, uint32_t capacity)
 {
 	memset(p_linked_list, 0, sizeof(*p_linked_list));
 
 	if (capacity > 0)
 	{
-		if (!linked_list_capacity_valid(capacity))
+		if (!DSAA_CAPACITY_VALID(capacity))
 		{
 			return false;
 		}

@@ -32,26 +32,13 @@ static void queue_free_data(struct queue *p_queue, struct queue_node *node, func
 	}
 }
 
-static bool queue_capacity_valid(uint32_t capacity)
-{
-	// limit max capacity = (1 << 31) - 1
-	if (capacity >= (uint32_t)1 << 31)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
 bool queue_init(struct queue *p_queue, uint32_t capacity)
 {
 	memset(p_queue, 0, sizeof(*p_queue));
 
 	if (capacity > 0)
 	{
-		if (!queue_capacity_valid(capacity))
+		if (!DSAA_CAPACITY_VALID(capacity))
 		{
 			return false;
 		}
@@ -123,7 +110,7 @@ struct queue_node* queue_enqueue(struct queue *p_queue, void *data)
 	struct queue_node *new_node = NULL;
 	if (p_queue->node_pool)
 	{
-		new_node = muggle_memory_pool_alloc(p_queue->node_pool);
+		new_node = (struct queue_node*)muggle_memory_pool_alloc(p_queue->node_pool);
 	}
 	else
 	{

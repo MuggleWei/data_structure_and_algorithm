@@ -1,26 +1,12 @@
 #include "stack.h"
 
-static bool stack_capacity_valid(uint32_t capacity)
-{
-	// limit max capacity = (1 << 31) - 1
-	if (capacity >= (uint32_t)1 << 31)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
-
 bool stack_init(struct stack *p_stack, uint32_t capacity)
 {
 	memset(p_stack, 0, sizeof(*p_stack));
 
 	capacity = capacity == 0 ? 8 : capacity;
 
-	if (!stack_capacity_valid(capacity))
+	if (!DSAA_CAPACITY_VALID(capacity))
 	{
 		return false;
 	}
@@ -76,7 +62,7 @@ bool stack_ensure_capacity(struct stack *p_stack, uint32_t capacity)
 		return true;
 	}
 
-	if (!stack_capacity_valid(capacity))
+	if (!DSAA_CAPACITY_VALID(capacity))
 	{
 		return false;
 	}

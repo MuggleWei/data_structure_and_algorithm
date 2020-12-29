@@ -6,5 +6,6 @@
 #include "dsaa/linked_list.h"
 #include "dsaa/stack.h"
 #include "dsaa/queue.h"
+#include "dsaa/tree.h"
 
 #endif

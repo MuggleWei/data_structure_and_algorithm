@@ -30,26 +30,13 @@ static int array_list_get_index(struct array_list *p_array_list, int32_t index)
 	return idx;
 }
 
-static bool array_list_capacity_valid(uint32_t capacity)
-{
-	// limit max capacity = (1 << 31) - 1
-	if (capacity >= (uint32_t)1 << 31)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-
 bool array_list_init(struct array_list *p_array_list, uint32_t capacity)
 {
 	memset(p_array_list, 0, sizeof(*p_array_list));
 
 	capacity = capacity == 0 ? 8 : capacity;
 
-	if (!array_list_capacity_valid(capacity))
+	if (!DSAA_CAPACITY_VALID(capacity))
 	{
 		return false;
 	}
@@ -105,7 +92,7 @@ bool array_list_ensure_capacity(struct array_list *p_array_list, uint32_t capaci
 		return true;
 	}
 
-	if (!array_list_capacity_valid(capacity))
+	if (!DSAA_CAPACITY_VALID(capacity))
 	{
 		return false;
 	}

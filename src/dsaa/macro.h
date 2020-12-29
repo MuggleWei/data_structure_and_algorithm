@@ -29,6 +29,9 @@ typedef int(*func_data_cmp)(void *d1, void *d2);
 // @param data  the data wait for free
 typedef void(*func_data_free)(void *pool, void *data);
 
+#define DSAA_CAPACITY_VALID(capacity) \
+((capacity) >= (uint32_t)(1<<31) ? false : true)
+
 EXTERN_C_END
 
 #endif
