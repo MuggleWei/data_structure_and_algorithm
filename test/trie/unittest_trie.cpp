@@ -69,5 +69,9 @@ TEST_F(TrieFixture, insert_find_remove)
 			struct trie_node *node = trie_find(trie, words[i]);
 			ASSERT_TRUE(node == NULL || node->data == NULL);
 		}
+
+		char *no_exists_word = "noexists";
+		struct trie_node *node = trie_find(trie, no_exists_word);
+		ASSERT_TRUE(node == NULL || node->data == NULL);
 	}
 }
