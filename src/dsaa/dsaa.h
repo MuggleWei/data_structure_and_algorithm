@@ -7,5 +7,6 @@
 #include "dsaa/stack.h"
 #include "dsaa/queue.h"
 #include "dsaa/tree.h"
+#include "dsaa/trie.h"
 
 #endif
