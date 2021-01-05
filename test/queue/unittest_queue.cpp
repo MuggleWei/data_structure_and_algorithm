@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
 #include "dsaa/dsaa.h"
+#include "test_utils/test_utils.h"
+
+#define TEST_QUEUE_LEN 64
 
 class QueueFixture : public ::testing::Test
 {
@@ -24,8 +27,8 @@ public:
 
 	void TearDown()
 	{
-		queue_destroy(&queue_[0], NULL, NULL);
-		queue_destroy(&queue_[1], NULL, NULL);
+		queue_destroy(&queue_[0], test_utils_free_int, &test_utils_);
+		queue_destroy(&queue_[1], test_utils_free_int, &test_utils_);
 
 		muggle_debug_memory_leak_end(&mem_state_);
 	}
@@ -33,6 +36,7 @@ public:
 protected:
 	struct queue queue_[2];
 
+	TestUtils test_utils_;
 	muggle_debug_memory_state mem_state_;
 };
 
@@ -52,14 +56,17 @@ TEST_F(QueueFixture, enqueue_dequeue)
 	{
 		struct queue *p_queue = &queue_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_QUEUE_LEN; i++)
 		{
-			arr[i] = i;
-			struct queue_node *node = queue_enqueue(p_queue, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct queue_node *node = queue_enqueue(p_queue, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(queue_size(p_queue), i + 1);
 		}
 
@@ -71,7 +78,7 @@ TEST_F(QueueFixture, enqueue_dequeue)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect++;
 
-			queue_dequeue(p_queue, NULL, NULL);
+			queue_dequeue(p_queue, test_utils_free_int, &test_utils_);
 		}
 	}
 }
@@ -82,21 +89,24 @@ TEST_F(QueueFixture, clear)
 	{
 		struct queue *p_queue = &queue_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_QUEUE_LEN; i++)
 		{
-			arr[i] = i;
-			struct queue_node *node = queue_enqueue(p_queue, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct queue_node *node = queue_enqueue(p_queue, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(queue_size(p_queue), i + 1);
 		}
 
 		bool ret = queue_is_empty(p_queue);
 		ASSERT_FALSE(ret);
 
-		queue_clear(p_queue, NULL, NULL);
+		queue_clear(p_queue, test_utils_free_int, &test_utils_);
 
 		ret = queue_is_empty(p_queue);
 		ASSERT_TRUE(ret);

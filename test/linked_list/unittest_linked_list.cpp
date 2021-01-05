@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
 #include "dsaa/dsaa.h"
+#include "test_utils/test_utils.h"
+
+#define TEST_LINKED_LIST_LEN 64
 
 class LinkedListFixture : public ::testing::Test
 {
@@ -24,8 +27,8 @@ public:
 
 	void TearDown()
 	{
-		linked_list_destroy(&list_[0], NULL, NULL);
-		linked_list_destroy(&list_[1], NULL, NULL);
+		linked_list_destroy(&list_[0], test_utils_free_int, &test_utils_);
+		linked_list_destroy(&list_[1], test_utils_free_int, &test_utils_);
 
 		muggle_debug_memory_leak_end(&mem_state_);
 	}
@@ -33,6 +36,7 @@ public:
 protected:
 	struct linked_list list_[2];
 
+	TestUtils test_utils_;
 	muggle_debug_memory_state mem_state_;
 };
 
@@ -51,18 +55,21 @@ TEST_F(LinkedListFixture, insert)
 	{
 		struct linked_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct linked_list_node *node = linked_list_insert(list, NULL, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct linked_list_node *node = linked_list_insert(list, NULL, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(linked_list_size(list), i + 1);
 		}
 
-		int expect = (int)(sizeof(arr) / sizeof(arr[0])) - 1;
+		int expect = TEST_LINKED_LIST_LEN - 1;
 		struct linked_list_node *node = linked_list_first(list);
 		for (; node; node = linked_list_next(list, node))
 		{
@@ -78,7 +85,7 @@ TEST_F(LinkedListFixture, insert)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect++;
 		}
-		ASSERT_EQ(expect, (int)(sizeof(arr) / sizeof(arr[0])));
+		ASSERT_EQ(expect, TEST_LINKED_LIST_LEN);
 	}
 }
 
@@ -88,14 +95,17 @@ TEST_F(LinkedListFixture, append)
 	{
 		struct linked_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct linked_list_node *node = linked_list_append(list, NULL, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct linked_list_node *node = linked_list_append(list, NULL, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(linked_list_size(list), i + 1);
 		}
 
@@ -106,9 +116,9 @@ TEST_F(LinkedListFixture, append)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect++;
 		}
-		ASSERT_EQ(expect, (int)(sizeof(arr) / sizeof(arr[0])));
+		ASSERT_EQ(expect, TEST_LINKED_LIST_LEN);
 
-		expect = (int)(sizeof(arr) / sizeof(arr[0])) - 1;;
+		expect = TEST_LINKED_LIST_LEN - 1;;
 		node = linked_list_last(list);
 		for (; node; node = linked_list_prev(list, node))
 		{
@@ -125,23 +135,26 @@ TEST_F(LinkedListFixture, remove)
 	{
 		struct linked_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct linked_list_node *node = linked_list_append(list, NULL, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct linked_list_node *node = linked_list_append(list, NULL, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(linked_list_size(list), i + 1);
 		}
 
-		int expect_cnt = (int)(sizeof(arr) / sizeof(arr[0]));
+		int expect_cnt = TEST_LINKED_LIST_LEN;
 		struct linked_list_node *node = linked_list_first(list);
 		while (node)
 		{
 			ASSERT_EQ(linked_list_size(list), expect_cnt);
-			node = linked_list_remove(list, node, NULL, NULL);
+			node = linked_list_remove(list, node, test_utils_free_int, &test_utils_);
 			expect_cnt--;
 		}
 	}
@@ -153,17 +166,20 @@ TEST_F(LinkedListFixture, clear)
 	{
 		struct linked_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			linked_list_insert(list, NULL, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			linked_list_insert(list, NULL, p);
 		}
 
 		bool ret = linked_list_is_empty(list);
 		ASSERT_FALSE(ret);
 
-		linked_list_clear(list, NULL, NULL);
+		linked_list_clear(list, test_utils_free_int, &test_utils_);
 
 		ret = linked_list_is_empty(list);
 		ASSERT_TRUE(ret);
@@ -171,35 +187,34 @@ TEST_F(LinkedListFixture, clear)
 	}
 }
 
-static int test_linked_list_int_cmp(void *d1, void *d2)
-{
-	return *(int*)d1 - *(int*)d2;
-}
 TEST_F(LinkedListFixture, find)
 {
 	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
 	{
 		struct linked_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct linked_list_node *node = linked_list_append(list, NULL, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct linked_list_node *node = linked_list_append(list, NULL, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(linked_list_size(list), i + 1);
 		}
 
 		struct linked_list_node *last_node = NULL;
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
-			struct linked_list_node *node = linked_list_find(list, NULL, &arr[i], test_linked_list_int_cmp);
+			struct linked_list_node *node = linked_list_find(list, NULL, &i, test_utils_cmp_int);
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(*(int*)node->data, i);
 
-			node = linked_list_find(list, last_node, &arr[i], test_linked_list_int_cmp);
+			node = linked_list_find(list, last_node, &i, test_utils_cmp_int);
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(*(int*)node->data, i);
 

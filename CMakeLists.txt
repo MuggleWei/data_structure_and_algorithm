@@ -49,6 +49,12 @@ muggle_add_project(${dsaa} ${CMAKE_CURRENT_LIST_DIR}/src/dsaa SHARED)
 add_dependencies(${dsaa} ${mugglecc})
 target_link_libraries(${dsaa} PUBLIC ${mugglecc})
 
+# test utils
+set(test_utils test_utils)
+muggle_add_project(${test_utils} ${CMAKE_CURRENT_LIST_DIR}/src/test_utils SHARED)
+add_dependencies(${test_utils} ${mugglecc})
+target_link_libraries(${test_utils} PUBLIC ${mugglecc})
+
 # functions
 function(add_example name folder)
 	message("add example ${name} ${folder}")
@@ -101,6 +107,7 @@ function(add_gtest name folder)
 	if (FOUND_GTEST_FROM_DOWNLOAD)
 		add_dependencies(${name}
 			${dsaa}
+			${test_utils}
 			${GTEST_BOTH_LIBRARIES}
 		)
 	endif()
@@ -110,6 +117,7 @@ function(add_gtest name folder)
 	)
 	target_link_libraries(${name}
 		${dsaa}
+		${test_utils}
 		${GTEST_BOTH_LIBRARIES}
 	)
 

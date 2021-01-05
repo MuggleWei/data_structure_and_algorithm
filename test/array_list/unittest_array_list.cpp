@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
 #include "dsaa/dsaa.h"
+#include "test_utils/test_utils.h"
+
+#define TEST_ARRAY_LIST_LEN 64
 
 class ArrayListFixture : public ::testing::Test
 {
@@ -24,8 +27,8 @@ public:
 
 	void TearDown()
 	{
-		array_list_destroy(&list_[0], NULL, NULL);
-		array_list_destroy(&list_[1], NULL, NULL);
+		array_list_destroy(&list_[0], test_utils_free_int, &test_utils_);
+		array_list_destroy(&list_[1], test_utils_free_int, &test_utils_);
 
 		muggle_debug_memory_leak_end(&mem_state_);
 	}
@@ -33,6 +36,7 @@ public:
 protected:
 	struct array_list list_[2];
 
+	TestUtils test_utils_;
 	muggle_debug_memory_state mem_state_;
 };
 
@@ -54,18 +58,21 @@ TEST_F(ArrayListFixture, insert)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_insert(list, 0, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_insert(list, 0, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
-		int expect = (int)(sizeof(arr) / sizeof(arr[0])) - 1;
+		int expect = TEST_ARRAY_LIST_LEN - 1;
 		for (int i = 0; i < (int)array_list_size(list); i++)
 		{
 			array_list_node *node = array_list_index(list, (int32_t)i);
@@ -83,7 +90,7 @@ TEST_F(ArrayListFixture, insert)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect++;
 		}
-		ASSERT_EQ(expect, (int)(sizeof(arr) / sizeof(arr[0])));
+		ASSERT_EQ(expect, TEST_ARRAY_LIST_LEN);
 	}
 }
 
@@ -93,20 +100,24 @@ TEST_F(ArrayListFixture, reverse_insert)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_insert(list, -1, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_insert(list, -1, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
 		struct array_list_node *node = array_list_index(list, (int32_t)-1);
 		ASSERT_TRUE(node != NULL);
-		ASSERT_EQ(node->data, &arr[0]);
+		ASSERT_TRUE(node->data != NULL);
+		ASSERT_EQ(*(int*)node->data, 0);
 
 		int expect = 1;
 		for (int i = 0; i < (int)array_list_size(list) - 1; i++)
@@ -116,7 +127,7 @@ TEST_F(ArrayListFixture, reverse_insert)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect++;
 		}
-		ASSERT_EQ(expect, (int)(sizeof(arr) / sizeof(arr[0])));
+		ASSERT_EQ(expect, TEST_ARRAY_LIST_LEN);
 	}
 }
 
@@ -126,14 +137,17 @@ TEST_F(ArrayListFixture, append)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_append(list, -1, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_append(list, -1, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
@@ -145,9 +159,9 @@ TEST_F(ArrayListFixture, append)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect++;
 		}
-		ASSERT_EQ(expect, (int)(sizeof(arr) / sizeof(arr[0])));
+		ASSERT_EQ(expect, TEST_ARRAY_LIST_LEN);
 
-		expect = (int)(sizeof(arr) / sizeof(arr[0])) - 1;
+		expect = TEST_ARRAY_LIST_LEN - 1;
 		for (int i = -1; i >= -(int)array_list_size(list); i--)
 		{
 			array_list_node *node = array_list_index(list, (int32_t)i);
@@ -165,22 +179,25 @@ TEST_F(ArrayListFixture, reverse_append)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_append(list, 0, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_append(list, 0, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
 		struct array_list_node *node = array_list_index(list, 0);
 		ASSERT_TRUE(node != NULL);
-		ASSERT_EQ(node->data, &arr[0]);
+		ASSERT_EQ(*(int*)node->data, 0);
 
-		int expect = (int)(sizeof(arr) / sizeof(arr[0])) - 1;
+		int expect = TEST_ARRAY_LIST_LEN - 1;
 		for (int i = 1; i < (int)array_list_size(list); i++)
 		{
 			array_list_node *node = array_list_index(list, (int32_t)i);
@@ -198,23 +215,26 @@ TEST_F(ArrayListFixture, remove)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_append(list, -1, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_append(list, -1, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
-		int expect_cnt = (int)(sizeof(arr) / sizeof(arr[0]));
+		int expect_cnt = TEST_ARRAY_LIST_LEN;
 		bool ret = 0;
 		while (1)
 		{
 			ASSERT_EQ(array_list_size(list), expect_cnt);
-			ret = array_list_remove(list, 0, NULL, NULL);
+			ret = array_list_remove(list, 0, test_utils_free_int, &test_utils_);
 			ASSERT_TRUE(ret);
 			expect_cnt--;
 			if (expect_cnt == 0)
@@ -231,21 +251,24 @@ TEST_F(ArrayListFixture, clear)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_append(list, -1, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_append(list, -1, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
 		bool ret = array_list_is_empty(list);
 		ASSERT_FALSE(ret);
 
-		array_list_clear(list, NULL, NULL);
+		array_list_clear(list, test_utils_free_int, &test_utils_);
 
 		ret = array_list_is_empty(list);
 		ASSERT_TRUE(ret);
@@ -253,30 +276,29 @@ TEST_F(ArrayListFixture, clear)
 	}
 }
 
-static int test_array_list_int_cmp(void *d1, void *d2)
-{
-	return *(int*)d1 - *(int*)d2;
-}
 TEST_F(ArrayListFixture, find)
 {
 	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
 	{
 		struct array_list *list = &list_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			arr[i] = i;
-			struct array_list_node *node = array_list_append(list, -1, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct array_list_node *node = array_list_append(list, -1, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(array_list_size(list), i + 1);
 		}
 
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			int index = array_list_find(list, 0, &arr[i], test_array_list_int_cmp);
+			int index = array_list_find(list, 0, &i, test_utils_cmp_int);
 			ASSERT_EQ(index, i);
 		}
 	}

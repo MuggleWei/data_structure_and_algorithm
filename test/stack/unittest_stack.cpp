@@ -1,5 +1,8 @@
 #include "gtest/gtest.h"
 #include "dsaa/dsaa.h"
+#include "test_utils/test_utils.h"
+
+#define TEST_STACK_LEN 64
 
 class StackFixture : public ::testing::Test
 {
@@ -24,8 +27,8 @@ public:
 
 	void TearDown()
 	{
-		stack_destroy(&stack_[0], NULL, NULL);
-		stack_destroy(&stack_[1], NULL, NULL);
+		stack_destroy(&stack_[0], test_utils_free_int, &test_utils_);
+		stack_destroy(&stack_[1], test_utils_free_int, &test_utils_);
 
 		muggle_debug_memory_leak_end(&mem_state_);
 	}
@@ -33,6 +36,7 @@ public:
 protected:
 	struct stack stack_[2];
 
+	TestUtils test_utils_;
 	muggle_debug_memory_state mem_state_;
 };
 
@@ -54,18 +58,21 @@ TEST_F(StackFixture, push_top_pop)
 	{
 		struct stack *p_stack = &stack_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_STACK_LEN; i++)
 		{
-			arr[i] = i;
-			struct stack_node *node = stack_push(p_stack, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct stack_node *node = stack_push(p_stack, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(stack_size(p_stack), i + 1);
 		}
 
-		int expect = (int)(sizeof(arr) / sizeof(arr[0])) - 1;
+		int expect = TEST_STACK_LEN - 1;
 		while (!stack_is_empty(p_stack))
 		{
 			struct stack_node *node = stack_top(p_stack);
@@ -73,7 +80,7 @@ TEST_F(StackFixture, push_top_pop)
 			ASSERT_EQ(*(int*)node->data, expect);
 			expect--;
 
-			stack_pop(p_stack, NULL, NULL);
+			stack_pop(p_stack, test_utils_free_int, &test_utils_);
 		}
 	}
 }
@@ -84,21 +91,24 @@ TEST_F(StackFixture, clear)
 	{
 		struct stack *p_stack = &stack_[i];
 
-		int arr[64];
-		for (int i = 0; i < (int)(sizeof(arr) / sizeof(arr[0])); i++)
+		for (int i = 0; i < TEST_STACK_LEN; i++)
 		{
-			arr[i] = i;
-			struct stack_node *node = stack_push(p_stack, &arr[i]);
+			int *p = test_utils_.allocateInteger();
+			ASSERT_TRUE(p != NULL);
+
+			*p = i;
+
+			struct stack_node *node = stack_push(p_stack, p);
 
 			ASSERT_TRUE(node != NULL);
-			ASSERT_EQ(node->data, &arr[i]);
+			ASSERT_EQ(node->data, p);
 			ASSERT_EQ(stack_size(p_stack), i + 1);
 		}
 
 		bool ret = stack_is_empty(p_stack);
 		ASSERT_FALSE(ret);
 
-		stack_clear(p_stack, NULL, NULL);
+		stack_clear(p_stack, test_utils_free_int, &test_utils_);
 
 		ret = stack_is_empty(p_stack);
 		ASSERT_TRUE(ret);

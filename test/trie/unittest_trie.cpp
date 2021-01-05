@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "dsaa/dsaa.h"
+#include "test_utils/test_utils.h"
 
 class TrieFixture : public ::testing::Test
 {
@@ -19,8 +20,8 @@ public:
 
 	void TearDown()
 	{
-		trie_destroy(&trie_[0], NULL, NULL);
-		trie_destroy(&trie_[1], NULL, NULL);
+		trie_destroy(&trie_[0], test_utils_free_str, &test_utils_);
+		trie_destroy(&trie_[1], test_utils_free_str, &test_utils_);
 
 		muggle_debug_memory_leak_end(&mem_state_);
 	}
@@ -28,6 +29,7 @@ public:
 protected:
 	struct trie trie_[2];
 
+	TestUtils test_utils_;
 	muggle_debug_memory_state mem_state_;
 };
 
@@ -46,9 +48,12 @@ TEST_F(TrieFixture, insert_find_remove)
 
 		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{
-			struct trie_node *node = trie_insert(trie, words[i], words[i]);
+			char *s = test_utils_.allocateString();
+			strncpy(s, words[i], TEST_UTILS_STR_SIZE - 1);
+
+			struct trie_node *node = trie_insert(trie, words[i], s);
 			ASSERT_TRUE(node != NULL);
-			ASSERT_STREQ((char*)node->data, words[i]);
+			ASSERT_STREQ((char*)node->data, s);
 		}
 
 		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
@@ -60,7 +65,7 @@ TEST_F(TrieFixture, insert_find_remove)
 
 		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{
-			bool ret = trie_remove(trie, words[i], NULL, NULL);
+			bool ret = trie_remove(trie, words[i], test_utils_free_str, &test_utils_);
 			ASSERT_TRUE(ret);
 		}
 

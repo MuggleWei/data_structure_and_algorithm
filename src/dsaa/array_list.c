@@ -233,7 +233,7 @@ bool array_list_remove(struct array_list *p_array_list, int32_t index, func_data
 
 	if (func_free)
 	{
-		func_free(pool, &p_array_list->nodes[index]);
+		func_free(pool, p_array_list->nodes[index].data);
 	}
 
 	for (int i = index; i < (int)p_array_list->size - 1; i++)
@@ -242,5 +242,5 @@ bool array_list_remove(struct array_list *p_array_list, int32_t index, func_data
 	}
 	p_array_list->size--;
 
-	return 1;
+	return true;
 }
