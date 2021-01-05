@@ -8,5 +8,6 @@
 #include "dsaa/queue.h"
 #include "dsaa/tree.h"
 #include "dsaa/trie.h"
+#include "dsaa/avl_tree.h"
 
 #endif

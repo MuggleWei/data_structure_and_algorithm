@@ -1,1 +1,0 @@
-python %~dp0auto_build.py "Visual Studio 14 2015 Win64" "Release"
