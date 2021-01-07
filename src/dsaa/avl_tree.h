@@ -7,12 +7,12 @@ EXTERN_C_BEGIN
 
 struct avl_tree_node
 {
-	struct avl_tree_node *left;
-	struct avl_tree_node *right;
-	struct avl_tree_node *parent;
-	int8_t               balance;
-	void                 *key;
-	void                 *value;
+	struct avl_tree_node *left;       // left sub tree node
+	struct avl_tree_node *right;      // right sub tree node
+	struct avl_tree_node *parent;     // parent node
+	int8_t               balance;     // balance factor = height(right_sub_tree) - height(left_sub_tree)
+	void                 *key;        // key data of node
+	void                 *value;      // value data of node
 };
 
 struct avl_tree

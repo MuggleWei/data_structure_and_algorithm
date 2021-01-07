@@ -86,111 +86,342 @@ static void avl_tree_erase_node(
 	}
 }
 
-static void avl_tree_rotate_right(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
+// rotate left node
+// @return deep change? true - deep decrease, false - deep not change
+static bool avl_tree_rotate_left(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
 {
+	/////////////////////////////////////////////
+	// Right-Right
+	//
+	//      |                        |
+	//      X(2)                     Z(0|-1)
+	//     / \                      / \
+	//    /   \                    /   \
+	//  {t1}   Z(1|0)    =>  (0|1)X    {t4}
+	//  {  }  / \                / \   {  }
+	//       /   \              /   \
+	//     {t23} {t4}	      {t1}  {t23}
+	//     {   } {  }	      {  }  {   }
+	/////////////////////////////////////////////
+
 	struct avl_tree_node *parent = node->parent;
-	struct avl_tree_node *grand_parent = parent->parent;
-	if (grand_parent)
+	struct avl_tree_node *x = node;
+	struct avl_tree_node *z = x->right;
+
+	MUGGLE_ASSERT(z != NULL);
+	MUGGLE_ASSERT(x->balance == 2);
+	MUGGLE_ASSERT(z->balance == 1 || z->balance == 0);
+
+	if (parent)
 	{
-		if (parent == grand_parent->left)
+		if (x == parent->left)
 		{
-			grand_parent->left = node;
+			parent->left = z;
 		}
 		else
 		{
-			grand_parent->right = node;
+			parent->right = z;
 		}
 	}
-	node->parent = grand_parent;
+	z->parent = parent;
 
-	parent->left = node->right;
-	if (node->right)
+	if (p_avl_tree->root == x)
 	{
-		node->right->parent = parent;
+		p_avl_tree->root = z;
 	}
 
-	parent->parent = node;
-	node->right = parent;
-
-	parent->balance -= 2;
-	node->balance--;
-
-	if (p_avl_tree->root == parent)
+	x->right = z->left;
+	if (z->left)
 	{
-		p_avl_tree->root = node;
+		z->left->parent = x;
+	}
+
+	x->parent = z;
+	z->left = x;
+
+	if (z->balance == 0)
+	{
+		x->balance = 1;
+		z->balance = -1;
+		return false;
+	}
+	else
+	{
+		x->balance = 0;
+		z->balance = 0;
+		return true;
 	}
 }
 
-static void avl_tree_rotate_left(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
+// rotate right node
+// @return deep change? true - deep decrease, false - deep not change
+static bool avl_tree_rotate_right(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
 {
+	/////////////////////////////////////////////
+	// Left-Left
+	//
+	//          |                    |
+	//          X(-2)                Z(0|1)
+	//         / \                  / \
+	//        /   \				   /   \
+	// (-1|0)Z    {t1}    =>   	 {t4}   X(0|-1)
+	//      / \   {  }			 {  }  / \
+	//     /   \				      /   \
+	//   {t4} {t23}				    {t23} {t1}
+	//   {  } {   }				    {   } {  }
+	/////////////////////////////////////////////
+
 	struct avl_tree_node *parent = node->parent;
-	struct avl_tree_node *grand_parent = parent->parent;
-	if (grand_parent)
+	struct avl_tree_node *x = node;
+	struct avl_tree_node *z = x->left;
+
+	MUGGLE_ASSERT(z != NULL);
+	MUGGLE_ASSERT(x->balance == -2);
+	MUGGLE_ASSERT(z->balance == -1 || z->balance == 0);
+
+	if (parent)
 	{
-		if (parent == grand_parent->left)
+		if (x == parent->left)
 		{
-			grand_parent->left = node;
+			parent->left = z;
 		}
 		else
 		{
-			grand_parent->right = node;
+			parent->right = z;
 		}
 	}
-	node->parent = grand_parent;
+	z->parent = parent;
 
-	parent->right = node->left;
-	if (node->left)
+	if (p_avl_tree->root == x)
 	{
-		node->left->parent = parent;
+		p_avl_tree->root = z;
 	}
 
-	parent->parent = node;
-	node->left = parent;
-
-	parent->balance += 2;
-	node->balance++;
-
-	if (p_avl_tree->root == parent)
+	x->left = z->right;
+	if (z->right)
 	{
-		p_avl_tree->root = node;
+		z->right->parent = x;
+	}
+
+	x->parent = z;
+	z->right = x;
+
+	if (z->balance == 0)
+	{
+		x->balance = -1;
+		z->balance = 1;
+		return false;
+	}
+	else
+	{
+		x->balance = 0;
+		z->balance = 0;
+		return true;
 	}
 }
 
+static void avl_tree_rotate_right_left(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
+{
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Right-Left
+	//
+	//        |                            |                             |
+	//        X(2)                         X                             Y
+	//       /  \                         / \                           / \
+	//      /    \                       /   \                         /   \
+	//    {t1}    Z (-1)      ==>      {t1}   Y            ==>  (-1|0)X     Z(1|0)
+	//    {  }   / \                   {  }  / \                     / \   / \
+	//          /   \                       /   \                   /  |   |  \
+	// (-1|0|1)Y     {t4}                 {t2}   Z               {t1}{t2} {t3}{t4}
+	//        / \    {  }                 {  }  / \              {  }{  } {  }{  }
+	//       /   \                             /   \
+	//     {t2}  {t3}                        {t3}  {t4}
+	//     {  }  {  }                        {  }  {  }
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	struct avl_tree_node *parent = node->parent;
+	struct avl_tree_node *x = node;
+	struct avl_tree_node *z = x->right;
+	MUGGLE_ASSERT(z != NULL);
+	struct avl_tree_node *y = z->left;
+	MUGGLE_ASSERT(y != NULL);
+
+	MUGGLE_ASSERT(x->balance == 2);
+	MUGGLE_ASSERT(z->balance == -1);
+
+	struct avl_tree_node *t2 = y->left;
+	struct avl_tree_node *t3 = y->right;
+
+	if (parent)
+	{
+		if (x == parent->left)
+		{
+			parent->left = y;
+		}
+		else
+		{
+			parent->right = y;
+		}
+	}
+	y->parent = parent;
+
+	if (p_avl_tree->root == x)
+	{
+		p_avl_tree->root = y;
+	}
+
+	x->right = t2;
+	if (t2)
+	{
+		t2->parent = x;
+	}
+
+	z->left = t3;
+	if (t3)
+	{
+		t3->parent = z;
+	}
+
+	y->left = x;
+	x->parent = y;
+
+	y->right = z;
+	z->parent = y;
+
+	if (y->balance > 0)  // t3 was higher
+	{
+		x->balance = -1;
+		z->balance = 0;
+	}
+	else if (y->balance == 0)
+	{
+		x->balance = 0;
+		z->balance = 0;
+	}
+	else // t2 was higher
+	{
+		x->balance = 0;
+		z->balance = 1;
+	}
+	y->balance = 0;
+}
+
+static void avl_tree_rotate_left_right(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
+{
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Left-Right
+	//
+	//        |                            |                            |
+	//        X(-2)                        X                            Y
+	//       / \                          / \                          / \
+	//      /   \                        /   \                        /   \
+	//   (1)Z   {t1}        ==>         Y    {t1}       ==>          Z     X
+	//     / \  {  }                   / \   {  }                   / \   / \
+	//    /   \                       /   \                        /  |   |  \
+	//  {t4}   Y(-1|0|1)             Z   {t2}                   {t4}{t3} {t2}{t1}
+	//  {  }  / \                   / \  {  }                   {  }{  } {  }{  }
+	//       /   \                 /   \
+	//     {t3}  {t2}            {t4}  {t3}
+	//     {  }  {  }            {  }  {  }
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	struct avl_tree_node *parent = node->parent;
+	struct avl_tree_node *x = node;
+	struct avl_tree_node *z = x->left;
+	MUGGLE_ASSERT(z != NULL);
+	struct avl_tree_node *y = z->right;
+	MUGGLE_ASSERT(y != NULL);
+
+	MUGGLE_ASSERT(x->balance == -2);
+	MUGGLE_ASSERT(z->balance == 1);
+
+	struct avl_tree_node *t2 = y->right;
+	struct avl_tree_node *t3 = y->left;
+
+	if (parent)
+	{
+		if (x == parent->left)
+		{
+			parent->left = y;
+		}
+		else
+		{
+			parent->right = y;
+		}
+	}
+	y->parent = parent;
+
+	x->left = t2;
+	if (t2)
+	{
+		t2->parent = x;
+	}
+
+	z->right = t3;
+	if (t3)
+	{
+		t3->parent = z;
+	}
+
+	y->left = z;
+	z->parent = y;
+
+	y->right = x;
+	x->parent = y;
+
+	if (y->balance > 0) // t2 was higher
+	{
+		x->balance = 0;
+		z->balance = -1;
+	}
+	else if (y == 0)
+	{
+		x->balance = 0;
+		z->balance = 0;
+	}
+	else // t3 was higher
+	{
+		x->balance = 1;
+		z->balance = 0;
+	}
+	y->balance = 0;
+}
+
+// rebalance node
+// @return deep change? true - deep decrease, false - deep not change
 static bool avl_tree_rebalance(struct avl_tree *p_avl_tree, struct avl_tree_node *node)
 {
-	if (node->balance > 1)
+	if (node->balance < -1)
 	{
 		// left
 		struct avl_tree_node *child = node->left;
-		if (child->balance > 0)
+		if (child->balance <= 0)
 		{
 			// left-left: rotate right
-			avl_tree_rotate_right(p_avl_tree, child);
+			return avl_tree_rotate_right(p_avl_tree, node);
 		}
-		else if (child->balance < 0)
+		else
 		{
-			// left-right: rotate right and rotate left
-			avl_tree_rotate_left(p_avl_tree, child);
-			avl_tree_rotate_right(p_avl_tree, child);
+			// left-right: rotate left right
+			avl_tree_rotate_left_right(p_avl_tree, node);
+			return true;
 		}
-		return true;
 	}
-	else if (node->balance < -1)
+	else if (node->balance > 1)
 	{
 		// right
 		struct avl_tree_node *child = node->right;
-		if (child->balance > 0)
-		{
-			// right-left
-			avl_tree_rotate_right(p_avl_tree, child);
-			avl_tree_rotate_left(p_avl_tree, child);
-		}
-		else if (child->balance < 0)
+		if (child->balance >= 0)
 		{
 			// right-right
-			avl_tree_rotate_left(p_avl_tree, child);
+			return avl_tree_rotate_left(p_avl_tree, node);
 		}
-		return true;
+		else
+		{
+			// right-left: rotate right left
+			avl_tree_rotate_right_left(p_avl_tree, node);
+			return true;
+		}
 	}
 	
 	return false;
@@ -284,10 +515,16 @@ struct avl_tree_node* avl_tree_find(struct avl_tree *p_avl_tree, void *data)
 
 struct avl_tree_node* avl_tree_insert(struct avl_tree *p_avl_tree, void *key, void *value)
 {
+	// avl tree is empty, insert as root
 	struct avl_tree_node *node = p_avl_tree->root;
 	if (node == NULL)
 	{
 		node = avl_tree_allocate_node(p_avl_tree);
+		if (node == NULL)
+		{
+			return NULL;
+		}
+
 		node->key = key;
 		node->value = value;
 		node->balance = 0;
@@ -317,6 +554,12 @@ struct avl_tree_node* avl_tree_insert(struct avl_tree *p_avl_tree, void *key, vo
 			else
 			{
 				new_node = avl_tree_allocate_node(p_avl_tree);
+				if (new_node == NULL)
+				{
+					return NULL;
+				}
+
+				node->left = new_node;
 				insert_side = AVL_TREE_SIDE_LEFT;
 				break;
 			}
@@ -331,83 +574,65 @@ struct avl_tree_node* avl_tree_insert(struct avl_tree *p_avl_tree, void *key, vo
 			else
 			{
 				new_node = avl_tree_allocate_node(p_avl_tree);
+				if (new_node == NULL)
+				{
+					return NULL;
+				}
+
+				node->right = new_node;
 				insert_side = AVL_TREE_SIDE_RIGHT;
 				break;
 			}
 		}
 	}
 
-	if (new_node == NULL)
-	{
-		// failed allocate memory space
-		return NULL;
-	}
-
 	new_node->parent = node;
 	new_node->key = key;
 	new_node->value = value;
 	new_node->balance = 0;
-	if (insert_side == AVL_TREE_SIDE_LEFT)
-	{
-		node->left = new_node;
-	}
-	else
-	{
-		node->right = new_node;
-	}
 
-	// rebalance avl tree
-	bool depth_incre = false;
-	if (insert_side == AVL_TREE_SIDE_LEFT)
-	{
-		if (node->right == NULL)
-		{
-			depth_incre = true;
-		}
-	}
-	else
-	{
-		if (node->left == NULL)
-		{
-			depth_incre = true;
-		}
-	}
-
-	if (!depth_incre)
-	{
-		return new_node;
-	}
-
+	// retracing
 	while (node)
 	{
 		if (insert_side == AVL_TREE_SIDE_LEFT)
 		{
-			node->balance++;
+			node->balance--;
 		}
 		else
 		{
-			node->balance--;
+			node->balance++;
 		}
-		
-		if (avl_tree_rebalance(p_avl_tree, node))
+
+		// if balance factor == 0, height of that subtree remain unchanged
+		// if balance factor == 1 or -1, the height of the subtree increased and retracing needs to continue
+		// if balance factor == 2 or -2, rotate node, and subtree has the same height as before
+		if (node->balance == 0)
 		{
 			break;
 		}
-		
-		if (node->parent)
+		else if (node->balance == 1 || node->balance == -1)
 		{
-			if (node->parent->left == node)
+			if (node->parent)
 			{
-				insert_side = AVL_TREE_SIDE_LEFT;
+				if (node->parent->left == node)
+				{
+					insert_side = AVL_TREE_SIDE_LEFT;
+				}
+				else
+				{
+					insert_side = AVL_TREE_SIDE_RIGHT;
+				}
+				node = node->parent;
 			}
 			else
 			{
-				insert_side = AVL_TREE_SIDE_RIGHT;
+				break;
 			}
-			node = node->parent;
 		}
 		else
 		{
+			MUGGLE_ASSERT(node->balance == 2 || node->balance == -2);
+			avl_tree_rebalance(p_avl_tree, node);
 			break;
 		}
 	}
@@ -420,7 +645,7 @@ void avl_tree_remove(
 	func_data_free key_func_free, void *key_pool,
 	func_data_free value_func_free, void *value_pool)
 {
-	// move data into left
+	// move data into leaf
 	void *tmp = NULL;
 	while (node)
 	{
@@ -429,7 +654,7 @@ void avl_tree_remove(
 			break;
 		}
 
-		if (node->balance >= 0)
+		if (node->left)
 		{
 			tmp = node->left->key;
 			node->left->key = node->key;
@@ -441,7 +666,7 @@ void avl_tree_remove(
 
 			node = node->left;
 		}
-		else if (node->balance < 0)
+		else
 		{
 			tmp = node->right->key;
 			node->right->key = node->key;
@@ -455,15 +680,17 @@ void avl_tree_remove(
 		}
 	}
 
+	// if node is root, then erase node and return
 	if (node->parent == NULL)
 	{
 		avl_tree_erase_node(p_avl_tree, node, key_func_free, key_pool, value_func_free, value_pool);
+		p_avl_tree->root = NULL;
 		return;
 	}
 
 	// get remove side
 	int remove_side = AVL_TREE_SIDE_LEFT;
-	if (node->parent->left = node)
+	if (node->parent->left == node)
 	{
 		remove_side = AVL_TREE_SIDE_LEFT;
 	}
@@ -475,44 +702,70 @@ void avl_tree_remove(
 	struct avl_tree_node *parent = node->parent;
 	avl_tree_erase_node(p_avl_tree, node, key_func_free, key_pool, value_func_free, value_pool);
 
-	if (parent->left != NULL || parent->right != NULL)
-	{
-		// depth not change
-		return;
-	}
-
 	node = parent;
 	while (node)
 	{
 		if (remove_side == AVL_TREE_SIDE_LEFT)
 		{
-			node->balance--;
+			node->balance++;
 		}
 		else
 		{
-			node->balance++;
+			node->balance--;
 		}
 
-		if (avl_tree_rebalance(p_avl_tree, node))
+		// if balance factor == 1 or -1, the height of the subtree remain unchanged
+		// if balance factor == 0 (it must have been +1 or -1), then height of the subtree decreased and retracing needs to continue
+		// if balance factor == 2 or -2, rotate node, and if the height of subtree changed, retracing needs to continue
+		if (node->balance == 1 || node->balance == -1)
 		{
 			break;
 		}
-
-		if (node->parent)
+		else if (node->balance == 0)
 		{
-			if (node->parent->left == node)
+			if (node->parent)
 			{
-				remove_side = AVL_TREE_SIDE_LEFT;
+				if (node->parent->left == node)
+				{
+					remove_side = AVL_TREE_SIDE_LEFT;
+				}
+				else
+				{
+					remove_side = AVL_TREE_SIDE_RIGHT;
+				}
+				node = node->parent;
 			}
 			else
 			{
-				remove_side = AVL_TREE_SIDE_RIGHT;
+				break;
 			}
-			node = node->parent;
 		}
 		else
 		{
-			break;
+			MUGGLE_ASSERT(node->balance == 2 || node->balance == -2);
+
+			parent = node->parent;
+			if (parent)
+			{
+				if (parent->left == node)
+				{
+					remove_side = AVL_TREE_SIDE_LEFT;
+				}
+				else
+				{
+					remove_side = AVL_TREE_SIDE_RIGHT;
+				}
+			}
+
+			bool depth_decrease = avl_tree_rebalance(p_avl_tree, node);
+			if (depth_decrease)
+			{
+				node = parent;
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 }
