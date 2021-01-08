@@ -351,6 +351,11 @@ static void avl_tree_rotate_left_right(struct avl_tree *p_avl_tree, struct avl_t
 	}
 	y->parent = parent;
 
+	if (p_avl_tree->root == x)
+	{
+		p_avl_tree->root = y;
+	}
+
 	x->left = t2;
 	if (t2)
 	{
@@ -374,7 +379,7 @@ static void avl_tree_rotate_left_right(struct avl_tree *p_avl_tree, struct avl_t
 		x->balance = 0;
 		z->balance = -1;
 	}
-	else if (y == 0)
+	else if (y->balance == 0)
 	{
 		x->balance = 0;
 		z->balance = 0;
@@ -646,8 +651,9 @@ void avl_tree_remove(
 	func_data_free value_func_free, void *value_pool)
 {
 	// move data into leaf
+	struct avl_tree_node *target = NULL;
 	void *tmp = NULL;
-	while (node)
+	while (true)
 	{
 		if (node->left == NULL && node->right == NULL)
 		{
@@ -656,27 +662,32 @@ void avl_tree_remove(
 
 		if (node->left)
 		{
-			tmp = node->left->key;
-			node->left->key = node->key;
-			node->key = tmp;
-
-			tmp = node->left->value;
-			node->left->value = node->value;
-			node->value = tmp;
-
-			node = node->left;
+			target = node->left;
+			while (target->right)
+			{
+				target = target->right;
+			}
 		}
-		else
+		else if (node->right)
 		{
-			tmp = node->right->key;
-			node->right->key = node->key;
-			node->key = tmp;
+			target = node->right;
+			while (target->left)
+			{
+				target = target->left;
+			}
+		}
 
-			tmp = node->right->value;
-			node->right->value = node->value;
-			node->value = tmp;
+		if (target)
+		{
+			tmp = node->key;
+			node->key = target->key;
+			target->key = tmp;
 
-			node = node->right;
+			tmp = node->value;
+			node->value = target->value;
+			target->value = tmp;
+
+			node = target;
 		}
 	}
 

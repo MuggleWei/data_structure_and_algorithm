@@ -2,7 +2,7 @@
 #include "dsaa/dsaa.h"
 #include "test_utils/test_utils.h"
 
-#define TEST_AVL_TREE_LEN 5
+#define TEST_AVL_TREE_LEN 64
 
 class AvlTreeFixture : public ::testing::Test
 {
@@ -91,7 +91,6 @@ void TestAvlTreeNodePrint(struct avl_tree_node *node)
 
 void TestAvlTreePrint(struct avl_tree *tree)
 {
-	printf("----------------------------------\n");
 	if (tree->root)
 	{
 		TestAvlTreeNodePrint(tree->root);
@@ -432,5 +431,122 @@ TEST_F(AvlTreeFixture, insert_remove_case4)
 				ASSERT_TRUE(node == NULL);
 			}
 		}
+	}
+}
+
+// insert remove integer array: manual set array
+TEST_F(AvlTreeFixture, insert_remove_case5)
+{
+	int arr[] = {
+		1,5,6,0,3,4,7,2
+	};
+
+	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	{
+		struct avl_tree *tree = &tree_[i];
+
+		// printf("----------------------------------\n");
+		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		{
+			// printf("insert %d\n", arr[i]);
+			struct avl_tree_node *node = avl_tree_insert(tree, &arr[i], &arr[i]);
+			// TestAvlTreePrint(tree);
+			ASSERT_TRUE(node != NULL);
+			TestAvlTreeCheckValid(tree);
+		}
+
+		// find
+		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		{
+			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			ASSERT_TRUE(node != NULL);
+			ASSERT_EQ(*(int*)node->key, arr[i]);
+		}
+
+		// remove
+		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		{
+			// printf("remove %d\n", arr[i]);
+			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			ASSERT_TRUE(node != NULL);
+
+			avl_tree_remove(tree, node, NULL, NULL, NULL, NULL);
+			// TestAvlTreePrint(tree);
+
+			TestAvlTreeCheckValid(tree);
+		}
+
+		// find
+		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		{
+			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			ASSERT_TRUE(node == NULL);
+		}
+	}
+}
+
+// insert remove integer array: random
+TEST_F(AvlTreeFixture, insert_remove_case6)
+{
+	srand((unsigned int)time(NULL));
+	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	{
+		struct avl_tree *tree = &tree_[i];
+
+		int *arr = (int*)malloc(sizeof(int*) * TEST_AVL_TREE_LEN);
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			arr[i] = i;
+		}
+
+		// shuffle
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			int idx = rand() % TEST_AVL_TREE_LEN;
+			int tmp = arr[i];
+			arr[i] = arr[idx];
+			arr[idx] = tmp;
+		}
+
+		// insert
+		printf("----------------------------------\n");
+		printf("insert: ");
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			printf("%d ", arr[i]);
+			struct avl_tree_node *node = avl_tree_insert(tree, &arr[i], &arr[i]);
+			ASSERT_TRUE(node != NULL);
+			TestAvlTreeCheckValid(tree);
+		}
+		printf("\n");
+		printf("traversal: ");
+		TestAvlTreePrint(tree);
+
+		// find
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			ASSERT_TRUE(node != NULL);
+			ASSERT_EQ(*(int*)node->key, arr[i]);
+		}
+
+		// remove
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			ASSERT_TRUE(node != NULL);
+
+			avl_tree_remove(tree, node, NULL, NULL, NULL, NULL);
+			TestAvlTreeCheckValid(tree);
+		}
+
+		// find
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			ASSERT_TRUE(node == NULL);
+		}
+
+		free(arr);
 	}
 }
