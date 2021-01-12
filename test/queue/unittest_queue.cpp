@@ -19,9 +19,9 @@ public:
 		ret = queue_init(&queue_[1], 8);
 		ASSERT_TRUE(ret);
 
-		for (int i = 0; i < (int)(sizeof(queue_) / sizeof(queue_[i])); i++)
+		for (int index = 0; index < (int)(sizeof(queue_) / sizeof(queue_[index])); index++)
 		{
-			ASSERT_EQ(queue_size(&queue_[i]), 0);
+			ASSERT_EQ(queue_size(&queue_[index]), 0);
 		}
 	}
 
@@ -42,19 +42,19 @@ protected:
 
 TEST_F(QueueFixture, empty)
 {
-	for (int i = 0; i < (int)(sizeof(queue_) / sizeof(queue_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(queue_) / sizeof(queue_[0])); index++)
 	{
-		bool ret = queue_is_empty(&queue_[i]);
+		bool ret = queue_is_empty(&queue_[index]);
 		ASSERT_TRUE(ret);
-		ASSERT_EQ(queue_size(&queue_[i]), 0);
+		ASSERT_EQ(queue_size(&queue_[index]), 0);
 	}
 }
 
 TEST_F(QueueFixture, enqueue_dequeue)
 {
-	for (int i = 0; i < (int)(sizeof(queue_) / sizeof(queue_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(queue_) / sizeof(queue_[0])); index++)
 	{
-		struct queue *p_queue = &queue_[i];
+		struct queue *p_queue = &queue_[index];
 
 		for (int i = 0; i < TEST_QUEUE_LEN; i++)
 		{
@@ -85,9 +85,9 @@ TEST_F(QueueFixture, enqueue_dequeue)
 
 TEST_F(QueueFixture, clear)
 {
-	for (int i = 0; i < (int)(sizeof(queue_) / sizeof(queue_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(queue_) / sizeof(queue_[0])); index++)
 	{
-		struct queue *p_queue = &queue_[i];
+		struct queue *p_queue = &queue_[index];
 
 		for (int i = 0; i < TEST_QUEUE_LEN; i++)
 		{

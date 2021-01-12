@@ -19,9 +19,9 @@ public:
 		ret = array_list_init(&list_[1], 8);
 		ASSERT_TRUE(ret);
 
-		for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[i])); i++)
+		for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[index])); index++)
 		{
-			ASSERT_EQ(array_list_size(&list_[i]), 0);
+			ASSERT_EQ(array_list_size(&list_[index]), 0);
 		}
 	}
 
@@ -42,21 +42,21 @@ protected:
 
 TEST_F(ArrayListFixture, empty)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		bool ret = array_list_is_empty(&list_[i]);
+		bool ret = array_list_is_empty(&list_[index]);
 		ASSERT_TRUE(ret);
 
-		struct array_list_node *node = array_list_index(&list_[i], 0);
+		struct array_list_node *node = array_list_index(&list_[index], 0);
 		ASSERT_TRUE(node == NULL);
 	}
 }
 
 TEST_F(ArrayListFixture, insert)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -96,9 +96,9 @@ TEST_F(ArrayListFixture, insert)
 
 TEST_F(ArrayListFixture, reverse_insert)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -133,9 +133,9 @@ TEST_F(ArrayListFixture, reverse_insert)
 
 TEST_F(ArrayListFixture, append)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -175,9 +175,9 @@ TEST_F(ArrayListFixture, append)
 
 TEST_F(ArrayListFixture, reverse_append)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -211,9 +211,9 @@ TEST_F(ArrayListFixture, reverse_append)
 
 TEST_F(ArrayListFixture, remove)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -247,9 +247,9 @@ TEST_F(ArrayListFixture, remove)
 
 TEST_F(ArrayListFixture, clear)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -278,9 +278,9 @@ TEST_F(ArrayListFixture, clear)
 
 TEST_F(ArrayListFixture, find)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct array_list *list = &list_[i];
+		struct array_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
@@ -298,8 +298,8 @@ TEST_F(ArrayListFixture, find)
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)
 		{
-			int index = array_list_find(list, 0, &i, test_utils_cmp_int);
-			ASSERT_EQ(index, i);
+			int idx = array_list_find(list, 0, &i, test_utils_cmp_int);
+			ASSERT_EQ(idx, i);
 		}
 	}
 }

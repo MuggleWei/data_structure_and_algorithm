@@ -19,9 +19,9 @@ public:
 		ret = linked_list_init(&list_[1], 8);
 		ASSERT_TRUE(ret);
 
-		for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[i])); i++)
+		for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[index])); index++)
 		{
-			ASSERT_EQ(linked_list_size(&list_[i]), 0);
+			ASSERT_EQ(linked_list_size(&list_[index]), 0);
 		}
 	}
 
@@ -42,18 +42,18 @@ protected:
 
 TEST_F(LinkedListFixture, empty)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		bool ret = linked_list_is_empty(&list_[i]);
+		bool ret = linked_list_is_empty(&list_[index]);
 		ASSERT_TRUE(ret);
 	}
 }
 
 TEST_F(LinkedListFixture, insert)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct linked_list *list = &list_[i];
+		struct linked_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
@@ -91,9 +91,9 @@ TEST_F(LinkedListFixture, insert)
 
 TEST_F(LinkedListFixture, append)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct linked_list *list = &list_[i];
+		struct linked_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
@@ -131,9 +131,9 @@ TEST_F(LinkedListFixture, append)
 
 TEST_F(LinkedListFixture, remove)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct linked_list *list = &list_[i];
+		struct linked_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
@@ -162,9 +162,9 @@ TEST_F(LinkedListFixture, remove)
 
 TEST_F(LinkedListFixture, clear)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct linked_list *list = &list_[i];
+		struct linked_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{
@@ -189,9 +189,9 @@ TEST_F(LinkedListFixture, clear)
 
 TEST_F(LinkedListFixture, find)
 {
-	for (int i = 0; i < (int)(sizeof(list_) / sizeof(list_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[0])); index++)
 	{
-		struct linked_list *list = &list_[i];
+		struct linked_list *list = &list_[index];
 
 		for (int i = 0; i < TEST_LINKED_LIST_LEN; i++)
 		{

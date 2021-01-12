@@ -100,9 +100,9 @@ void TestAvlTreePrint(struct avl_tree *tree)
 
 TEST_F(AvlTreeFixture, insert_find)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
 		{
@@ -146,9 +146,9 @@ TEST_F(AvlTreeFixture, insert_find)
 // insert/remove integer array: 1, 2, 3 ...... n
 TEST_F(AvlTreeFixture, insert_remove_case1)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
 		{
@@ -211,9 +211,9 @@ TEST_F(AvlTreeFixture, insert_remove_case1)
 // insert/remove integer array: n, n-1, n-2 ...... 1
 TEST_F(AvlTreeFixture, insert_remove_case2)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		for (int i = TEST_AVL_TREE_LEN - 1; i >= 0; i--)
 		{
@@ -275,9 +275,9 @@ TEST_F(AvlTreeFixture, insert_remove_case2)
 // insert remove integer array: 1, 0, 3, 2 ... 2k + 1, 2k ... 2n + 1, 2n
 TEST_F(AvlTreeFixture, insert_remove_case3)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
 		{
@@ -357,9 +357,9 @@ TEST_F(AvlTreeFixture, insert_remove_case3)
 // insert remove integer array: 2n + 1, 2n ... 2k + 1, 2k ... 3, 2, 0, 1
 TEST_F(AvlTreeFixture, insert_remove_case4)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		for (int i = TEST_AVL_TREE_LEN - 1; i >= 0; i--)
 		{
@@ -441,9 +441,9 @@ TEST_F(AvlTreeFixture, insert_remove_case5)
 		1,5,6,0,3,4,7,2
 	};
 
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		// printf("----------------------------------\n");
 		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -489,9 +489,9 @@ TEST_F(AvlTreeFixture, insert_remove_case5)
 TEST_F(AvlTreeFixture, insert_remove_case6)
 {
 	srand((unsigned int)time(NULL));
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct avl_tree *tree = &tree_[i];
+		struct avl_tree *tree = &tree_[index];
 
 		int *arr = (int*)malloc(sizeof(int*) * TEST_AVL_TREE_LEN);
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)

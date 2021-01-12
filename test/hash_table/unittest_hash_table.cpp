@@ -59,9 +59,9 @@ void TestHashTablePrint(struct hash_table *table)
 
 TEST_F(HashTableFixture, put_find)
 {
-	for (int idx = 0; idx < (int)(sizeof(tables_) / sizeof(tables_[0])); idx++)
+	for (int index = 0; index < (int)(sizeof(tables_) / sizeof(tables_[0])); index++)
 	{
-		struct hash_table *table = &tables_[idx];
+		struct hash_table *table = &tables_[index];
 
 		for (int i = 0; i < TEST_HASH_TABLE_LEN; i++)
 		{
@@ -99,9 +99,9 @@ TEST_F(HashTableFixture, put_find)
 
 TEST_F(HashTableFixture, put_remove)
 {
-	for (int idx = 0; idx < (int)(sizeof(tables_) / sizeof(tables_[0])); idx++)
+	for (int index = 0; index < (int)(sizeof(tables_) / sizeof(tables_[0])); index++)
 	{
-		struct hash_table *table = &tables_[idx];
+		struct hash_table *table = &tables_[index];
 
 		for (int i = 0; i < TEST_HASH_TABLE_LEN; i++)
 		{

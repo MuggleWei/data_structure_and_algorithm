@@ -42,9 +42,9 @@ TEST_F(TrieFixture, insert_find_remove)
 		"bar"
 	};
 
-	for (int i = 0; i < (int)(sizeof(trie_) / sizeof(trie_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(trie_) / sizeof(trie_[0])); index++)
 	{
-		struct trie *trie = &trie_[i];
+		struct trie *trie = &trie_[index];
 
 		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{

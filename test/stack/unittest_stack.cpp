@@ -19,9 +19,9 @@ public:
 		ret = stack_init(&stack_[1], 8);
 		ASSERT_TRUE(ret);
 
-		for (int i = 0; i < (int)(sizeof(stack_) / sizeof(stack_[i])); i++)
+		for (int index = 0; index < (int)(sizeof(stack_) / sizeof(stack_[index])); index++)
 		{
-			ASSERT_EQ(stack_size(&stack_[i]), 0);
+			ASSERT_EQ(stack_size(&stack_[index]), 0);
 		}
 	}
 
@@ -42,21 +42,21 @@ protected:
 
 TEST_F(StackFixture, empty)
 {
-	for (int i = 0; i < (int)(sizeof(stack_) / sizeof(stack_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(stack_) / sizeof(stack_[0])); index++)
 	{
-		bool ret = stack_is_empty(&stack_[i]);
+		bool ret = stack_is_empty(&stack_[index]);
 		ASSERT_TRUE(ret);
 
-		struct stack_node *node = stack_top(&stack_[i]);
+		struct stack_node *node = stack_top(&stack_[index]);
 		ASSERT_TRUE(node == NULL);
 	}
 }
 
 TEST_F(StackFixture, push_top_pop)
 {
-	for (int i = 0; i < (int)(sizeof(stack_) / sizeof(stack_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(stack_) / sizeof(stack_[0])); index++)
 	{
-		struct stack *p_stack = &stack_[i];
+		struct stack *p_stack = &stack_[index];
 
 		for (int i = 0; i < TEST_STACK_LEN; i++)
 		{
@@ -87,9 +87,9 @@ TEST_F(StackFixture, push_top_pop)
 
 TEST_F(StackFixture, clear)
 {
-	for (int i = 0; i < (int)(sizeof(stack_) / sizeof(stack_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(stack_) / sizeof(stack_[0])); index++)
 	{
-		struct stack *p_stack = &stack_[i];
+		struct stack *p_stack = &stack_[index];
 
 		for (int i = 0; i < TEST_STACK_LEN; i++)
 		{

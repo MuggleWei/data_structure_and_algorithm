@@ -19,9 +19,9 @@ public:
 		ret = tree_init(&tree_[1], 8);
 		ASSERT_TRUE(ret);
 
-		for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[i])); i++)
+		for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[index])); index++)
 		{
-			ASSERT_TRUE(tree_is_empty(&tree_[i]));
+			ASSERT_TRUE(tree_is_empty(&tree_[index]));
 		}
 	}
 
@@ -42,18 +42,18 @@ protected:
 
 TEST_F(TreeFixture, empty)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		bool ret = tree_is_empty(&tree_[i]);
+		bool ret = tree_is_empty(&tree_[index]);
 		ASSERT_TRUE(ret);
 	}
 }
 
 TEST_F(TreeFixture, add_find)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct tree *tree = &tree_[i];
+		struct tree *tree = &tree_[index];
 		struct tree_node *root_node = tree_node_add_child(tree, NULL, NULL);
 
 		for (int i = 0; i < TEST_TREE_LEN; i++)
@@ -88,9 +88,9 @@ TEST_F(TreeFixture, add_find)
 
 TEST_F(TreeFixture, remove)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct tree *tree = &tree_[i];
+		struct tree *tree = &tree_[index];
 		struct tree_node *root_node = tree_node_add_child(tree, NULL, NULL);
 
 		for (int i = 0; i < TEST_TREE_LEN; i++)
@@ -117,9 +117,9 @@ TEST_F(TreeFixture, remove)
 
 TEST_F(TreeFixture, move)
 {
-	for (int i = 0; i < (int)(sizeof(tree_) / sizeof(tree_[0])); i++)
+	for (int index = 0; index < (int)(sizeof(tree_) / sizeof(tree_[0])); index++)
 	{
-		struct tree *tree = &tree_[i];
+		struct tree *tree = &tree_[index];
 		struct tree_node *root_node = tree_node_add_child(tree, NULL, NULL);
 
 		for (int i = 0; i < TEST_TREE_LEN; i++)
