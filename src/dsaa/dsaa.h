@@ -9,5 +9,6 @@
 #include "dsaa/tree.h"
 #include "dsaa/trie.h"
 #include "dsaa/avl_tree.h"
+#include "dsaa/hash_table.h"
 
 #endif

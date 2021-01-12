@@ -530,15 +530,32 @@ TEST_F(AvlTreeFixture, insert_remove_case6)
 			ASSERT_EQ(*(int*)node->key, arr[i]);
 		}
 
-		// remove
+		// shuffle
+		int *arr2 = (int*)malloc(sizeof(int*) * TEST_AVL_TREE_LEN);
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
 		{
-			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
+			arr2[i] = arr[i];
+		}
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			int idx = rand() % TEST_AVL_TREE_LEN;
+			int tmp = arr2[i];
+			arr2[i] = arr2[idx];
+			arr2[idx] = tmp;
+		}
+
+		// remove
+		printf("remove: ");
+		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
+		{
+			printf("%d ", arr2[i]);
+			struct avl_tree_node *node = avl_tree_find(tree, &arr2[i]);
 			ASSERT_TRUE(node != NULL);
 
 			avl_tree_remove(tree, node, NULL, NULL, NULL, NULL);
 			TestAvlTreeCheckValid(tree);
 		}
+		printf("\n");
 
 		// find
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
@@ -547,6 +564,7 @@ TEST_F(AvlTreeFixture, insert_remove_case6)
 			ASSERT_TRUE(node == NULL);
 		}
 
+		free(arr2);
 		free(arr);
 	}
 }
