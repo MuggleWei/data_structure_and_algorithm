@@ -37,23 +37,44 @@ protected:
 
 void TestHashTablePrint(struct hash_table *table)
 {
+	int cnt_dict[8];
+	memset(cnt_dict, 0, sizeof(cnt_dict));
+
 	for (uint64_t i = 0; i < table->table_size; i++)
 	{
+		int cnt = 0;
 		struct hash_table_node *node = &table->nodes[i];
 		if (node->next)
 		{
 			node = node->next;
 
-			printf("%5d | ", (int)i);
+			// printf("%5d | ", (int)i);
 			while (node)
 			{
 				int v = *(int*)node->value;
-				printf("%5d ", v);
+				// printf("%5d ", v);
 
 				node = node->next;
+				++cnt;
 			}
-			printf("\n");
+			// printf("\n");
 		}
+
+		if (cnt >= sizeof(cnt_dict) / sizeof(cnt_dict[0]) - 1)
+		{
+			cnt_dict[sizeof(cnt_dict) / sizeof(cnt_dict[0]) - 1] += 1;
+		}
+		else
+		{
+			cnt_dict[cnt] += 1;
+		}
+	}
+
+	printf("hash table count dict: \n");
+	printf("node number | count\n");
+	for (int i = 0; i < sizeof(cnt_dict) / sizeof(cnt_dict[0]); i++)
+	{
+		printf("%11d | %d\n", i, cnt_dict[i]);
 	}
 }
 
@@ -92,8 +113,8 @@ TEST_F(HashTableFixture, put_find)
 			ASSERT_EQ(*(int*)node->value, i);
 		}
 
-		// printf("------------------------------------\n");
-		// TestHashTablePrint(table);
+		printf("------------------------------------\n");
+		TestHashTablePrint(table);
 	}
 }
 
