@@ -67,12 +67,12 @@ DSAA_EXPORT
 struct avl_tree_node* avl_tree_insert(struct avl_tree *p_avl_tree, void *key, void *value);
 
 // remove data in avl tree
-// @param p_avl_tree      pointer to avl tree
-// @param node            node need to remove
-// @param key_func_free   function for free key data, if it's NULL, do nothing for key data
-// @param key_pool        the memory pool passed to key_func_free
-// @param value_func_free   function for free value data, if it's NULL, do nothing for value data
-// @param value_pool        the memory pool passed to value_func_free
+// @param p_avl_tree       pointer to avl tree
+// @param node             node need to remove
+// @param key_func_free    function for free key data, if it's NULL, do nothing for key data
+// @param key_pool         the memory pool passed to key_func_free
+// @param value_func_free  function for free value data, if it's NULL, do nothing for value data
+// @param value_pool       the memory pool passed to value_func_free
 DSAA_EXPORT
 void avl_tree_remove(
 	struct avl_tree *p_avl_tree, struct avl_tree_node *node,
