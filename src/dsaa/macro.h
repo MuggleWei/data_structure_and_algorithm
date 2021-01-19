@@ -22,7 +22,7 @@ EXTERN_C_BEGIN
 //     1: d1 > d2
 //     0: d1 == d2
 //     -1: d1 < d2
-typedef int(*func_data_cmp)(void *d1, void *d2);
+typedef int(*func_data_cmp)(const void *d1, const void *d2);
 
 // free data
 // @param pool  pointer to a memory pool, it can be NULL

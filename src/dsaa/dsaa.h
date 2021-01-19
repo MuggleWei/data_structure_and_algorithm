@@ -12,4 +12,6 @@
 #include "dsaa/hash_table.h"
 #include "dsaa/heap.h"
 
+#include "dsaa/sort.h"
+
 #endif

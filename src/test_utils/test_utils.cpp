@@ -24,7 +24,7 @@ void TestUtils::freeString(char *p)
 	free(p);
 }
 
-int test_utils_cmp_int(void *p1, void *p2)
+int test_utils_cmp_int(const void *p1, const void *p2)
 {
 	if (p1 == p2)
 	{
@@ -44,7 +44,7 @@ int test_utils_cmp_int(void *p1, void *p2)
 	return *(int*)p1 - *(int*)p2;
 }
 
-int test_utils_cmp_str(void *p1, void *p2)
+int test_utils_cmp_str(const void *p1, const void *p2)
 {
 	if (p1 == p2)
 	{

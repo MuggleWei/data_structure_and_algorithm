@@ -35,10 +35,10 @@ public:
 };
 
 TEST_UTILS_EXPORT
-int test_utils_cmp_int(void *p1, void *p2);
+int test_utils_cmp_int(const void *p1, const void *p2);
 
 TEST_UTILS_EXPORT
-int test_utils_cmp_str(void *p1, void *p2);
+int test_utils_cmp_str(const void *p1, const void *p2);
 
 TEST_UTILS_EXPORT
 void test_utils_free_int(void *pool, void *data);
