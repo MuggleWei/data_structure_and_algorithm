@@ -26,6 +26,9 @@ bool heap_sort(void **ptr, size_t count, func_data_cmp cmp);
 DSAA_EXPORT
 bool merge_sort(void **ptr, size_t count, func_data_cmp cmp);
 
+DSAA_EXPORT
+bool quick_sort(void **ptr, size_t count, func_data_cmp cmp);
+
 EXTERN_C_END
 
 #endif

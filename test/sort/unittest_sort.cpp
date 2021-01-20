@@ -2,7 +2,7 @@
 #include "dsaa/dsaa.h"
 #include "test_utils/test_utils.h"
 
-#define TEST_SORT_LEN 8192
+#define TEST_SORT_LEN 1000000
 
 class SortFixture : public ::testing::Test
 {
@@ -11,9 +11,13 @@ public:
 	{
 		muggle_debug_memory_leak_start(&mem_state_);
 
+		integer_arr_ = (int*)malloc(sizeof(int) * TEST_SORT_LEN);
+		ptr_ = (void**)malloc(sizeof(void*) * TEST_SORT_LEN);
+
 		for (int i = 0; i < TEST_SORT_LEN; i++)
 		{
-			integer_arr_[i] = i;
+			// integer_arr_[i] = i;
+			integer_arr_[i] = (i * 2) / 2; // for have same element
 			ptr_[i] = &integer_arr_[i];
 		}
 		
@@ -21,12 +25,10 @@ public:
 		for (int i = 0; i < TEST_SORT_LEN; i++)
 		{
 			int idx = rand() % TEST_SORT_LEN;
-			void* tmp = ptr_[i];
+			void *tmp = ptr_[i];
 			ptr_[i] = ptr_[idx];
 			ptr_[idx] = tmp;
 		}
-
-		// printPtr();
 	}
 
 	void TearDown()
@@ -36,12 +38,15 @@ public:
 			ASSERT_EQ(*(int*)ptr_[i], integer_arr_[i]);
 		}
 
+		free(ptr_);
+		free(integer_arr_);
+
 		muggle_debug_memory_leak_end(&mem_state_);
 	}
 
 	void printPtr()
 	{
-		printf("input: \n");
+		printf("------------------------------\n");
 		for (int i = 0; i < TEST_SORT_LEN; i++)
 		{
 			printf(" %d", *(int*)ptr_[i]);
@@ -50,8 +55,8 @@ public:
 	}
 
 protected:
-	int integer_arr_[TEST_SORT_LEN];
-	void *ptr_[TEST_SORT_LEN];
+	int *integer_arr_;
+	void **ptr_;
 
 	muggle_debug_memory_state mem_state_;
 };
@@ -77,10 +82,10 @@ void run_sort(void **ptr, func_sort func, const char *name)
 		name, TEST_SORT_LEN, (unsigned long long)ns);
 }
 
-TEST_F(SortFixture, insertion_sort)
-{
-	run_sort(ptr_, insertion_sort, __FUNCTION__);
-}
+// TEST_F(SortFixture, insertion_sort)
+// {
+// 	run_sort(ptr_, insertion_sort, __FUNCTION__);
+// }
 
 TEST_F(SortFixture, shell_short)
 {
@@ -100,4 +105,9 @@ TEST_F(SortFixture, merge_sort)
 TEST_F(SortFixture, c_qsort)
 {
 	run_sort(ptr_, c_qsort, __FUNCTION__);
+}
+
+TEST_F(SortFixture, quick_sort)
+{
+	run_sort(ptr_, quick_sort, __FUNCTION__);
 }

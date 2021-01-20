@@ -132,3 +132,80 @@ bool merge_sort(void **ptr, size_t count, func_data_cmp cmp)
 
 	return true;
 }
+
+static void* quick_sort_median3(void **ptr, size_t left, size_t right, func_data_cmp cmp)
+{
+	void *tmp = NULL;
+	size_t center = (left + right) / 2;
+	if (cmp(ptr[left], ptr[center]) > 0)
+	{
+		tmp = ptr[left];
+		ptr[left] = ptr[center];
+		ptr[center] = tmp;
+	}
+	if (cmp(ptr[left], ptr[right]) > 0)
+	{
+		tmp = ptr[left];
+		ptr[left] = ptr[right];
+		ptr[right] = tmp;
+	}
+	if (cmp(ptr[center], ptr[right]) > 0)
+	{
+		tmp = ptr[center];
+		ptr[center] = ptr[right];
+		ptr[right] = tmp;
+	}
+
+	tmp = ptr[center];
+	ptr[center] = ptr[right - 1];
+	ptr[right - 1] = tmp;
+
+	return ptr[right - 1];
+}
+
+#define QUICK_SORT_CUTOFF 10
+static void quick_sort_recursive(void **ptr, size_t left, size_t right, func_data_cmp cmp)
+{
+	if (left + QUICK_SORT_CUTOFF <= right)
+	{
+		void *pivot = quick_sort_median3(ptr, left, right, cmp);
+		size_t i = left;
+		size_t j = right - 1;
+		void *tmp;
+		while (true)
+		{
+			while (cmp(ptr[++i], pivot) < 0) {}
+			while (cmp(ptr[--j], pivot) > 0) {}
+			if (i < j)
+			{
+				tmp = ptr[i];
+				ptr[i] = ptr[j];
+				ptr[j] = tmp;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		// restore pivot
+		tmp = ptr[i];
+		ptr[i] = ptr[right - 1];
+		ptr[right - 1] = tmp;
+
+		quick_sort_recursive(ptr, left, i - 1, cmp);
+		quick_sort_recursive(ptr, i + 1, right, cmp);
+	}
+	else
+	{
+		// do an insertion sort on the subarray
+		insertion_sort(ptr + left, right + 1 - left, cmp);
+	}
+}
+
+bool quick_sort(void **ptr, size_t count, func_data_cmp cmp)
+{
+	quick_sort_recursive(ptr, 0, count - 1, cmp);
+
+	return true;
+}
