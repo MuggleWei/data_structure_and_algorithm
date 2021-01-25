@@ -51,7 +51,7 @@ void TestHashTablePrint(struct hash_table *table)
 			// printf("%5d | ", (int)i);
 			while (node)
 			{
-				int v = *(int*)node->value;
+				// int v = *(int*)node->value;
 				// printf("%5d ", v);
 
 				node = node->next;
@@ -60,7 +60,7 @@ void TestHashTablePrint(struct hash_table *table)
 			// printf("\n");
 		}
 
-		if (cnt >= sizeof(cnt_dict) / sizeof(cnt_dict[0]) - 1)
+		if (cnt >= (int)(sizeof(cnt_dict) / sizeof(cnt_dict[0]) - 1))
 		{
 			cnt_dict[sizeof(cnt_dict) / sizeof(cnt_dict[0]) - 1] += 1;
 		}
@@ -72,7 +72,7 @@ void TestHashTablePrint(struct hash_table *table)
 
 	printf("hash table count dict: \n");
 	printf("node number | count\n");
-	for (int i = 0; i < sizeof(cnt_dict) / sizeof(cnt_dict[0]); i++)
+	for (int i = 0; i < (int)(sizeof(cnt_dict) / sizeof(cnt_dict[0])); i++)
 	{
 		printf("%11d | %d\n", i, cnt_dict[i]);
 	}
@@ -104,7 +104,7 @@ TEST_F(HashTableFixture, put_find)
 		for (int i = 0; i < TEST_HASH_TABLE_LEN; i++)
 		{
 			char buf[16];
-			snprintf(buf, TEST_UTILS_STR_SIZE, "%d", i);
+			snprintf(buf, sizeof(buf), "%d", i);
 
 			struct hash_table_node *node = hash_table_find(table, buf);
 
@@ -144,7 +144,7 @@ TEST_F(HashTableFixture, put_remove)
 		for (int i = 0; i < TEST_HASH_TABLE_LEN; i++)
 		{
 			char buf[16];
-			snprintf(buf, TEST_UTILS_STR_SIZE, "%d", i);
+			snprintf(buf, sizeof(buf), "%d", i);
 
 			struct hash_table_node *node = hash_table_find(table, buf);
 
@@ -156,7 +156,7 @@ TEST_F(HashTableFixture, put_remove)
 		for (int i = 0; i < TEST_HASH_TABLE_LEN; i++)
 		{
 			char buf[16];
-			snprintf(buf, TEST_UTILS_STR_SIZE, "%d", i);
+			snprintf(buf, sizeof(buf), "%d", i);
 
 			struct hash_table_node *node = hash_table_find(table, buf);
 			ASSERT_TRUE(node != NULL);
@@ -166,7 +166,7 @@ TEST_F(HashTableFixture, put_remove)
 		for (int i = 0; i < TEST_HASH_TABLE_LEN; i++)
 		{
 			char buf[16];
-			snprintf(buf, TEST_UTILS_STR_SIZE, "%d", i);
+			snprintf(buf, sizeof(buf), "%d", i);
 
 			struct hash_table_node *node = hash_table_find(table, buf);
 

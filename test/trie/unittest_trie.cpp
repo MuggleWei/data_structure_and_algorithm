@@ -35,7 +35,7 @@ protected:
 
 TEST_F(TrieFixture, insert_find_remove)
 {
-	char* words[] = {
+	const char* words[] = {
 		"hello",
 		"world",
 		"foo",
@@ -46,7 +46,7 @@ TEST_F(TrieFixture, insert_find_remove)
 	{
 		struct trie *trie = &trie_[index];
 
-		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
+		for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{
 			char *s = test_utils_.allocateString();
 			strncpy(s, words[i], TEST_UTILS_STR_SIZE - 1);
@@ -56,26 +56,26 @@ TEST_F(TrieFixture, insert_find_remove)
 			ASSERT_STREQ((char*)node->data, s);
 		}
 
-		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
+		for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{
 			struct trie_node *node = trie_find(trie, words[i]);
 			ASSERT_TRUE(node != NULL);
 			ASSERT_STREQ((char*)node->data, words[i]);
 		}
 
-		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
+		for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{
 			bool ret = trie_remove(trie, words[i], test_utils_free_str, &test_utils_);
 			ASSERT_TRUE(ret);
 		}
 
-		for (int i = 0; i < sizeof(words) / sizeof(words[0]); i++)
+		for (size_t i = 0; i < sizeof(words) / sizeof(words[0]); i++)
 		{
 			struct trie_node *node = trie_find(trie, words[i]);
 			ASSERT_TRUE(node == NULL || node->data == NULL);
 		}
 
-		char *no_exists_word = "noexists";
+		const char *no_exists_word = "noexists";
 		struct trie_node *node = trie_find(trie, no_exists_word);
 		ASSERT_TRUE(node == NULL || node->data == NULL);
 	}

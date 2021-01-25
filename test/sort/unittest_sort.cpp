@@ -63,7 +63,7 @@ protected:
 
 bool c_qsort(void **ptr, size_t count, func_data_cmp cmp)
 {
-	qsort(ptr, count, sizeof(void*), test_utils_cmp_int);
+	qsort(ptr, count, sizeof(void*), cmp);
 	return true;
 }
 

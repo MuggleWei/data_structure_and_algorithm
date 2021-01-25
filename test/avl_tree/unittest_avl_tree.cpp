@@ -316,7 +316,6 @@ TEST_F(AvlTreeFixture, insert_remove_case3)
 
 		for (int i = 0; i < TEST_AVL_TREE_LEN; i++)
 		{
-			int tmp = 0;
 			struct avl_tree_node *node = NULL;
 			for (int j = 1; j >= 0; j--)
 			{
@@ -398,7 +397,6 @@ TEST_F(AvlTreeFixture, insert_remove_case4)
 
 		for (int i = TEST_AVL_TREE_LEN - 1; i >= 0; i--)
 		{
-			int tmp = 0;
 			struct avl_tree_node *node = NULL;
 			for (int j = 1; j >= 0; j--)
 			{
@@ -446,7 +444,7 @@ TEST_F(AvlTreeFixture, insert_remove_case5)
 		struct avl_tree *tree = &tree_[index];
 
 		// printf("----------------------------------\n");
-		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		for (size_t i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 		{
 			// printf("insert %d\n", arr[i]);
 			struct avl_tree_node *node = avl_tree_insert(tree, &arr[i], &arr[i]);
@@ -456,7 +454,7 @@ TEST_F(AvlTreeFixture, insert_remove_case5)
 		}
 
 		// find
-		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		for (size_t i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 		{
 			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
 			ASSERT_TRUE(node != NULL);
@@ -464,7 +462,7 @@ TEST_F(AvlTreeFixture, insert_remove_case5)
 		}
 
 		// remove
-		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		for (size_t i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 		{
 			// printf("remove %d\n", arr[i]);
 			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
@@ -477,7 +475,7 @@ TEST_F(AvlTreeFixture, insert_remove_case5)
 		}
 
 		// find
-		for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		for (size_t i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 		{
 			struct avl_tree_node *node = avl_tree_find(tree, &arr[i]);
 			ASSERT_TRUE(node == NULL);
