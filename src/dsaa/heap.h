@@ -18,8 +18,8 @@ struct heap
 	uint32_t         size;     // number of nodes in heap
 	struct heap_node *nodes;   // nodes array
 
-	// NOTE: this heap is max-heap, so if cmp return <= 0, node will be parent,
-	// parent key less or equal to children's key
+	// NOTE: this heap is max-heap, so if cmp return >= 0, node will be parent,
+	// parent key greater or equal to children's key
 	func_data_cmp    cmp;      // pointer to compare function for data
 };
 
