@@ -11,6 +11,7 @@ EXTERN_C_BEGIN
 // graph adjacency matrix vertex
 struct gam_vertex
 {
+	void *key;   // graph key
 	void *value; // graph vertex value
 	void *idx;   // vertex index
 };

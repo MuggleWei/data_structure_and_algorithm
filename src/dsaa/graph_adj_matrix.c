@@ -66,7 +66,7 @@ bool gam_init(struct gam *p_gam, func_data_cmp cmp, uint64_t capacity)
 	edge_pool_ready = false;
 
 	bool idx_queue_ready = false;
-	if (!queue_init(&p_gam->idx_queue, capacity))
+	if (!queue_init(&p_gam->idx_queue, (uint32_t)capacity))
 	{
 		goto gam_init_err;
 	}
@@ -79,7 +79,7 @@ bool gam_init(struct gam *p_gam, func_data_cmp cmp, uint64_t capacity)
 	}
 
 	bool key_vertex_map_ready = false;
-	if (!avl_tree_init(&p_gam->key_vertex_map, cmp, capacity))
+	if (!avl_tree_init(&p_gam->key_vertex_map, cmp, (uint32_t)capacity))
 	{
 		goto gam_init_err;
 	}
@@ -206,6 +206,7 @@ struct gam_vertex* gam_add_vertex(struct gam *p_gam, void *key, void *value)
 		return NULL;
 	}
 
+	vertex->key = key;
 	vertex->value = value;
 	vertex->idx = idx;
 
