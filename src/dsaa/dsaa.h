@@ -9,6 +9,7 @@
 #include "dsaa/tree.h"
 #include "dsaa/trie.h"
 #include "dsaa/avl_tree.h"
+#include "dsaa/avl_tree_iter.h"
 #include "dsaa/hash_table.h"
 #include "dsaa/heap.h"
 #include "dsaa/graph_adj_matrix.h"
