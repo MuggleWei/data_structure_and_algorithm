@@ -66,7 +66,7 @@ struct gal_vertex* gal_add_vertex(
 // @param v2_key  pointer to vertex 2 key
 // @param weight  pointer to edge weight
 DSAA_EXPORT
-bool gal_add_edge(struct gal *p_gal, void *v1_key, void *v2_key, void *weight);
+struct gal_edge* gal_add_edge(struct gal *p_gal, void *v1_key, void *v2_key, void *weight);
 
 // graph adjacency list find vertex
 // @param p_gal   pointer to graph adjacency matrix

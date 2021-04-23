@@ -220,13 +220,13 @@ struct gam_vertex* gam_add_vertex(struct gam *p_gam, void *key, void *value)
 	return vertex;
 }
 
-bool gam_add_edge(struct gam *p_gam, void *v1_key, void *v2_key, void *weight)
+struct gam_edge* gam_add_edge(struct gam *p_gam, void *v1_key, void *v2_key, void *weight)
 {
 	struct gam_vertex *v1 = gam_find_vertex(p_gam, v1_key);
 	struct gam_vertex *v2 = gam_find_vertex(p_gam, v2_key);
 	if (v1 == NULL || v2 == NULL)
 	{
-		return false;
+		return NULL;
 	}
 
 	struct gam_edge *edge = NULL;
@@ -237,13 +237,13 @@ bool gam_add_edge(struct gam *p_gam, void *v1_key, void *v2_key, void *weight)
 	if (edge != NULL)
 	{
 		// edge already exists
-		return false;
+		return NULL;
 	}
 
 	edge = muggle_memory_pool_alloc(&p_gam->edge_pool);
 	if (edge == NULL)
 	{
-		return false;
+		return NULL;
 	}
 
 	edge->v1 = v1;

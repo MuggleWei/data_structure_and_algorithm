@@ -227,11 +227,11 @@ gal_add_vertex_err:
 	return NULL;
 }
 
-bool gal_add_edge(struct gal *p_gal, void *v1_key, void *v2_key, void *weight)
+struct gal_edge* gal_add_edge(struct gal *p_gal, void *v1_key, void *v2_key, void *weight)
 {
 	if (gal_find_edge(p_gal, v1_key, v2_key) != NULL)
 	{
-		return false;
+		return NULL;
 	}
 
 	struct avl_tree_node *tree_v1_node = avl_tree_find(&p_gal->verteices, v1_key);
@@ -240,7 +240,7 @@ bool gal_add_edge(struct gal *p_gal, void *v1_key, void *v2_key, void *weight)
 	struct gal_vertex *v2 = (struct gal_vertex*)tree_v2_node->value;
 	if (v1 == NULL || v2 == NULL)
 	{
-		return false;
+		return NULL;
 	}
 
 	bool alloc_edge_ready = false;
@@ -267,7 +267,7 @@ bool gal_add_edge(struct gal *p_gal, void *v1_key, void *v2_key, void *weight)
 		goto gal_add_edge_err;
 	}
 
-	return true;
+	return edge;
 
 gal_add_edge_err:
 
@@ -286,7 +286,7 @@ gal_add_edge_err:
 		muggle_memory_pool_free(&p_gal->edge_pool, edge);
 	}
 
-	return false;
+	return NULL;
 }
 
 struct gal_vertex* gal_find_vertex(struct gal *p_gal, void *key)

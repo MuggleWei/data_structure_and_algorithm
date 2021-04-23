@@ -71,7 +71,7 @@ struct gam_vertex* gam_add_vertex(
 // @param v2_key  pointer to vertex 2 key
 // @param weight  pointer to edge weight
 DSAA_EXPORT
-bool gam_add_edge(struct gam *p_gam, void *v1_key, void *v2_key, void *weight);
+struct gam_edge* gam_add_edge(struct gam *p_gam, void *v1_key, void *v2_key, void *weight);
 
 // graph adjacency matrix find vertex
 // @param p_gam   pointer to graph adjacency matrix
