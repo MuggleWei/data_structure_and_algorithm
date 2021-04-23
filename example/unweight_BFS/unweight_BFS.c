@@ -14,10 +14,10 @@
 
 struct unweight_node
 {
-	int id;       // node id
-	bool known;   // node is already known
-	int distance; // distance from start node
-	int path;     // previous node in path
+	int  id;       // node id
+	bool known;    // node is already known
+	int  distance; // distance from start node
+	int  path;     // previous node in path
 };
 
 struct unweight_node* alloc_node()
