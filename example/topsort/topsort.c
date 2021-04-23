@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "dsaa/dsaa.h"
-#include "dsaa/linked_list.h"
 
 /**
  * @brief allocate course
@@ -133,8 +132,6 @@ int main()
 		printf("failed gal_init\n");
 		exit(EXIT_FAILURE);
 	}
-
-	char *course = NULL;
 
 	add_course(&graph, 1, 1);
 	add_course(&graph, 1, 2);

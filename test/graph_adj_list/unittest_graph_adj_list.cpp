@@ -137,8 +137,6 @@ TEST_F(GraphAdjListFixture, find_edge)
 
 TEST_F(GraphAdjListFixture, find_out_edge)
 {
-	bool ret = false;
-
 	struct linked_list_node *node = NULL;
 	struct linked_list *list = NULL;
 	struct gal_edge *edge = NULL;
@@ -201,8 +199,6 @@ TEST_F(GraphAdjListFixture, find_out_edge)
 
 TEST_F(GraphAdjListFixture, find_in_edge)
 {
-	bool ret = false;
-
 	struct linked_list_node *node = NULL;
 	struct linked_list *list = NULL;
 	struct gal_edge *edge = NULL;
