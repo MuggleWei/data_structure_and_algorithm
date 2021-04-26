@@ -21,7 +21,7 @@ public:
 
 		for (int index = 0; index < (int)(sizeof(stack_) / sizeof(stack_[index])); index++)
 		{
-			ASSERT_EQ(stack_size(&stack_[index]), 0);
+			ASSERT_EQ((int)stack_size(&stack_[index]), 0);
 		}
 	}
 
@@ -69,7 +69,7 @@ TEST_F(StackFixture, push_top_pop)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(stack_size(p_stack), i + 1);
+			ASSERT_EQ((int)stack_size(p_stack), i + 1);
 		}
 
 		int expect = TEST_STACK_LEN - 1;
@@ -102,7 +102,7 @@ TEST_F(StackFixture, clear)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(stack_size(p_stack), i + 1);
+			ASSERT_EQ((int)stack_size(p_stack), i + 1);
 		}
 
 		bool ret = stack_is_empty(p_stack);
@@ -112,6 +112,6 @@ TEST_F(StackFixture, clear)
 
 		ret = stack_is_empty(p_stack);
 		ASSERT_TRUE(ret);
-		ASSERT_EQ(stack_size(p_stack), 0);
+		ASSERT_EQ((int)stack_size(p_stack), 0);
 	}
 }

@@ -21,7 +21,7 @@ public:
 
 		for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[index])); index++)
 		{
-			ASSERT_EQ(array_list_size(&list_[index]), 0);
+			ASSERT_EQ((int)array_list_size(&list_[index]), 0);
 		}
 	}
 
@@ -69,7 +69,7 @@ TEST_F(ArrayListFixture, insert)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		int expect = TEST_ARRAY_LIST_LEN - 1;
@@ -111,7 +111,7 @@ TEST_F(ArrayListFixture, reverse_insert)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		struct array_list_node *node = array_list_index(list, (int32_t)-1);
@@ -148,7 +148,7 @@ TEST_F(ArrayListFixture, append)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		int expect = 0;
@@ -190,7 +190,7 @@ TEST_F(ArrayListFixture, reverse_append)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		struct array_list_node *node = array_list_index(list, 0);
@@ -226,14 +226,14 @@ TEST_F(ArrayListFixture, remove)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		int expect_cnt = TEST_ARRAY_LIST_LEN;
 		bool ret = 0;
 		while (1)
 		{
-			ASSERT_EQ(array_list_size(list), expect_cnt);
+			ASSERT_EQ((int)array_list_size(list), expect_cnt);
 			ret = array_list_remove(list, 0, test_utils_free_int, &test_utils_);
 			ASSERT_TRUE(ret);
 			expect_cnt--;
@@ -262,7 +262,7 @@ TEST_F(ArrayListFixture, clear)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		bool ret = array_list_is_empty(list);
@@ -272,7 +272,7 @@ TEST_F(ArrayListFixture, clear)
 
 		ret = array_list_is_empty(list);
 		ASSERT_TRUE(ret);
-		ASSERT_EQ(array_list_size(list), 0);
+		ASSERT_EQ((int)array_list_size(list), 0);
 	}
 }
 
@@ -293,7 +293,7 @@ TEST_F(ArrayListFixture, find)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(array_list_size(list), i + 1);
+			ASSERT_EQ((int)array_list_size(list), i + 1);
 		}
 
 		for (int i = 0; i < TEST_ARRAY_LIST_LEN; i++)

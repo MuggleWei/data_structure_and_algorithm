@@ -21,7 +21,7 @@ public:
 
 		for (int index = 0; index < (int)(sizeof(list_) / sizeof(list_[index])); index++)
 		{
-			ASSERT_EQ(linked_list_size(&list_[index]), 0);
+			ASSERT_EQ((int)linked_list_size(&list_[index]), 0);
 		}
 	}
 
@@ -66,7 +66,7 @@ TEST_F(LinkedListFixture, insert)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(linked_list_size(list), i + 1);
+			ASSERT_EQ((int)linked_list_size(list), i + 1);
 		}
 
 		int expect = TEST_LINKED_LIST_LEN - 1;
@@ -106,7 +106,7 @@ TEST_F(LinkedListFixture, append)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(linked_list_size(list), i + 1);
+			ASSERT_EQ((int)linked_list_size(list), i + 1);
 		}
 
 		int expect = 0;
@@ -146,14 +146,14 @@ TEST_F(LinkedListFixture, remove)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(linked_list_size(list), i + 1);
+			ASSERT_EQ((int)linked_list_size(list), i + 1);
 		}
 
 		int expect_cnt = TEST_LINKED_LIST_LEN;
 		struct linked_list_node *node = linked_list_first(list);
 		while (node)
 		{
-			ASSERT_EQ(linked_list_size(list), expect_cnt);
+			ASSERT_EQ((int)linked_list_size(list), expect_cnt);
 			node = linked_list_remove(list, node, test_utils_free_int, &test_utils_);
 			expect_cnt--;
 		}
@@ -183,7 +183,7 @@ TEST_F(LinkedListFixture, clear)
 
 		ret = linked_list_is_empty(list);
 		ASSERT_TRUE(ret);
-		ASSERT_EQ(linked_list_size(list), 0);
+		ASSERT_EQ((int)linked_list_size(list), 0);
 	}
 }
 
@@ -204,7 +204,7 @@ TEST_F(LinkedListFixture, find)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(linked_list_size(list), i + 1);
+			ASSERT_EQ((int)linked_list_size(list), i + 1);
 		}
 
 		struct linked_list_node *last_node = NULL;

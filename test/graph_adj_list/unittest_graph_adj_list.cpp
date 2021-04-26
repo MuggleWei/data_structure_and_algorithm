@@ -72,15 +72,15 @@ public:
 		{
 			int *p_distance = test_utils_.allocateInteger();
 			*p_distance = s_edge_infos[i].weight;
-			ret = gal_add_edge(&gal_, (void*)s_edge_infos[i].v1_key, (void*)s_edge_infos[i].v2_key, p_distance);
-			ASSERT_TRUE(ret);
+			struct gal_edge *edge = gal_add_edge(&gal_, (void*)s_edge_infos[i].v1_key, (void*)s_edge_infos[i].v2_key, p_distance);
+			ASSERT_TRUE(edge != NULL);
 		}
 
 		for (size_t i = 0; i < sizeof(s_edge_infos) / sizeof(s_edge_infos[0]); i++)
 		{
 			int distance = s_edge_infos[i].weight;
-			ret = gal_add_edge(&gal_, (void*)s_edge_infos[i].v1_key, (void*)s_edge_infos[i].v2_key, &distance);
-			ASSERT_FALSE(ret);
+			struct gal_edge *edge = gal_add_edge(&gal_, (void*)s_edge_infos[i].v1_key, (void*)s_edge_infos[i].v2_key, &distance);
+			ASSERT_FALSE(edge != NULL);
 		}
 	}
 
@@ -144,7 +144,7 @@ TEST_F(GraphAdjListFixture, find_out_edge)
 
 	list = gal_find_out_edge(&gal_, (void*)"PEK");
 	ASSERT_TRUE(list != NULL);
-	ASSERT_EQ(linked_list_size(list), 2);
+	ASSERT_EQ((int)linked_list_size(list), 2);
 
 	node = linked_list_first(list);
 	ASSERT_TRUE(node != NULL);
@@ -206,7 +206,7 @@ TEST_F(GraphAdjListFixture, find_in_edge)
 
 	list = gal_find_in_edge(&gal_, (void*)"SZX");
 	ASSERT_TRUE(list != NULL);
-	ASSERT_EQ(linked_list_size(list), 2);
+	ASSERT_EQ((int)linked_list_size(list), 2);
 
 	node = linked_list_first(list);
 	ASSERT_TRUE(node != NULL);

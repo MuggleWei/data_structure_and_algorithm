@@ -21,7 +21,7 @@ public:
 
 		for (int index = 0; index < (int)(sizeof(queue_) / sizeof(queue_[index])); index++)
 		{
-			ASSERT_EQ(queue_size(&queue_[index]), 0);
+			ASSERT_EQ((int)queue_size(&queue_[index]), 0);
 		}
 	}
 
@@ -46,7 +46,7 @@ TEST_F(QueueFixture, empty)
 	{
 		bool ret = queue_is_empty(&queue_[index]);
 		ASSERT_TRUE(ret);
-		ASSERT_EQ(queue_size(&queue_[index]), 0);
+		ASSERT_EQ((int)queue_size(&queue_[index]), 0);
 	}
 }
 
@@ -67,7 +67,7 @@ TEST_F(QueueFixture, enqueue_dequeue)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(queue_size(p_queue), i + 1);
+			ASSERT_EQ((int)queue_size(p_queue), i + 1);
 		}
 
 		int expect = 0;
@@ -100,7 +100,7 @@ TEST_F(QueueFixture, clear)
 
 			ASSERT_TRUE(node != NULL);
 			ASSERT_EQ(node->data, p);
-			ASSERT_EQ(queue_size(p_queue), i + 1);
+			ASSERT_EQ((int)queue_size(p_queue), i + 1);
 		}
 
 		bool ret = queue_is_empty(p_queue);
@@ -110,6 +110,6 @@ TEST_F(QueueFixture, clear)
 
 		ret = queue_is_empty(p_queue);
 		ASSERT_TRUE(ret);
-		ASSERT_EQ(queue_size(p_queue), 0);
+		ASSERT_EQ((int)queue_size(p_queue), 0);
 	}
 }
