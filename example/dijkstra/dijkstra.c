@@ -234,7 +234,7 @@ int main()
 	dijkstra(&graph, start_id);
 	output_dijkstra_result(&graph, start_id);
 
-	gal_destroy(&graph, NULL, NULL, free_node, NULL, NULL, NULL);
+	gal_destroy(&graph, NULL, NULL, free_node, NULL, free_weight, NULL);
 
 	return 0;
 }
